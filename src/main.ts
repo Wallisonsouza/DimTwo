@@ -10,9 +10,9 @@ import { Scene } from "./engine/core/scene/scene";
 import { SceneManager } from "./engine/core/scene/SceneManager";
 import { Engine } from "./engine/Engine";
 import { ResourcesManager } from "./engine/global/manager/manager";
-import type { MaterialType } from "./engine/modules/resources";
 import { AdvancedShaderSystem } from "./engine/modules/resources/material/AdvancedShaderSystem";
 import { SimpleShaderSystem } from "./engine/modules/resources/material/SimpleShaderSystem";
+import { Material } from "./engine/modules/resources/material/types";
 import { Texture } from "./engine/modules/resources/texture/types";
 import { AnimatorSystem, PhysicsSystem, RenderSystem } from "./engine/modules/systems";
 import { createFillSquareMesh } from "./engine/resources/geometries/Square";
@@ -26,8 +26,6 @@ import { InputSystem } from "./game/systems/InputSystem";
 import { TerrainSystem } from "./game/systems/procedural-world/TerrainSystem";
 import { GameLayout } from "./layout/GameLayout";
 
-
-
 export class Game extends Engine {
     constructor() {
         super();
@@ -39,19 +37,21 @@ const squareMesh = createFillSquareMesh("fillSquare", new Vec3(1, 1, 0));
 ResourcesManager.MeshManager.add("fillSquare", squareMesh);
 
 
-const advanced_material: MaterialType = {
+const advancedMaterial = new Material({
     name: "advanced_material",
     shaderName: "advanced",
-};
+});
 
-ResourcesManager.MaterialManager.add(advanced_material.name, advanced_material);
+
+
+ResourcesManager.MaterialManager.add(advancedMaterial.name, advancedMaterial);
 const advancedShader = new AdvancedShaderSystem();
-ResourcesManager.ShaderSystemManager.add(advanced_material.name, advancedShader);
+ResourcesManager.ShaderSystemManager.add(advancedMaterial.name, advancedShader);
 
-const simpleMaterial: MaterialType = {
+const simpleMaterial = new Material({
     name: "simpleMaterial",
     shaderName: "simple",
-};
+});
 
 ResourcesManager.MaterialManager.add(simpleMaterial.name, simpleMaterial);
 const simpleShader = new SimpleShaderSystem();

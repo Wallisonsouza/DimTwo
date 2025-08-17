@@ -3,7 +3,7 @@ import { System } from "../../core/base/System";
 import { ResourcesManager } from "../../global/manager/manager";
 import type { Transform } from "../components/spatial/Transform";
 import { ComponentGroup, ComponentType } from "../enums/ComponentType";
-import { material_get } from "../generators/create.material";
+
 
 export class RenderSystem extends System {
 
@@ -38,7 +38,7 @@ export class RenderSystem extends System {
       for (const render of rendersByLayer.get(layer)!) {
         const entityID = render.getEntityID();
 
-        const material = material_get(render.material);
+        const material = ResourcesManager.MaterialManager.get(render.material);
         if (!material || !material.shaderName) continue;
 
         const shader = shaders.get(material.shaderName)!;
