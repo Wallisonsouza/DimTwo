@@ -9,7 +9,6 @@ import { Vec3 } from "./engine/core/math/Vec3";
 import { Scene } from "./engine/core/scene/scene";
 import { SceneManager } from "./engine/core/scene/SceneManager";
 import { Engine } from "./engine/Engine";
-import { ResourcesManager } from "./engine/global/manager/manager";
 import { AdvancedShaderSystem } from "./engine/modules/resources/material/AdvancedShaderSystem";
 import { SimpleShaderSystem } from "./engine/modules/resources/material/SimpleShaderSystem";
 import { Material } from "./engine/modules/resources/material/types";
@@ -33,54 +32,71 @@ export class Game extends Engine {
     }
 }
 
-const squareMesh = createFillSquareMesh("fillSquare", new Vec3(1, 1, 0));
-ResourcesManager.MeshManager.add("fillSquare", squareMesh);
+const squareMesh = createFillSquareMesh(new Vec3(1, 1, 0));
 
+new Material({ name: "advanced_material", shaderName: "advanced" });
+new Material({ name: "simpleMaterial", shaderName: "simple" });
 
-const advancedMaterial = new Material({
-    name: "advanced_material",
-    shaderName: "advanced",
-});
-
-
-
-ResourcesManager.MaterialManager.add(advancedMaterial.name, advancedMaterial);
-const advancedShader = new AdvancedShaderSystem();
-ResourcesManager.ShaderSystemManager.add(advancedMaterial.name, advancedShader);
-
-const simpleMaterial = new Material({
-    name: "simpleMaterial",
-    shaderName: "simple",
-});
-
-ResourcesManager.MaterialManager.add(simpleMaterial.name, simpleMaterial);
-const simpleShader = new SimpleShaderSystem();
-ResourcesManager.ShaderSystemManager.add(simpleMaterial.name, simpleShader);
-
-
+new AdvancedShaderSystem("advancedShaderSystem");
+new SimpleShaderSystem("simpleShaderSystem");
 
 const editor = new Editor();
 const game = new Game();
 
-EngineResourceManager.register("simpleShaderVertex", new TextFileLoader("./src/engine/assets/shaders/simpleShader.vert"));
-EngineResourceManager.register("simpleShaderFragment", new TextFileLoader("./src/engine/assets/shaders/simpleShader.frag"));
+EngineResourceManager.register(
+    "simpleShaderVertex",
+    new TextFileLoader("./src/engine/assets/shaders/simpleShader.vert")
+);
+EngineResourceManager.register(
+    "simpleShaderFragment",
+    new TextFileLoader("./src/engine/assets/shaders/simpleShader.frag")
+);
 
-EngineResourceManager.register("advancedShaderVertex", new TextFileLoader("./src/engine/assets/shaders/advancedShader.vert"));
-EngineResourceManager.register("advancedShaderFragment", new TextFileLoader("./src/engine/assets/shaders/advancedShader.frag"));
+EngineResourceManager.register(
+    "advancedShaderVertex",
+    new TextFileLoader("./src/engine/assets/shaders/advancedShader.vert")
+);
+EngineResourceManager.register(
+    "advancedShaderFragment",
+    new TextFileLoader("./src/engine/assets/shaders/advancedShader.frag")
+);
 
-EngineResourceManager.register("player", new ImageFileLoader("./src/game/assets/images/Player.png"));
-EngineResourceManager.register("slime", new ImageFileLoader("./src/game/assets/images/Slime.png"));
+EngineResourceManager.register(
+    "player",
+    new ImageFileLoader("./src/game/assets/images/Player.png")
+);
+EngineResourceManager.register(
+    "slime",
+    new ImageFileLoader("./src/game/assets/images/Slime.png")
+);
 
 await EngineResourceManager.load();
 
 const playerTexture = new Texture("player", "player");
 const slimeTexture = new Texture("slime", "slime");
 
-game.compileShader("advanced", EngineResourceManager.get("advancedShaderVertex")!, EngineResourceManager.get("advancedShaderFragment")!);
-game.compileShader("simple", EngineResourceManager.get("simpleShaderVertex")!, EngineResourceManager.get("simpleShaderFragment")!);
+game.compileShader("advanced",
+    EngineResourceManager.get("advancedShaderVertex")!,
+    EngineResourceManager.get("advancedShaderFragment")!,
+    "advancedShaderSystem"
 
-editor.compileShader("advanced", EngineResourceManager.get("advancedShaderVertex")!, EngineResourceManager.get("advancedShaderFragment")!);
-editor.compileShader("simple", EngineResourceManager.get("simpleShaderVertex")!, EngineResourceManager.get("simpleShaderFragment")!);
+);
+game.compileShader("simple",
+    EngineResourceManager.get("simpleShaderVertex")!,
+    EngineResourceManager.get("simpleShaderFragment")!,
+    "simpleShaderSystem"
+);
+
+editor.compileShader("advanced",
+    EngineResourceManager.get("advancedShaderVertex")!,
+    EngineResourceManager.get("advancedShaderFragment")!,
+    "advancedShaderSystem"
+);
+editor.compileShader("simple",
+    EngineResourceManager.get("simpleShaderVertex")!,
+    EngineResourceManager.get("simpleShaderFragment")!,
+    "simpleShaderSystem"
+);
 
 
 game.compileTexture(playerTexture);
@@ -101,8 +117,6 @@ EngineSystemManager.register(EngineSystem.PhysicsSystem, () => new PhysicsSystem
 EngineSystemManager.register(EngineSystem.CameraSystem, () => new CameraSystem());
 EngineSystemManager.register(EngineSystem.CharacterControlerSystem, () => new CharacterControlerSystem());
 EngineSystemManager.register(EngineSystem.CharacterControlerAnimationSystem, () => new CharacterControllerAnimationSystem());
-
-
 EngineSystemManager.register(EngineSystem.EditorFreeCameraSystem, () => new FreeCameraSystem());
 
 game.useSystem(EngineSystem.RenderSystem);
@@ -115,6 +129,21 @@ game.useSystem(EngineSystem.CameraSystem);
 game.useSystem(EngineSystem.TerrainSystem);
 
 editor.useSystem(EngineSystem.RenderSystem);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //-------------------
 const scene = new Scene("simple_scene");

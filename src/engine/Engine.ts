@@ -133,8 +133,9 @@ export class Engine {
         return this.scene;
     }
 
-    public compileShader(name: string, vertSource: string, fragSource: string) {
+    public compileShader(name: string, vertSource: string, fragSource: string, system: string) {
         const shader = new Shader(this.getContext(), name, vertSource, fragSource);
+        shader.systemName = system;
         this.shaders.add(name, shader);
     }
 

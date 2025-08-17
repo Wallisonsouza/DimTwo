@@ -44,13 +44,15 @@ export class RenderSystem extends System {
         const shader = shaders.get(material.shaderName)!;
         gl.useProgram(shader.program);
 
+        if(!shader.systemName) return;
+
         const transform = components.getComponent<Transform>(
           entityID,
           ComponentType.Transform
         );
         if (!transform) continue;
 
-        const shaderSystem = ResourcesManager.ShaderSystemManager.get(material.name);
+        const shaderSystem = ResourcesManager.ShaderSystemManager.get(shader.systemName);
         if (!shaderSystem) continue;
 
         shaderSystem.global?.(engine, scene, shader);

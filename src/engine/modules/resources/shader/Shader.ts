@@ -9,6 +9,7 @@ export class Shader {
     fragmentSource: string;
     attributes: Map<string, GLint>;
     uniforms: Map<string, WebGLUniformLocation>;
+    systemName: string | null = null;
 
     constructor(gl: WebGL2RenderingContext, name: string, vertexSource: string, fragmentSource: string) {
         this.gl = gl;

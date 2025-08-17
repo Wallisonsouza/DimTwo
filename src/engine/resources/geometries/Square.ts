@@ -3,7 +3,7 @@ import { Vec3 } from "../../core/math/Vec3";
 import { createMesh } from "../../modules/generators/create.mesh";
 import type { Mesh } from "../../modules/resources/mesh/Mesh";
 
-export function createFillSquareMesh(name: string, size: Vec3): Mesh {
+export function createFillSquareMesh(size: Vec3): Mesh {
     const halfSize = new Vec3(size.x * 0.5, size.y * 0.5, size.z * 0.5);
 
     const vertices: Vec3[] = [
@@ -32,7 +32,7 @@ export function createFillSquareMesh(name: string, size: Vec3): Mesh {
         new Vec2(0, 1),
     ];
 
-    return createMesh(name, vertices, indices, normals, uvs);
+    return createMesh("fillSquare", vertices, indices, normals, uvs);
 }
 
 export function createWireSquareMesh(name: string, size: Vec3): Mesh {

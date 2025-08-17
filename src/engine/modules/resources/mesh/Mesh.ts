@@ -1,6 +1,7 @@
 import { Instantiable } from "../../../core/base/Instantiable";
 import { Vec2 } from "../../../core/math/Vec2";
 import { Vec3 } from "../../../core/math/Vec3";
+import { ResourcesManager } from "../../../global/manager/manager";
 import type { MeshBuffer } from "../../../interfaces/IMeshBuffer";
 
 export class Mesh extends Instantiable {
@@ -23,6 +24,8 @@ export class Mesh extends Instantiable {
         this.indices = indices;
         this.normals = normals;
         this.uvs = uvs;
+
+        ResourcesManager.MeshManager.add(this.name, this);
     }
 
     public compile(gl: WebGL2RenderingContext): MeshBuffer {
