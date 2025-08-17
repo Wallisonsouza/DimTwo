@@ -1,14 +1,14 @@
 import type { Engine } from "../engine/Engine";
 import { Display } from "../engine/core/display/Display";
 import { LayoutHelper } from "./LayoutHelper";
-import { ResolutionSelector } from "./elements/ResolutionSelector";
+import { CreateResolutionSelectorComponent } from "./elements/ResolutionSelector";
 
 export class GameLayout extends Display {
     constructor(engine: Engine) {
         super();
 
 
-        const playBtn = LayoutHelper.createOption({
+       /*  const playBtn = LayoutHelper.createOption({
             icon: {
                 svgSrc: "./src/layout/svg/play-fill.svg"
             },
@@ -44,16 +44,12 @@ export class GameLayout extends Display {
                 engine.time.stop();
                 engine.unloadScene();
             },
-        });
+        }); */
 
-        const dropdown = ResolutionSelector(this);
+        const dropdown = CreateResolutionSelectorComponent(this);
         this.optionsBar.appendChild(dropdown.getRenderElement());
 
         this.optionsBar.appendChild(LayoutHelper.createFitContentDiv(true, false));
-        this.optionsBar.appendChild(playBtn);
-        this.optionsBar.appendChild(pauseBtn);
-        this.optionsBar.appendChild(resumeBtn);
-        this.optionsBar.appendChild(stopBtn);
         this.optionsBar.appendChild(LayoutHelper.createFitContentDiv(true, false));
         this.optionsBar.classList.add("game");
 

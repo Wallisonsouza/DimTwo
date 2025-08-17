@@ -71,7 +71,9 @@ export class Texture {
  */
     public compile(gl: WebGL2RenderingContext) {
 
-        const image = EngineResourceManager.get(this.imageName);
+        const image = EngineResourceManager.get<HTMLImageElement>(this.imageName);
+        if(!image) return;
+        
         const texture = gl.createTexture();
         if (!texture) throw new Error("Failed to create WebGLTexture");
         this.width = image.width;

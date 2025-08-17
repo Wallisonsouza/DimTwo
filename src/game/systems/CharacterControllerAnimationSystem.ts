@@ -17,13 +17,18 @@ export class CharacterControllerAnimationSystem extends System {
 
         for (const characterControler of characterControlers) {
 
+            const entityID = characterControler.getEntityID();
+
             const spriteRender = components.getComponent<SpriteRender>(
-                characterControler.getGameEntity(),
+                entityID,
                 ComponentType.SpriteRender
             );
             if (!spriteRender) continue;
 
-            const animator = components.getComponent<Animator>(characterControler.getGameEntity(), ComponentType.Animator);
+            const animator = components.getComponent<Animator>(
+                entityID,
+                ComponentType.Animator
+            );
             if (!animator) continue;
 
             animator.playbackSpeed = Input.keyboard.getKey(WebKeyCode.ShiftLeft) ? 1.5 : 1.0;

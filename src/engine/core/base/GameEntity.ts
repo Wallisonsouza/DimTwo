@@ -5,21 +5,21 @@ export interface GameEntityOptions {
     name?: string;
     tag?: string;
     active?: boolean;
-    parent?: GameEntity | null;
+    parentID?: number | null;
 }
 
 export class GameEntity extends Entity implements Clonable<GameEntity> {
     tag: string;
     active: boolean;
     name: string;
-    parent: GameEntity | null;
+    parentID: number | null;
 
     constructor(options: GameEntityOptions = {}) {
         super();
         this.name = options.name ?? "";
         this.tag = options.tag ?? "";
         this.active = options.active ?? true;
-        this.parent = options.parent ?? null;
+        this.parentID = options.parentID ?? null;
     }
 
     clone(): GameEntity {
@@ -27,7 +27,7 @@ export class GameEntity extends Entity implements Clonable<GameEntity> {
             name: this.name,
             tag: this.tag,
             active: this.active,
-            parent: this.parent 
+            parentID: this.parentID
         });
     }
 }

@@ -22,10 +22,14 @@ export class LayoutText extends LayoutElement {
         this.text.addClass("engine-text__text");
 
         if (options.text) {
-            this.text.setText(options.text);
+            this.text.getRenderElement().innerText = options.text;
         }
 
         this.line.appendElements(this.text);
         this.appendElements(this.line);
+    }
+
+    public setText(text: string) {
+        this.text.getRenderElement().innerText = text;
     }
 }

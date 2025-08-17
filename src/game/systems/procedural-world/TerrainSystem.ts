@@ -22,7 +22,7 @@ export class TerrainSystem extends System {
       return
     }
 
-    const playerTranform = scene.components.getComponent<Transform>(playerEntity, ComponentType.Transform);
+    const playerTranform = scene.components.getComponent<Transform>(playerEntity.id.getValue(), ComponentType.Transform);
     if (!playerTranform) return;
 
     this.playerPosition = playerTranform.position;

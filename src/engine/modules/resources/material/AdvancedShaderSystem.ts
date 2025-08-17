@@ -1,5 +1,4 @@
 import { Editor } from "../../../../main";
-import type { GameEntity } from "../../../core/base/GameEntity";
 import { Mat4 } from "../../../core/math/Mat4";
 import { Vec3 } from "../../../core/math/Vec3";
 import type { Scene } from "../../../core/scene/scene";
@@ -16,7 +15,7 @@ export class AdvancedShaderSystem extends ShaderSystem {
     global(engine: Engine, scene: Scene, shader: Shader) {
 
         let camera = scene.getActiveCamera();
-        let cameraTransform = scene.components.getComponent<Transform>(camera.getGameEntity(), ComponentType.Transform);
+        let cameraTransform = scene.components.getComponent<Transform>(camera.getEntityID(), ComponentType.Transform);
 
         if(engine instanceof Editor) {
             camera = engine.camera;
@@ -34,11 +33,11 @@ export class AdvancedShaderSystem extends ShaderSystem {
         shader.shader_set_uniform_mat4("uProjection", projectionMatrix.data);
     }
 
-    local(engine: Engine, entity: GameEntity, scene: Scene, shader: Shader) {
-        const transform = scene.components.getComponent<Transform>(entity, ComponentType.Transform);
+    local(engine: Engine, entityID: number, scene: Scene, shader: Shader) {
+        const transform = scene.components.getComponent<Transform>(entityID, ComponentType.Transform);
         if (!transform) return;
 
-        const spriteRender = scene.components.getComponent<SpriteRender>(entity, ComponentType.SpriteRender);
+        const spriteRender = scene.components.getComponent<SpriteRender>(entityID, ComponentType.SpriteRender);
         if (!spriteRender) return;
 
         if (!spriteRender.sprite) return;

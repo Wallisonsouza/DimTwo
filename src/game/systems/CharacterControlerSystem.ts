@@ -19,7 +19,7 @@ export class CharacterControlerSystem extends System {
     for (const characterControler of characterControlers) {
 
       const characterTransform = components.getComponent<Transform>(
-        characterControler.getGameEntity(),
+        characterControler.getEntityID(),
         ComponentType.Transform
       );
       if (!characterTransform) continue;

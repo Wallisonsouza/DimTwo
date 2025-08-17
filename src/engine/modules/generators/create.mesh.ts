@@ -6,6 +6,6 @@ import { Mesh } from "../resources/mesh/Mesh";
 export function createMesh(name: string, vertices: Vec3[], indices: number[], normals: Vec3[], uvs: Vec2[]) {
 
     const mesh = new Mesh(name, vertices, indices, normals, uvs);
-    ResourcesManager.MeshManager.add( mesh.instanceID.getValue(), mesh);
+    ResourcesManager.MeshManager.add( mesh.instanceID.getValue().toString(), mesh);
     return mesh;
 }

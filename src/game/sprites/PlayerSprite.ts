@@ -1,9 +1,10 @@
+import { Vec2 } from "../../engine/core/math/Vec2";
 import type { Sprite } from "../../engine/modules/resources/sprite";
 
 export const PLAYER_SPRITE: Sprite = {
     meshName: null,
-    origin: {x: 0, y: 0},
-    position: {x: 0, y: 0},
-    size: {x: 32, y: 32},
-    textureName: "player"
-}
+    origin: new Vec2(0, 0),
+    position: new Vec2(0, 0),
+    size: new Vec2(32, 32),
+    textureName: "player",
+};

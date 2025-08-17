@@ -4,9 +4,10 @@ import type { LayoutIconOptions } from "./LayoutIcon";
 
 export type LayoutDropdownOptions = {
     text?: string;
+    toogleOptions?: boolean;
     initialOptionIndex?: number;
     icon?: LayoutIconOptions;
-    options?: LayoutButtonOptions[];
+    dropdownOptions?: LayoutButtonOptions[];
     onOptionClick?: (option: LayoutButton) => void;
 }
 
@@ -26,35 +27,51 @@ export class LayoutDropdown extends LayoutElement {
             }
         });
 
+        // Se for dropdown do tipo "select", altera texto do botão principal
+        if (options.toogleOptions === true) {
+            if (options.initialOptionIndex !== undefined && options.dropdownOptions) {
+                const initialOption = options.dropdownOptions[options.initialOptionIndex];
+                if (initialOption.text) {
+                    this.mainButton.text?.setText(initialOption.text);
+                }
+            }
+        }
+
         this.mainButton.addClass("engine-dropdown__main");
         this.appendElements(this.mainButton);
 
         this.optionsContainer = new LayoutElement();
         this.optionsContainer.addClass("engine-dropdown__options");
 
-        if (options.options) {
-            for (const config of options.options) {
-
+        if (options.dropdownOptions) {
+            for (const config of options.dropdownOptions) {
                 config.propagation = false;
-
-                config.onClick = () => {
-                    if (options.onOptionClick) {
-                        options.onOptionClick(option);
-                    }
-                    this.optionsContainer.toggleClass("visible");
-                }
 
                 const option = new LayoutButton(config);
 
-                option.addClass("engine-dropdown__option")
+                option.on("click", () => {
+
+                    if (options.onOptionClick) {
+                        options.onOptionClick(option);
+                    }
+
+                    if (options.toogleOptions === true && config.text) {
+                        this.mainButton.text?.setText(config.text);
+                    }
+
+                    this.optionsContainer.toggleClass("visible");
+                })
+
+                option.addClass("engine-dropdown__option");
                 this.optionsContainer.appendElements(option);
             }
-        };
+        }
 
         this.appendElements(this.optionsContainer);
 
+        // fecha o dropdown ao clicar fora
         document.addEventListener("click", () => {
             this.optionsContainer.removeClass("visible");
-        })
+        });
     }
 }

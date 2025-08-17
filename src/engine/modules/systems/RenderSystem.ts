@@ -36,7 +36,7 @@ export class RenderSystem extends System {
     // Renderiza layer por layer
     for (const layer of sortedLayers) {
       for (const render of rendersByLayer.get(layer)!) {
-        const entity = render.getGameEntity();
+        const entityID = render.getEntityID();
 
         const material = material_get(render.material);
         if (!material || !material.shaderName) continue;
@@ -45,7 +45,7 @@ export class RenderSystem extends System {
         gl.useProgram(shader.program);
 
         const transform = components.getComponent<Transform>(
-          entity,
+          entityID,
           ComponentType.Transform
         );
         if (!transform) continue;
@@ -54,7 +54,7 @@ export class RenderSystem extends System {
         if (!shaderSystem) continue;
 
         shaderSystem.global?.(engine, scene, shader);
-        shaderSystem.local?.(engine, entity, scene, shader);
+        shaderSystem.local?.(engine, entityID, scene, shader);
 
         if (!render.meshName) return;
         const mesh = ResourcesManager.MeshManager.get(render.meshName);

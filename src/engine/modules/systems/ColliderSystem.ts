@@ -1,4 +1,4 @@
-import { SpatialHash } from "../../core/algorithms/spatialHash/SpatialHash";
+/* import { SpatialHash } from "../../core/algorithms/spatialHash/SpatialHash";
 import type { System } from "../../core/base/System";
 import type { ECSComponent } from "../../core/ecs/ECSComponent";
 import type { ECSSystem } from "../../core/ecs/ECSSystem";
@@ -127,22 +127,22 @@ function detectCollisions(
 
     for (let i = 0; i < length; i++) {
       const colliderA = collidersInCell[i];
-      const aTransform = Transform.getTransform(colliderA.getGameEntity());
+      const aTransform = Transform.getTransform(colliderA.getEntityID());
       if (!aTransform) continue;
 
       for (let j = i + 1; j < length; j++) {
         const colliderB = collidersInCell[j];
-        if (colliderA.getGameEntity().id === colliderB.getGameEntity().id) continue;
+        if (colliderA.getEntityID().id === colliderB.getEntityID().id) continue;
 
-       /*  if (
+        if (
 
           !scene.collisionMatrix.canCollide(
             colliderA.collisionMask,
             colliderB.collisionMask,
           )
-        ) continue; */
+        ) continue;
 
-        const bTransform = Transform.getTransform(colliderB.getGameEntity());
+        const bTransform = Transform.getTransform(colliderB.getEntityID());
         if (!bTransform) continue;
 
         const pairKey = makePairKey(colliderA.instanceID.getValue(), colliderB.instanceID.getValue());
@@ -205,12 +205,12 @@ function detectCollisions(
         if (resolution) {
 
           const aRigid = components.getComponent<RigidBody2D>(
-            colliderA.getGameEntity(),
+            colliderA.getEntityID(),
             ComponentType.RigidBody2D,
           );
 
           const bRigid = components.getComponent<RigidBody2D>(
-            colliderB.getGameEntity(),
+            colliderB.getEntityID(),
             ComponentType.RigidBody2D,
           );
 
@@ -247,3 +247,4 @@ function detectCollisions(
     collisionState.previous.set(pairKey, pair);
   }
 }
+ */

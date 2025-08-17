@@ -78,10 +78,12 @@ export class Vec3 {
         return a.x * b.x + a.y * b.y + a.z * b.z;
     }
 
-    public static normalizeVec3(v: Vec3): Vec3 {
-        const length = Math.hypot(v.x, v.y, v.z);
-        return length > 0 ? { x: v.x / length, y: v.y / length, z: v.z / length } : { x: 0, y: 0, z: 0 };
-    }
+   public static normalizeVec3(v: Vec3): Vec3 {
+    const length = Math.hypot(v.x, v.y, v.z);
+    return length > 0 
+        ? new Vec3(v.x / length, v.y / length, v.z / length) 
+        : new Vec3(0, 0, 0);
+}
 
     public static vec3Tof32Arr(vectors: Vec3[], out?: Float32Array): Float32Array {
         if (!out || out.length < vectors.length * 3) {

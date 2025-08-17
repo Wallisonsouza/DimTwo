@@ -16,8 +16,8 @@ export class CameraSystem extends System {
         const playerEntity = this.getScene().entities.getByTag("Player");
         if (!playerEntity) return;
 
-        this.cameraTransform = this.getScene().components.getComponent<Transform>(cameraEntity, ComponentType.Transform);
-        this.targetTransform = this.getScene().components.getComponent<Transform>(playerEntity, ComponentType.Transform);
+        this.cameraTransform = this.getScene().components.getComponent<Transform>(cameraEntity.id.getValue(), ComponentType.Transform);
+        this.targetTransform = this.getScene().components.getComponent<Transform>(playerEntity.id.getValue(), ComponentType.Transform);
     }
 
     update(dt: number) {

@@ -1,10 +1,11 @@
+import { Vec2 } from "../../core/math/Vec2";
 import type { Sprite } from "../../modules/resources/sprite";
 
 
 export const SQUARE_SPRITE: Sprite = {
     meshName: null,
     textureName: "primitives",
-    origin: { x: 0, y: 0 },
-    position: { x: 512 + 8, y: 0 },
-    size: { x: 512, y: 512 },
-}
+    origin: new Vec2(0, 0),
+    position: new Vec2(512 + 8, 0),
+    size: new Vec2(512, 512),
+};

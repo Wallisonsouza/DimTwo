@@ -1,4 +1,4 @@
-
+/* 
 import { getBounds, type Bounds } from "../../../../core/math/geometry/Bounds";
 import { Vec2 } from "../../../../core/math/Vec2";
 import { Vec3 } from "../../../../core/math/Vec3";
@@ -27,8 +27,8 @@ function getEffectiveRadius(radius: number, scale: Vec3): number {
 }
 
 export function resolveOverlap(aPos: Vec2, a: Collider, bPos: Vec2, b: Collider): Vec2 | null {
-  const aTransform = Transform.getTransform(a.getGameEntity());
-  const bTransform = Transform.getTransform(b.getGameEntity());
+  const aTransform = Transform.getTransform(a.getEntityID());
+  const bTransform = Transform.getTransform(b.getEntityID());
   if (!aTransform || !bTransform) return null;
 
   Vec2.add(aPos, a.center, tempAddA);
@@ -77,3 +77,4 @@ export function resolveOverlap(aPos: Vec2, a: Collider, bPos: Vec2, b: Collider)
 
   return null;
 }
+ */

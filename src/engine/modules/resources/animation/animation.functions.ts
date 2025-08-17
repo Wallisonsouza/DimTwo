@@ -1,3 +1,4 @@
+import { Vec2 } from "../../../core/math/Vec2";
 import type { AnimationClip, AnimationFrame } from "./animation.types";
 
 export function createAnimationClip(
@@ -18,15 +19,10 @@ export function createAnimationClip(
       sprite: {
         meshName: "quad_mesh",
         textureName: texture,
-        position: {
-          x: startX + i * (frameWidth + frameSpacing),
-          y: startY,
-        },
-        size: {
-          x: frameWidth,
-          y: frameHeight,
-        },
-        origin: { x: -0, y: -0 },
+        position: new Vec2(startX + i * (frameWidth + frameSpacing), startY),
+        size: new Vec2(frameWidth, frameHeight),
+        origin: new Vec2(0, 0),
+
       },
     };
 

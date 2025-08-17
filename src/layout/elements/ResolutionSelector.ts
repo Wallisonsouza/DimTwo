@@ -1,11 +1,12 @@
 import { Display, Resolution } from "../../engine/core/display/Display";
 import { LayoutDropdown } from "./LayoutDropdown";
 
-export function ResolutionSelector(display: Display) {
+export function CreateResolutionSelectorComponent(display: Display) {
     const dropdown = new LayoutDropdown({
         text: "Resolução",
         initialOptionIndex: 0,
-        options: [
+        toogleOptions: true,
+        dropdownOptions: [
             { text: "3840x2160 (4K)", value: Resolution.R3840x2160 },
             { text: "2560x1440 (QHD)", value: Resolution.R2560x1440 },
             { text: "1920x1080 (Full HD)", value: Resolution.R1920x1080 },

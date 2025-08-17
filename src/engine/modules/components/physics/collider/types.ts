@@ -1,4 +1,4 @@
-import { Component } from "../../../../core/base/Component";
+/* import { Component } from "../../../../core/base/Component";
 import { Vec3 } from "../../../../core/math/Vec3";
 import { Bounds } from "../../../../core/math/geometry/Bounds";
 import { ComponentType } from "../../../enums/ComponentType";
@@ -12,7 +12,7 @@ export class Collider extends Component {
   private bounds: Bounds;
 
   public getBounds(): Bounds {
-    const t = this.getGameEntity().getTransform();
+    const t = this.getEntityID().getTransform();
 
     const x = t.position.x + this.center.x - this.bounds.right / 2;
     const y = t.position.y + this.center.y - this.bounds.bottom / 2;
@@ -36,3 +36,4 @@ export class Collider extends Component {
     this.bounds = new Bounds();
   }
 }
+ */

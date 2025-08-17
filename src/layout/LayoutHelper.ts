@@ -1,41 +1,9 @@
-type Option = {
-    text?: LayoutTextOptons;
-    icon?: LayoutIcon;
-    value?: any;
-    onClick?: (option: Option) => void;
-};
-
 
 type LayoutIcon = {
     imageSrc?: string;
     svgSrc?: string;
 
 }
-
-
-type LayoutDropDown = {
-    initialOption?: number;
-    text?: LayoutTextOptons;
-    icon?: LayoutIcon;
-    onClick?: () => void;
-    options?: Option[];
-    onOptionClick?: (option: Option) => void;
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -99,106 +67,6 @@ export class LayoutHelper {
         }
 
         return container;
-    }
-
-
-    public static createOption(option: Option): HTMLDivElement {
-        const container = this.createContainer();
-        container.className = "engine-option";
-
-        if (option.text) {
-            const textEl = this.createText(option.text);
-            container.appendChild(textEl);
-        }
-
-        if (option.onClick) {
-            container.addEventListener("click", () => { option.onClick?.(option) });
-        }
-
-        if (option.icon) {
-            const icon = this.createIcon(option.icon);
-            container.appendChild(icon);
-        }
-
-        return container;
-    }
-
-    public static createText(options: LayoutTextOptons): HTMLDivElement {
-        const container = document.createElement("div");
-        container.className = "engine-text";
-
-        const line = document.createElement("div");
-        line.className = "engine-text__line";
-
-        const text = document.createElement("div");
-        text.className = "engine-text__text";
-
-        if (options.text) text.innerText = options.text;
-
-        if (options.onClick) {
-            container.addEventListener("click", options.onClick);
-        }
-
-        line.appendChild(text);
-        container.appendChild(line);
-        return container;
-    }
-
-    public static createDropdown(dropdown: LayoutDropDown): HTMLDivElement {
-        const dropdownContainer = this.createContainer();
-        dropdownContainer.className = "engine-dropdown";
-
-        let initial: { text?: LayoutTextOptons, icon?: LayoutIcon } = { text: dropdown.text, icon: dropdown.icon };
-
-        if (typeof dropdown.initialOption === "number" && dropdown.options && dropdown.options[dropdown.initialOption]) {
-            initial.text = dropdown.options[dropdown.initialOption].text;
-            initial.icon = dropdown.options[dropdown.initialOption].icon;
-        }
-
-        const mainButton = this.createOption({
-            text: initial.text,
-            icon: initial.icon,
-            onClick: dropdown.onClick
-        });
-
-        const optionsContainer = this.createContainer();
-        optionsContainer.classList.add("engine-dropdown__options");
-
-        dropdown.options?.forEach(opt => {
-            const optionEl = this.createOption({
-                ...opt,
-                onClick: () => {
-
-                    if (dropdown.onOptionClick) {
-                        dropdown.onOptionClick(opt);
-                    }
-
-                    if (opt.text) {
-                        mainButton.innerText = opt.text.text ?? "";
-                    }
-
-                    if (opt.icon) {
-
-                    }
-
-                    optionsContainer.classList.remove("engine-dropdown__options--open");
-                }
-            });
-            optionsContainer.appendChild(optionEl);
-        });
-
-        mainButton.addEventListener("click", (e) => {
-            e.stopPropagation();
-            optionsContainer.classList.toggle("engine-dropdown__options--open");
-        });
-
-        document.addEventListener("click", () => {
-            optionsContainer.classList.remove("engine-dropdown__options--open");
-        });
-
-        dropdownContainer.appendChild(mainButton);
-        dropdownContainer.appendChild(optionsContainer);
-        return dropdownContainer;
     }
 
     public static createContainer(...elements: HTMLDivElement[]) {

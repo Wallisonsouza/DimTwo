@@ -1,33 +1,34 @@
-import type { Vec2 } from "../../math/Vec2";
-import type { Vec3 } from "../../math/Vec3";
+import { Vec2 } from "../../math/Vec2";
+import { Vec3 } from "../../math/Vec3";
 
 export class SimplexNoise {
 
   private grad3: Vec3[] = [
-    { x: 1, y: 1, z: 0 },
-    { x: -1, y: 1, z: 0 },
-    { x: 1, y: -1, z: 0 },
-    { x: -1, y: -1, z: 0 },
-    { x: 1, y: 0, z: 1 },
-    { x: -1, y: 0, z: 1 },
-    { x: 1, y: 0, z: -1 },
-    { x: -1, y: 0, z: -1 },
-    { x: 0, y: 1, z: 1 },
-    { x: 0, y: -1, z: 1 },
-    { x: 0, y: 1, z: -1 },
-    { x: 0, y: -1, z: -1 },
+    new Vec3(1, 1, 0),
+    new Vec3(-1, 1, 0),
+    new Vec3(1, -1, 0),
+    new Vec3(-1, -1, 0),
+    new Vec3(1, 0, 1),
+    new Vec3(-1, 0, 1),
+    new Vec3(1, 0, -1),
+    new Vec3(-1, 0, -1),
+    new Vec3(0, 1, 1),
+    new Vec3(0, -1, 1),
+    new Vec3(0, 1, -1),
+    new Vec3(0, -1, -1),
   ];
 
   private grad2: Vec2[] = [
-    { x: 1, y: 1 },
-    { x: -1, y: 1 },
-    { x: 1, y: -1 },
-    { x: -1, y: -1 },
-    { x: 1, y: 0 },
-    { x: -1, y: 0 },
-    { x: 0, y: 1 },
-    { x: 0, y: -1 },
+    new Vec2(1, 1),
+    new Vec2(-1, 1),
+    new Vec2(1, -1),
+    new Vec2(-1, -1),
+    new Vec2(1, 0),
+    new Vec2(-1, 0),
+    new Vec2(0, 1),
+    new Vec2(0, -1),
   ];
+
 
   private perm: number[] = [];
   private random: () => number;

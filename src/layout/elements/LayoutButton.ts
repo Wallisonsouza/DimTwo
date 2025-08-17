@@ -1,10 +1,10 @@
 import { LayoutElement } from "./LayoutElement";
-import { LayoutIcon } from "./LayoutIcon";
+import { LayoutIcon, type LayoutIconOptions } from "./LayoutIcon";
 import { LayoutText } from "./LayoutText";
 
 export type LayoutButtonOptions = {
     text?: string;
-    icon?: LayoutIcon;
+    icon?: LayoutIconOptions;
     propagation?: boolean;
     value?: any;
     onClick?: (element: LayoutElement) => void;
@@ -13,7 +13,7 @@ export type LayoutButtonOptions = {
 export class LayoutButton extends LayoutElement {
     text?: LayoutText;
     icon?: LayoutIcon;
-    value?: number;
+    value?: any;
 
     constructor(options: LayoutButtonOptions) {
         super();
@@ -27,8 +27,8 @@ export class LayoutButton extends LayoutElement {
         this.value = options.value;
 
         if (options.icon) {
-            this.icon = options.icon;
-            this.appendElements(this.icon);
+            const icon = new LayoutIcon(options.icon);
+            this.appendElements(icon);
         }
 
         if (options.onClick) {
@@ -39,5 +39,9 @@ export class LayoutButton extends LayoutElement {
                 options.onClick?.(this)
             });
         }
+    }
+
+    public setText(text: string): void {
+        this.text?.setText(text)
     }
 }

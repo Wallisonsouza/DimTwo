@@ -1,25 +1,23 @@
-import type { IComponentManager } from "../../interfaces/IComponentManager";
 import type { ComponentGroup, ComponentType } from "../../modules/enums/ComponentType";
 import type { Component } from "../base/Component";
-import type { GameEntity } from "../base/GameEntity";
 
-export class ComponentManager implements IComponentManager {
+export class ComponentManager {
     private readonly data: Map<ComponentType, Map<number, Component>> = new Map();
     private readonly group: Map<ComponentGroup, Set<Component>> = new Map();
 
-    addComponent(entity: GameEntity, component: Component): boolean {
+    addComponent(entityID: number, component: Component): boolean {
 
         const type = component.type;
         if (!this.data.has(type)) this.data.set(type, new Map());
 
         const typeMap = this.data.get(type)!;
-        if (typeMap.has(entity.id.getValue())) {
-            console.warn(`GameEntity ${entity.id.getValue()} already has a component of type ${type}`);
-               console.log(`GameEntity: ${entity}`);
+        if (typeMap.has(entityID)) {
+            console.warn(`GameEntity ${entityID} already has a component of type ${type}`);
+            console.log(`GameEntity: ${entityID}`);
             return false;
         }
 
-        typeMap.set(entity.id.getValue(), component);
+        typeMap.set(entityID, component);
 
         const group = component.group;
         if (group) {
@@ -27,16 +25,16 @@ export class ComponentManager implements IComponentManager {
             this.group.get(group)!.add(component);
         }
 
-        component.setGameEntity(entity);
+        component.setEntityID(entityID);
         return true;
     }
 
-    removeComponent(entity: GameEntity, type: ComponentType): boolean {
+    removeComponent(entityID: number, type: ComponentType): boolean {
         const typeMap = this.data.get(type);
-        if (!typeMap || !typeMap.has(entity.id.getValue())) return false;
+        if (!typeMap || !typeMap.has(entityID)) return false;
 
-        const component = typeMap.get(entity.id.getValue())!;
-        typeMap.delete(entity.id.getValue());
+        const component = typeMap.get(entityID)!;
+        typeMap.delete(entityID);
 
         const group = component.group;
         if (group && this.group.has(group)) {
@@ -46,13 +44,13 @@ export class ComponentManager implements IComponentManager {
         return true;
     }
 
-    getComponent<T extends Component>(entity: GameEntity, type: ComponentType): T | null {
+    getComponent<T extends Component>(entityID: number, type: ComponentType): T | null {
         const typeMap = this.data.get(type);
-        return (typeMap?.get(entity.id.getValue()) as T) ?? null;
+        return (typeMap?.get(entityID) as T) ?? null;
     }
 
-    getAllComponents<T extends Component>(entity: GameEntity, type: ComponentType): T[] {
-        const comp = this.getComponent<T>(entity, type);
+    getAllComponents<T extends Component>(entityID: number, type: ComponentType): T[] {
+        const comp = this.getComponent<T>(entityID, type);
         return comp ? [comp] : [];
     }
 
@@ -73,15 +71,19 @@ export class ComponentManager implements IComponentManager {
         return allComponents;
     }
 
-    getAllComponentsForEntity(entity: GameEntity): Component[] {
+    getAllComponentsForEntity(entityID: number): Component[] {
         const components: Component[] = [];
 
         for (const typeMap of this.data.values()) {
-            const component = typeMap.get(entity.id.getValue());
+            const component = typeMap.get(entityID);
             if (component) components.push(component);
         }
 
         return components;
+    }
+
+    public getData() {
+        return this.data;
     }
 
     public clear() {

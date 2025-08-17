@@ -51,4 +51,8 @@ export class EntityManager {
         this.byName.clear();
         this.byTag.clear();
     }
+
+    getData() {
+        return this.byId;
+    }
 }

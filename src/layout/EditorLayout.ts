@@ -1,11 +1,15 @@
 import { Display } from "../engine/core/display/Display";
+import type { Engine } from "../engine/Engine";
+import { CreateSceneOptionsArea } from "./elements/GeneralOptionsSelector";
 import { LayoutButton } from "./elements/LayoutButton";
-import { ResolutionSelector } from "./elements/ResolutionSelector";
+import { CreateResolutionSelectorComponent } from "./elements/ResolutionSelector";
 
 export class EditorLayout extends Display {
-    constructor() {
+    constructor(engine: Engine) {
         super();
-
+        const file = CreateSceneOptionsArea(engine);
+        this.optionsBar.appendChild(file.getRenderElement());
+        
         const loadBtn = new LayoutButton({
             text: "Load",
             onClick: () => {
@@ -20,10 +24,16 @@ export class EditorLayout extends Display {
                 console.log("Save clicked");
             }
         });
+
+
+
         this.optionsBar.appendChild(saveBtn.getRenderElement());
 
-        const dropdown = ResolutionSelector(this);
+        const dropdown = CreateResolutionSelectorComponent(this);
         this.optionsBar.appendChild(dropdown.getRenderElement());
+
+
+
         this.optionsBar.classList.add("editor")
     }
 }

@@ -27,8 +27,12 @@ export class LayoutElement {
     public setInnerHTML(html: string) {
         this.container.innerHTML = html;
     }
-    public setText(text: string) {
-        this.container.innerText = text;
-    }
 
+    public on<K extends keyof HTMLElementEventMap>(
+        type: K,
+        listener: (this: HTMLDivElement, ev: HTMLElementEventMap[K]) => any,
+        options?: boolean | AddEventListenerOptions
+    ) {
+        this.container.addEventListener(type, listener, options);
+    }
 }

@@ -141,6 +141,7 @@ export class Engine {
 
     public compileTexture(texture: Texture) {
         const textureBuffer = texture.compile(this.getContext());
+        if(!textureBuffer) return;
         this.textureBuffers.add(texture.name, textureBuffer);
     }
 

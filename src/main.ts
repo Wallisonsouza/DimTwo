@@ -36,7 +36,7 @@ export class Editor extends Engine {
 
     constructor() {
         super();
-        this.display = new EditorLayout();
+        this.display = new EditorLayout(this);
         this.camera = new Camera();
         this.cameraTransform = new Transform();
         this.cameraTransform.position.z = 5;
@@ -167,4 +167,5 @@ game.onStop(() => {
     editor.loadScene("simple_scene");
 })
 editor.loadScene("simple_scene");
+editor.getScene()?.serialize();
 editor.time.play();

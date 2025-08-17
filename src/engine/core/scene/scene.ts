@@ -20,7 +20,7 @@ export class Scene {
     }
 
     public addComponent(entity: GameEntity, component: Component) {
-        this.components.addComponent(entity, component);
+        this.components.addComponent(entity.id.getValue(), component);
     }
 
     private injectedCamera: Camera | null = null;
@@ -53,7 +53,7 @@ export class Scene {
             const entityClone = entity.clone();
             sceneClone.addEntity(entityClone);
 
-            for (const component of this.components.getAllComponentsForEntity(entity)) {
+            for (const component of this.components.getAllComponentsForEntity(entity.id.getValue())) {
                 const componentClone = component.clone();
                 sceneClone.addComponent(entityClone, componentClone);
             }
@@ -66,4 +66,87 @@ export class Scene {
         this.components.clear();
         this.entities.clear();
     }
+
+    public serialize() {
+        return JSON.stringify({
+            name: this.name,
+            entities: serializeEntitiesMap(this.entities.getData()),
+            components: serializeComponentMap(this.components.getData())
+        }, undefined, 4);
+    }
 }
+
+function serializeEntitiesMap(entities: Map<number, GameEntity>): any[] {
+    const result: any[] = [];
+    for (const entity of entities.values()) {
+        result.push(entity);
+    }
+    return result;
+}
+
+
+function serializeComponentMap(map: Map<string, Map<number, any>>): any {
+    const result: any = {};
+
+    for (const [componentType, componentMap] of map) {
+        const componentsArray: any[] = [];
+        for (const component of componentMap.values()) {
+            if (component instanceof Map) {
+                componentsArray.push(serializeComponentMap(component));
+            } else {
+                componentsArray.push(component);
+            }
+        }
+        result[componentType] = componentsArray;
+    }
+
+    return result;
+}
+
+/*     serialize(): string {
+        return JSON.stringify(
+            {
+                name: this.name,
+                entities: this.entities.getAll().map(e => serializeValue(e)),
+                components: serializeComponentMap(this.components.getData())
+            },
+            undefined,
+            4
+        );
+    }
+
+
+function serializeValue(value: any): any {
+    if (value instanceof Map) {
+        return serializeComponentMap(value);
+    } else if (value instanceof Array) {
+        return value.map(v => serializeValue(v));
+    } else if (value?.x !== undefined && value?.y !== undefined) {
+        // Vec2 ou Vec3
+        const arr = [value.x, value.y];
+        if (value.z !== undefined) arr.push(value.z);
+        if (value.w !== undefined) arr.push(value.w);
+        return arr;
+    } else if (value?.data !== undefined && typeof value.data === 'object') {
+        // Matriz (ex: Mat4)
+        // Assumindo que `data` é um objeto com índices numéricos
+        return Object.values(value.data);
+    } else if (typeof value === 'object' && value !== null) {
+        const obj: any = {};
+        for (const k in value) {
+            obj[k] = serializeValue(value[k]);
+        }
+        return obj;
+    } else {
+        return value;
+    }
+}
+
+function serializeComponentMap(map: Map<string, Map<number, any>>): any {
+    const result: any = {};
+    for (const [componentType, componentMap] of map) {
+        const componentsArray = Array.from(componentMap.values()).map(c => serializeValue(c));
+        result[componentType] = componentsArray;
+    }
+    return result;
+} */

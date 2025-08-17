@@ -1,4 +1,4 @@
-
+/* 
 import { getBounds, type Bounds } from "../../../../core/math/geometry/Bounds";
 import { Vec2 } from "../../../../core/math/Vec2";
 import { Vec3 } from "../../../../core/math/Vec3";
@@ -27,8 +27,8 @@ export function testOverlap(
   bPos: Vec2,
   b: Collider,
 ): boolean {
-  const aTransform = Transform.getTransform(a.getGameEntity());
-  const bTransform = Transform.getTransform(b.getGameEntity());
+  const aTransform = Transform.getTransform(a.getEntityID());
+  const bTransform = Transform.getTransform(b.getEntityID());
   if (!aTransform || !bTransform) return false;
 
   Vec2.add(aPos, a.center, tempAddA);
@@ -95,3 +95,4 @@ export function testOverlap(
 
   return false;
 }
+ */
