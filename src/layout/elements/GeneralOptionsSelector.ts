@@ -1,7 +1,6 @@
 import type { Engine } from "../../engine/Engine";
 import { LayoutDropdown } from "./LayoutDropdown";
 
-
 enum SceneOptions {
     Create,
     Open,

@@ -1,40 +1,3 @@
-export interface ResolutionSize {
-    width: number;
-    height: number;
-}
-
-export enum Resolution {
-    R3840x2160, 
-    R2560x1440, 
-    R1920x1080,
-    R1680x1050, 
-    R1600x900,
-    R1440x900,
-    R1366x768,
-    R1280x1024,
-    R1280x800,
-    R1280x720,
-    R1024x768,
-    R800x600,
-    R640x480
-}
-
-export const ResolutionValues: Record<Resolution, ResolutionSize> = {
-    [Resolution.R3840x2160]: { width: 3840, height: 2160 },
-    [Resolution.R2560x1440]: { width: 2560, height: 1440 },
-    [Resolution.R1920x1080]: { width: 1920, height: 1080 },
-    [Resolution.R1680x1050]: { width: 1680, height: 1050 },
-    [Resolution.R1600x900]: { width: 1600, height: 900 },
-    [Resolution.R1440x900]: { width: 1440, height: 900 },
-    [Resolution.R1366x768]: { width: 1366, height: 768 },
-    [Resolution.R1280x1024]: { width: 1280, height: 1024 },
-    [Resolution.R1280x800]: { width: 1280, height: 800 },
-    [Resolution.R1280x720]: { width: 1280, height: 720 },
-    [Resolution.R1024x768]: { width: 1024, height: 768 },
-    [Resolution.R800x600]: { width: 800, height: 600 },
-    [Resolution.R640x480]: { width: 640, height: 480 },
-};
-
 export class Display {
 
     private readonly context: WebGL2RenderingContext;
@@ -74,15 +37,13 @@ export class Display {
     public getInternalAspectRatio(): number {
         return this.canvas.width / this.canvas.height;
     }
-    public setResolution(resolution: Resolution) {
-        const { width: renderWidth, height: renderHeight } = ResolutionValues[resolution];
-
-        this.canvas.width = renderWidth;
-        this.canvas.height = renderHeight;
+    public setResolution(width: number, height: number) {
+        this.canvas.width = width;
+        this.canvas.height = height;
 
         this.updateDimensions();
 
-        this.context.viewport(0, 0, renderWidth, renderHeight);
+        this.context.viewport(0, 0, width, height);
     }
 
     private updateDimensions() {

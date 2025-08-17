@@ -1,7 +1,6 @@
 import { Editor } from "./editor/EditorEngine";
 import { FreeCameraSystem } from "./editor/FreeCamera";
 import { GameEntity } from "./engine/core/base/GameEntity";
-import { Resolution } from "./engine/core/display/Display";
 import { ImageFileLoader } from "./engine/core/loaders/ImageFileLoader";
 import { TextFileLoader } from "./engine/core/loaders/TextFileLoader";
 import { EngineResourceManager } from "./engine/core/managers/EngineResourceManager";
@@ -138,10 +137,6 @@ scene.addEntity(cameraEntity);
 const app = document.querySelector("#app") as HTMLDivElement;
 editor.display.addToDocument(app);
 game.display.addToDocument(app);
-
-game.display.setResolution(Resolution.R1920x1080)
-editor.display.setResolution(Resolution.R1920x1080)
-
 
 game.onLoadScene((scene) => {
     editor.unloadScene();
