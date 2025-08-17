@@ -1,8 +1,8 @@
-import { Editor } from "../../../main";
-import { System } from "../../core/base/System";
-import { Vec3 } from "../../core/math/Vec3";
-import { WebKeyboardInput } from "../webInput/WebKeyboardInput";
-import type { KeyCode } from "../webInput/WebKeyCode";
+import { System } from "../engine/core/base/System";
+import { Vec3 } from "../engine/core/math/Vec3";
+import { WebKeyboardInput } from "../engine/modules/webInput/WebKeyboardInput";
+import type { KeyCode } from "../engine/modules/webInput/WebKeyCode";
+import { Editor } from "./EditorEngine";
 
 class Input {
     private static keyInput: WebKeyboardInput = new WebKeyboardInput();

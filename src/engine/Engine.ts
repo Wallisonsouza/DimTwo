@@ -1,4 +1,3 @@
-import type { Editor } from "../main";
 import { Display } from "./core/display/Display";
 import { EngineSystem, EngineSystemManager } from "./core/managers/EngineSystemManager";
 import { SimpleManager } from "./core/managers/SimpleManager";
@@ -150,7 +149,7 @@ export class Engine {
         this.meshBuffers.add(mesh.name, meshBuffer);
     }
 
-    protected onFocusCallback?: (editor: Editor) => void;
+    protected onFocusCallback?: (engine: Engine) => void;
     protected onLoadSceneCallback?: (scene: Scene) => void;
     protected onStopCallback?: () => void;
 
@@ -162,7 +161,7 @@ export class Engine {
         this.onLoadSceneCallback = callback;
     }
 
-    public onFocusWindow(callback: (editor: Editor) => void) {
+    public onFocusWindow(callback: (engine: Engine) => void) {
         this.onFocusCallback = callback;
     }
 }

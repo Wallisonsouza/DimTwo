@@ -1,3 +1,5 @@
+import { Editor } from "./editor/EditorEngine";
+import { FreeCameraSystem } from "./editor/FreeCamera";
 import { GameEntity } from "./engine/core/base/GameEntity";
 import { Resolution } from "./engine/core/display/Display";
 import { ImageFileLoader } from "./engine/core/loaders/ImageFileLoader";
@@ -9,14 +11,11 @@ import { Scene } from "./engine/core/scene/scene";
 import { SceneManager } from "./engine/core/scene/SceneManager";
 import { Engine } from "./engine/Engine";
 import { ResourcesManager } from "./engine/global/manager/manager";
-import { Camera } from "./engine/modules/components/render/Camera";
-import { Transform } from "./engine/modules/components/spatial/Transform";
 import type { MaterialType } from "./engine/modules/resources";
 import { AdvancedShaderSystem } from "./engine/modules/resources/material/AdvancedShaderSystem";
 import { SimpleShaderSystem } from "./engine/modules/resources/material/SimpleShaderSystem";
 import { Texture } from "./engine/modules/resources/texture/types";
 import { AnimatorSystem, PhysicsSystem, RenderSystem } from "./engine/modules/systems";
-import { FreeCameraSystem } from "./engine/modules/systems/FreeCamera";
 import { createFillSquareMesh } from "./engine/resources/geometries/Square";
 import { createCamera as configureCamera } from "./game/entities/camera.entity";
 import { createPlayer as configurePlayer } from "./game/entities/player.entity";
@@ -26,22 +25,9 @@ import { CharacterControlerSystem } from "./game/systems/CharacterControlerSyste
 import { CharacterControllerAnimationSystem } from "./game/systems/CharacterControllerAnimationSystem";
 import { InputSystem } from "./game/systems/InputSystem";
 import { TerrainSystem } from "./game/systems/procedural-world/TerrainSystem";
-import { EditorLayout } from "./layout/EditorLayout";
 import { GameLayout } from "./layout/GameLayout";
 
-export class Editor extends Engine {
 
-    public camera: Camera;
-    public cameraTransform: Transform;
-
-    constructor() {
-        super();
-        this.display = new EditorLayout(this);
-        this.camera = new Camera();
-        this.cameraTransform = new Transform();
-        this.cameraTransform.position.z = 5;
-    }
-}
 
 export class Game extends Engine {
     constructor() {

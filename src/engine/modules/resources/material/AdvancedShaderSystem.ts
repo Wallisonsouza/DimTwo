@@ -1,4 +1,3 @@
-import { Editor } from "../../../../main";
 import { Mat4 } from "../../../core/math/Mat4";
 import { Vec3 } from "../../../core/math/Vec3";
 import type { Scene } from "../../../core/scene/scene";
@@ -17,10 +16,6 @@ export class AdvancedShaderSystem extends ShaderSystem {
         let camera = scene.getActiveCamera();
         let cameraTransform = scene.components.getComponent<Transform>(camera.getEntityID(), ComponentType.Transform);
 
-        if(engine instanceof Editor) {
-            camera = engine.camera;
-            cameraTransform = engine.cameraTransform;
-        }
         camera.aspect = engine.display.getAspectRatio();
         if (!cameraTransform) return;
 

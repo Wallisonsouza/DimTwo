@@ -1,5 +1,4 @@
 
-import { Editor } from "../../../../main";
 import { Mat4 } from "../../../core/math/Mat4";
 import type { Scene } from "../../../core/scene/scene";
 import type { Engine } from "../../../Engine";
@@ -17,10 +16,6 @@ export class SimpleShaderSystem extends ShaderSystem {
 
         let cameraTransform = scene.components.getComponent<Transform>(camera.getEntityID(), ComponentType.Transform);
 
-        if (engine instanceof Editor) {
-            camera = engine.camera;
-            cameraTransform = engine.cameraTransform;
-        }
         camera.aspect = engine.display.getAspectRatio();
 
         if (!cameraTransform) return;
