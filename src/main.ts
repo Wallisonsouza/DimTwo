@@ -65,6 +65,7 @@ EngineResourceManager.register(
     "player",
     new ImageFileLoader("./src/game/assets/images/Player.png")
 );
+
 EngineResourceManager.register(
     "slime",
     new ImageFileLoader("./src/game/assets/images/Slime.png")

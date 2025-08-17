@@ -1,6 +1,7 @@
 import { Component, type Clonable } from "../../../core/base/Component";
 import { Result } from "../../../core/managers/result";
-import { ComponentGroup, ComponentType } from "../../enums/ComponentType";
+import { ComponentGroup } from "../../enums/ComponentGroup";
+import { ComponentType } from "../../enums/ComponentType";
 import type { AnimationClip } from "../../resources/animation";
 import type { SpriteRender } from "../render/SpriteRender";
 import type { AnimatorController } from "./AnimatorController";

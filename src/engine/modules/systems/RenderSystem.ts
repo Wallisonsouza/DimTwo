@@ -2,7 +2,8 @@ import type { Render } from "../../core/base/Render";
 import { System } from "../../core/base/System";
 import { ResourcesManager } from "../../global/manager/manager";
 import type { Transform } from "../components/spatial/Transform";
-import { ComponentGroup, ComponentType } from "../enums/ComponentType";
+import { ComponentGroup } from "../enums/ComponentGroup";
+import { ComponentType } from "../enums/ComponentType";
 
 
 export class RenderSystem extends System {

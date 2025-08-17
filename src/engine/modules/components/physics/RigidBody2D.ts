@@ -1,6 +1,7 @@
 import { Component, type Clonable } from "../../../core/base/Component";
 import { Vec2 } from "../../../core/math/Vec2";
-import { ComponentGroup, ComponentType } from "../../enums/ComponentType";
+import { ComponentGroup } from "../../enums/ComponentGroup";
+import { ComponentType } from "../../enums/ComponentType";
 import type { Transform } from "../spatial/Transform";
 
 export interface RigidBody2DOptions {

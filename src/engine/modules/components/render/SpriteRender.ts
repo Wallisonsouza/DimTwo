@@ -1,6 +1,7 @@
 import type { Clonable } from "../../../core/base/Component.ts";
 import { Render } from "../../../core/base/Render.ts";
-import { ComponentGroup, ComponentType } from "../../enums/ComponentType.ts";
+import { ComponentGroup } from "../../enums/ComponentGroup.ts";
+import { ComponentType } from "../../enums/ComponentType.ts";
 import type { Sprite } from "../../resources/sprite/types.ts";
 
 export interface SpriteRenderOptions {

@@ -2,7 +2,8 @@ import { Component, type Clonable } from "../../../core/base/Component";
 import { Mat4 } from "../../../core/math/Mat4";
 import { Quat } from "../../../core/math/quat";
 import { Vec3 } from "../../../core/math/Vec3";
-import { ComponentGroup, ComponentType } from "../../enums/ComponentType";
+import { ComponentGroup } from "../../enums/ComponentGroup";
+import { ComponentType } from "../../enums/ComponentType";
 
 export interface TransformOptions {
     position?: Vec3;

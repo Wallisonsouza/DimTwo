@@ -1,4 +1,6 @@
-import { ComponentGroup, ComponentType } from "../../modules/enums/ComponentType";
+
+import type { ComponentGroup } from "../../modules/enums/ComponentGroup";
+import type { ComponentType } from "../../modules/enums/ComponentType";
 import { Instantiable } from "./Instantiable";
 
 export interface Clonable<T> {
