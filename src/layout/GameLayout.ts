@@ -1,14 +1,13 @@
 import type { Engine } from "../engine/Engine";
 import { Display } from "../engine/core/display/Display";
-import { LayoutHelper } from "./LayoutHelper";
+import { LayoutButton } from "./elements/LayoutButton";
 import { CreateResolutionSelectorComponent } from "./elements/ResolutionSelector";
 
 export class GameLayout extends Display {
     constructor(engine: Engine) {
         super();
 
-
-       /*  const playBtn = LayoutHelper.createOption({
+        const playBtn = new LayoutButton({
             icon: {
                 svgSrc: "./src/layout/svg/play-fill.svg"
             },
@@ -18,7 +17,7 @@ export class GameLayout extends Display {
             },
         });
 
-        const pauseBtn = LayoutHelper.createOption({
+        const pauseBtn = new LayoutButton({
             icon: {
                 svgSrc: "./src/layout/svg/pause-fill.svg"
             },
@@ -27,7 +26,7 @@ export class GameLayout extends Display {
             },
         });
 
-        const resumeBtn = LayoutHelper.createOption({
+        const resumeBtn = new LayoutButton({
             icon: {
                 svgSrc: "./src/layout/svg/resume-fill.svg"
             },
@@ -36,7 +35,7 @@ export class GameLayout extends Display {
             },
         });
 
-        const stopBtn = LayoutHelper.createOption({
+        const stopBtn = new LayoutButton({
             icon: {
                 svgSrc: "./src/layout/svg/stop-fill.svg"
             },
@@ -44,13 +43,18 @@ export class GameLayout extends Display {
                 engine.time.stop();
                 engine.unloadScene();
             },
-        }); */
+        });
 
         const dropdown = CreateResolutionSelectorComponent(this);
-        this.optionsBar.appendChild(dropdown.getRenderElement());
 
-        this.optionsBar.appendChild(LayoutHelper.createFitContentDiv(true, false));
-        this.optionsBar.appendChild(LayoutHelper.createFitContentDiv(true, false));
+        this.optionsBar.appendChild(dropdown.getRenderElement());
+        this.optionsBar.appendChild(playBtn.getRenderElement());
+        this.optionsBar.appendChild(pauseBtn.getRenderElement());
+        this.optionsBar.appendChild(resumeBtn.getRenderElement());
+        this.optionsBar.appendChild(stopBtn.getRenderElement());
+
+       /*  this.optionsBar.appendChild(LayoutHelper.createFitContentDiv(true, false));
+        this.optionsBar.appendChild(LayoutHelper.createFitContentDiv(true, false)); */
         this.optionsBar.classList.add("game");
 
     }
