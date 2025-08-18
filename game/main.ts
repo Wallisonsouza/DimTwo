@@ -7,20 +7,20 @@ import { Scene } from "@engine/core/scene/scene";
 import { SceneManager } from "@engine/core/scene/SceneManager";
 import { Engine } from "@engine/Engine";
 import { AdvancedShaderSystem } from "@engine/modules/resources/material/AdvancedShaderSystem";
-import { GizmosShaderSystem } from "@engine/modules/resources/material/GizmosShaderSystem";
+import { Material } from "@engine/modules/resources/material/Material";
 import { SimpleShaderSystem } from "@engine/modules/resources/material/SimpleShaderSystem";
-import { Material } from "@engine/modules/resources/material/types";
-import { Texture } from "@engine/modules/resources/texture/types";
+import { Texture } from "@engine/modules/resources/texture/Texture";
 import { AnimatorSystem, PhysicsSystem, RenderSystem } from "@engine/modules/systems";
-import { createFillSquareMesh, createWireSquareMesh } from "@engine/resources/geometries/Square";
+import { Quad } from "@engine/resources/geometries/Square";
 import { GameLayout } from "editor/layout/GameLayout";
 import { loadEditor } from "editor/main";
 import { Editor } from "editor/src/EditorEngine";
 import { FreeCameraSystem } from "editor/src/FreeCamera";
 import { GizmosSystem } from "editor/src/GizmosSystem";
+import { GizmosShaderSystem } from "editor/src/tools/gizmos/GizmosShaderSystem";
 import { loadEngine } from "engine/main";
-import { configureCamera } from "./src/entities/camera.entity";
-import { configurePlayer } from "./src/entities/player.entity";
+import { configureCamera } from "./src/entities/cameraEntity";
+import { configurePlayer } from "./src/entities/playerEntity";
 import { configureSlime } from "./src/entities/slime.entity";
 import { CameraSystem } from "./src/systems/CameraSystem";
 import { CharacterControlerSystem } from "./src/systems/CharacterControlerSystem";
@@ -38,8 +38,8 @@ export class GameEngine extends Engine {
     }
 }
 
-const squareMesh = createFillSquareMesh(new Vec3(1, 1, 0));
-const gizmosSquare = createWireSquareMesh(new Vec3(1, 1, 0));
+const squareMesh = Quad.createFillQuadMesh("fillQuad", new Vec3(1, 1, 0));
+const gizmosQuad = Quad.createWireQuadMesh("wireQuad", new Vec3(1, 1, 0));
 
 new Material({ name: "advancedMaterial", shaderName: "advanced", transparent: true });
 new Material({ name: "simpleMaterial", shaderName: "simple" });
@@ -116,7 +116,7 @@ game.compileMesh(squareMesh);
 editor.compileTexture(playerTexture);
 editor.compileTexture(slimeTexture);
 editor.compileMesh(squareMesh);
-editor.compileMesh(gizmosSquare);
+editor.compileMesh(gizmosQuad);
 
 EngineSystemManager.register(EngineSystem.RenderSystem, () => new RenderSystem());
 EngineSystemManager.register(EngineSystem.TerrainSystem, () => new TerrainSystem());

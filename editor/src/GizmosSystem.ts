@@ -20,7 +20,7 @@ export class GizmosSystem extends System {
         shaderSystem.global?.(engine, scene, shader);
 
         const colliders = scene.components.getAllByGroup<Collider>(ComponentGroup.Collider);
-        const mesh = ResourcesManager.MeshManager.get("wireSquare") as Mesh;
+        const mesh = ResourcesManager.MeshManager.get("wireQuad") as Mesh;
         if (!mesh) return;
 
         for (const collider of colliders) {

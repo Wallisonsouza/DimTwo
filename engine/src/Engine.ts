@@ -9,7 +9,7 @@ import Time from "./core/time/Time";
 import type { MeshBuffer, TextureBuffer } from "./interfaces/IMeshBuffer";
 import type { Mesh } from "./modules/resources/mesh/Mesh";
 import { Shader } from "./modules/resources/shader/Shader";
-import { Texture } from "./modules/resources/texture/types";
+import { Texture } from "./modules/resources/texture/Texture";
 
 export class Engine {
     public display: Display;

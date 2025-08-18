@@ -1,12 +1,12 @@
-import { Color } from "../../../core/math/Color";
-import { Mat4 } from "../../../core/math/Mat4";
-import { Scene } from "../../../core/scene/scene";
-import { Engine } from "../../../Engine";
-import { SpriteRender } from "../../components/render/SpriteRender";
-import { Transform } from "../../components/spatial/Transform";
-import { ComponentType } from "../../enums/ComponentType";
-import { Shader } from "../shader/Shader";
-import { ShaderSystem } from "../shader/ShaderSystem";
+import { Color } from "../../../../engine/src/core/math/Color";
+import { Mat4 } from "../../../../engine/src/core/math/Mat4";
+import { Scene } from "../../../../engine/src/core/scene/scene";
+import { Engine } from "../../../../engine/src/Engine";
+import { SpriteRender } from "../../../../engine/src/modules/components/render/SpriteRender";
+import { Transform } from "../../../../engine/src/modules/components/spatial/Transform";
+import { ComponentType } from "../../../../engine/src/modules/enums/ComponentType";
+import { Shader } from "../../../../engine/src/modules/resources/shader/Shader";
+import { ShaderSystem } from "../../../../engine/src/modules/resources/shader/ShaderSystem";
 
 export class GizmosShaderSystem extends ShaderSystem {
 

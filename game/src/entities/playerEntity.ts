@@ -5,7 +5,7 @@ import { BoxCollider2D } from "@engine//modules/components/physics/BoxCollider2D
 import { RigidBody2D } from "@engine//modules/components/physics/RigidBody2D";
 import { SpriteRender } from "@engine//modules/components/render/SpriteRender";
 import { Transform } from "@engine//modules/components/spatial/Transform";
-import { PLAYER_ANIMATOR_CONTROLLER } from "../controllers/player.animator.controller";
+import { PLAYER_ANIMATOR_CONTROLLER } from "../animations/controllers/player.animator.controller";
 import { PLAYER_SPRITE } from "../sprites/PlayerSprite";
 import { CharacterControler2D } from "../systems/character.controller.types";
 

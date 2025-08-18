@@ -1,7 +1,6 @@
 import { Vec2 } from "../../../engine/src/core/math/Vec2";
 import type { Sprite } from "../../../engine/src/modules/resources/sprite";
 
-
 export const BUSHE_0: Sprite = {
     meshName: null,
     textureName: "bushe",
