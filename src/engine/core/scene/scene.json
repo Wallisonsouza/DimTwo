@@ -14073,7 +14073,7 @@
                     "a": 1
                 },
                 "alpha": 1,
-                "material": "advanced_material",
+                "material": "advancedMaterial",
                 "meshName": "fillSquare",
                 "subMeshes": null,
                 "layer": 2,
@@ -14111,7 +14111,7 @@
                     "a": 1
                 },
                 "alpha": 1,
-                "material": "advanced_material",
+                "material": "advancedMaterial",
                 "meshName": "fillSquare",
                 "subMeshes": null,
                 "layer": 1,

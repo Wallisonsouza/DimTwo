@@ -11,6 +11,7 @@ export enum EngineSystem {
     ColliderSystem,
     CharacterControlerSystem,
     CharacterControlerAnimationSystem,
+    EditorGizmosSystem,
     TerrainSystem
 }
 

@@ -42,7 +42,6 @@ export class Display {
         this.canvas.height = height;
 
         this.updateDimensions();
-
         this.context.viewport(0, 0, width, height);
     }
 
@@ -54,7 +53,6 @@ export class Display {
 
     public addToDocument(parent: HTMLElement) {
         parent.appendChild(this.container);
-        this.updateDimensions();
     }
 
     private handleEvents() {

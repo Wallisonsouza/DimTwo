@@ -1,7 +1,6 @@
 import { Vec2 } from "../../core/math/Vec2";
 import { Vec3 } from "../../core/math/Vec3";
-import { createMesh } from "../../modules/generators/create.mesh";
-import type { Mesh } from "../../modules/resources/mesh/Mesh";
+import { Mesh } from "../../modules/resources/mesh/Mesh";
 
 export function createFillSquareMesh(size: Vec3): Mesh {
     const halfSize = new Vec3(size.x * 0.5, size.y * 0.5, size.z * 0.5);
@@ -32,10 +31,10 @@ export function createFillSquareMesh(size: Vec3): Mesh {
         new Vec2(0, 1),
     ];
 
-    return createMesh("fillSquare", vertices, indices, normals, uvs);
+    return new Mesh("fillSquare", vertices, indices, normals, uvs);
 }
 
-export function createWireSquareMesh(name: string, size: Vec3): Mesh {
+export function createWireSquareMesh(size: Vec3): Mesh {
     const halfSize = new Vec3(size.x * 0.5, size.y * 0.5, size.z * 0.5);
 
     const vertices: Vec3[] = [
@@ -55,7 +54,7 @@ export function createWireSquareMesh(name: string, size: Vec3): Mesh {
     const normals: Vec3[] = [];
     const uvs: Vec2[] = [];
 
-    return createMesh(name, vertices, indices, normals, uvs);
+    return new Mesh("wireSquare", vertices, indices, normals, uvs);
 }
 
 export function createWireCircleMesh(name: string, radius: number, divisions: number): Mesh {
@@ -80,5 +79,5 @@ export function createWireCircleMesh(name: string, radius: number, divisions: nu
     const normals: Vec3[] = [];
     const uvs: Vec2[] = [];
 
-    return createMesh(name, vertices, indices, normals, uvs);
+    return new Mesh(name, vertices, indices, normals, uvs);
 }

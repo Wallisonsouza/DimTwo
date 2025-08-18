@@ -20,7 +20,7 @@ export function createTreeEntity(
     const spriteRener = Builder.createSpriteRender(gameEntity, {
         sprite: sprite,
         layer: 1,
-        material: "advanced_material",
+        material: "advancedMaterial",
     });
 
     const boxCollider = createBoxCollider2D(gameEntity, { collisionMask: CollisionLayer.TREE, isTrigger: true, size: new Vec3(1, 1, 1) });

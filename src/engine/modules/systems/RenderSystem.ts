@@ -1,75 +1,80 @@
 import type { Render } from "../../core/base/Render";
 import { System } from "../../core/base/System";
+import type { Scene } from "../../core/scene/scene";
+import type { Engine } from "../../Engine";
 import { ResourcesManager } from "../../global/manager/manager";
-import type { Transform } from "../components/spatial/Transform";
 import { ComponentGroup } from "../enums/ComponentGroup";
-import { ComponentType } from "../enums/ComponentType";
-
+import type { Material } from "../resources/material/types";
 
 export class RenderSystem extends System {
 
-  render() {
-    const scene = this.getScene();
-    const components = scene.components;
-    const engine = this.getEngine();
-    const shaders = engine.shaders;
-    const gl = engine.getContext();
+  private transparentsCache: Render[] = [];
 
-    gl.enable(gl.BLEND);
-    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-
-    const renders = components
-      .getAllByGroup<Render>(ComponentGroup.Render)
-      .filter(r => r.enabled);
-
-    const rendersByLayer = new Map<number, Render[]>();
+  private renderObjects(context: WebGL2RenderingContext, engine: Engine, scene: Scene, renders: Render[], opaque: boolean) {
     for (const render of renders) {
-      const layer = render.layer ?? 0;
-      if (!rendersByLayer.has(layer)) {
-        rendersByLayer.set(layer, []);
+      if (!render.enabled) continue;
+
+
+      const entityID = render.getEntityID();
+      const material = ResourcesManager.MaterialManager.get(render.material) as Material;
+      if (!material || !material.shaderName) continue;
+
+      if (opaque && (render.color.a < 1 || material.transparent == true)) {
+        this.transparentsCache.push(render);
+        continue;
       }
-      rendersByLayer.get(layer)!.push(render);
+
+
+      console.log(material.transparent)
+      const shader = engine.shaders.get(material.shaderName);
+      if (!shader || !shader.systemName) continue;
+
+      context.useProgram(shader.program);
+
+      const shaderSystem = ResourcesManager.ShaderSystemManager.get(shader.systemName);
+      if (!shaderSystem) continue;
+
+      shaderSystem.global?.(engine, scene, shader);
+      shaderSystem.local?.(engine, entityID, scene, shader);
+
+      if (!render.meshName) return;
+      const mesh = ResourcesManager.MeshManager.get(render.meshName);
+      if (!mesh) continue;
+
+      const vao = engine.meshBuffers.get(mesh.name);
+      if (!vao) continue;
+
+      context.bindVertexArray(vao.vao);
+      context.drawElements(context.TRIANGLES, vao.indexCount, context.UNSIGNED_SHORT, 0);
+      context.bindVertexArray(null);
     }
+  }
 
-    // Ordena layers (menor para maior)
-    const sortedLayers = [...rendersByLayer.keys()].sort((a, b) => a - b);
+  render() {
+    const engine = this.getEngine();
+    const scene = this.getScene();
+    const context = engine.getContext();
 
-    // Renderiza layer por layer
-    for (const layer of sortedLayers) {
-      for (const render of rendersByLayer.get(layer)!) {
-        const entityID = render.getEntityID();
+    const renders = scene.components.getAllByGroup<Render>(ComponentGroup.Render);
 
-        const material = ResourcesManager.MaterialManager.get(render.material);
-        if (!material || !material.shaderName) continue;
+    context.depthMask(true);
+    context.enable(context.DEPTH_TEST);
+    context.disable(context.BLEND);
 
-        const shader = shaders.get(material.shaderName)!;
-        gl.useProgram(shader.program);
+    this.renderObjects(context, engine, scene, renders, true);
 
-        if(!shader.systemName) return;
+    if (this.transparentsCache.length > 0) {
+      this.transparentsCache.sort((a, b) => { return a.layer - b.layer });
 
-        const transform = components.getComponent<Transform>(
-          entityID,
-          ComponentType.Transform
-        );
-        if (!transform) continue;
+      context.enable(context.BLEND);
+      context.blendFunc(context.SRC_ALPHA, context.ONE_MINUS_SRC_ALPHA);
+      context.depthMask(false);
+      context.disable(context.DEPTH_TEST);
 
-        const shaderSystem = ResourcesManager.ShaderSystemManager.get(shader.systemName);
-        if (!shaderSystem) continue;
+      this.renderObjects(context, engine, scene, this.transparentsCache, false);
 
-        shaderSystem.global?.(engine, scene, shader);
-        shaderSystem.local?.(engine, entityID, scene, shader);
-
-        if (!render.meshName) return;
-        const mesh = ResourcesManager.MeshManager.get(render.meshName);
-        if (!mesh) continue;
-
-        const vao = engine.meshBuffers.get(mesh.name);
-        if (!vao) continue;
-
-        gl.bindVertexArray(vao.vao);
-        gl.drawElements(gl.TRIANGLES, vao.indexCount, gl.UNSIGNED_SHORT, 0);
-        gl.bindVertexArray(null);
-      }
+      context.depthMask(true);
+      this.transparentsCache.length = 0;
     }
   }
 }

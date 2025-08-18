@@ -24,7 +24,7 @@ export function createPrimitive(
 
   const spriteRender = Builder.createSpriteRender(gameEntity, {
     layer: 1,
-    material: "advanced_material",
+    material: "advancedMaterial",
     sprite: sprite,
     color: Color.random()
   });

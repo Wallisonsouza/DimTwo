@@ -1,5 +1,6 @@
 import { Editor } from "./editor/EditorEngine";
 import { FreeCameraSystem } from "./editor/FreeCamera";
+import { GizmosSystem } from "./editor/GizmosSystem";
 import { GameEntity } from "./engine/core/base/GameEntity";
 import { ImageFileLoader } from "./engine/core/loaders/ImageFileLoader";
 import { TextFileLoader } from "./engine/core/loaders/TextFileLoader";
@@ -10,14 +11,15 @@ import { Scene } from "./engine/core/scene/scene";
 import { SceneManager } from "./engine/core/scene/SceneManager";
 import { Engine } from "./engine/Engine";
 import { AdvancedShaderSystem } from "./engine/modules/resources/material/AdvancedShaderSystem";
+import { GizmosShaderSystem } from "./engine/modules/resources/material/GizmosShaderSystem";
 import { SimpleShaderSystem } from "./engine/modules/resources/material/SimpleShaderSystem";
 import { Material } from "./engine/modules/resources/material/types";
 import { Texture } from "./engine/modules/resources/texture/types";
 import { AnimatorSystem, PhysicsSystem, RenderSystem } from "./engine/modules/systems";
-import { createFillSquareMesh } from "./engine/resources/geometries/Square";
-import { createCamera as configureCamera } from "./game/entities/camera.entity";
-import { createPlayer as configurePlayer } from "./game/entities/player.entity";
-import { createSlime as configureSlime } from "./game/entities/slime.entity";
+import { createFillSquareMesh, createWireSquareMesh } from "./engine/resources/geometries/Square";
+import { configureCamera } from "./game/entities/camera.entity";
+import { configurePlayer } from "./game/entities/player.entity";
+import { configureSlime } from "./game/entities/slime.entity";
 import { CameraSystem } from "./game/systems/CameraSystem";
 import { CharacterControlerSystem } from "./game/systems/CharacterControlerSystem";
 import { CharacterControllerAnimationSystem } from "./game/systems/CharacterControllerAnimationSystem";
@@ -25,7 +27,7 @@ import { InputSystem } from "./game/systems/InputSystem";
 import { TerrainSystem } from "./game/systems/procedural-world/TerrainSystem";
 import { GameLayout } from "./layout/GameLayout";
 
-export class Game extends Engine {
+export class GameEngine extends Engine {
     constructor() {
         super();
         this.display = new GameLayout(this);
@@ -33,33 +35,50 @@ export class Game extends Engine {
 }
 
 const squareMesh = createFillSquareMesh(new Vec3(1, 1, 0));
+const gizmosSquare = createWireSquareMesh(new Vec3(1, 1, 0));
 
-new Material({ name: "advanced_material", shaderName: "advanced" });
+new Material({ name: "advancedMaterial", shaderName: "advanced", transparent: true });
 new Material({ name: "simpleMaterial", shaderName: "simple" });
+new Material({ name: "gizmosMaterial", shaderName: "gizmos" });
 
-new AdvancedShaderSystem("advancedShaderSystem");
-new SimpleShaderSystem("simpleShaderSystem");
+
 
 const editor = new Editor();
-const game = new Game();
+const game = new GameEngine();
 
+// simple
 EngineResourceManager.register(
     "simpleShaderVertex",
     new TextFileLoader("./src/engine/assets/shaders/simpleShader.vert")
 );
+
 EngineResourceManager.register(
     "simpleShaderFragment",
     new TextFileLoader("./src/engine/assets/shaders/simpleShader.frag")
 );
 
+// advanced
 EngineResourceManager.register(
     "advancedShaderVertex",
     new TextFileLoader("./src/engine/assets/shaders/advancedShader.vert")
 );
+
 EngineResourceManager.register(
     "advancedShaderFragment",
     new TextFileLoader("./src/engine/assets/shaders/advancedShader.frag")
 );
+
+// gizmos
+EngineResourceManager.register(
+    "gizmosShaderFragment",
+    new TextFileLoader("./src/engine/assets/shaders/gizmos.frag")
+);
+
+EngineResourceManager.register(
+    "gizmosShaderVertex",
+    new TextFileLoader("./src/engine/assets/shaders/gizmos.vert")
+);
+
 
 EngineResourceManager.register(
     "player",
@@ -76,6 +95,14 @@ await EngineResourceManager.load();
 const playerTexture = new Texture("player", "player");
 const slimeTexture = new Texture("slime", "slime");
 
+
+
+// systems
+new AdvancedShaderSystem("advancedShaderSystem");
+new SimpleShaderSystem("simpleShaderSystem");
+new GizmosShaderSystem("gizmosShaderSystem");
+
+// game
 game.compileShader("advanced",
     EngineResourceManager.get("advancedShaderVertex")!,
     EngineResourceManager.get("advancedShaderFragment")!,
@@ -88,16 +115,25 @@ game.compileShader("simple",
     "simpleShaderSystem"
 );
 
+// editor
 editor.compileShader("advanced",
     EngineResourceManager.get("advancedShaderVertex")!,
     EngineResourceManager.get("advancedShaderFragment")!,
     "advancedShaderSystem"
 );
+
 editor.compileShader("simple",
     EngineResourceManager.get("simpleShaderVertex")!,
     EngineResourceManager.get("simpleShaderFragment")!,
     "simpleShaderSystem"
 );
+
+editor.compileShader("gizmos",
+    EngineResourceManager.get("gizmosShaderVertex")!,
+    EngineResourceManager.get("gizmosShaderFragment")!,
+    "gizmosShaderSystem"
+);
+
 
 
 game.compileTexture(playerTexture);
@@ -108,7 +144,7 @@ game.compileMesh(squareMesh);
 editor.compileTexture(playerTexture);
 editor.compileTexture(slimeTexture);
 editor.compileMesh(squareMesh);
-
+editor.compileMesh(gizmosSquare);
 
 EngineSystemManager.register(EngineSystem.RenderSystem, () => new RenderSystem());
 EngineSystemManager.register(EngineSystem.TerrainSystem, () => new TerrainSystem());
@@ -118,7 +154,15 @@ EngineSystemManager.register(EngineSystem.PhysicsSystem, () => new PhysicsSystem
 EngineSystemManager.register(EngineSystem.CameraSystem, () => new CameraSystem());
 EngineSystemManager.register(EngineSystem.CharacterControlerSystem, () => new CharacterControlerSystem());
 EngineSystemManager.register(EngineSystem.CharacterControlerAnimationSystem, () => new CharacterControllerAnimationSystem());
-EngineSystemManager.register(EngineSystem.EditorFreeCameraSystem, () => new FreeCameraSystem());
+
+
+
+
+
+
+
+
+
 
 game.useSystem(EngineSystem.RenderSystem);
 game.useSystem(EngineSystem.AnimatorSystem);
@@ -129,10 +173,10 @@ game.useSystem(EngineSystem.CharacterControlerAnimationSystem);
 game.useSystem(EngineSystem.CameraSystem);
 game.useSystem(EngineSystem.TerrainSystem);
 
+EngineSystemManager.register(EngineSystem.EditorFreeCameraSystem, () => new FreeCameraSystem());
+EngineSystemManager.register(EngineSystem.EditorGizmosSystem, () => new GizmosSystem());
 editor.useSystem(EngineSystem.RenderSystem);
-
-
-
+editor.useSystem(EngineSystem.EditorGizmosSystem);
 
 
 
@@ -167,6 +211,11 @@ scene.addEntity(cameraEntity);
 const app = document.querySelector("#app") as HTMLDivElement;
 editor.display.addToDocument(app);
 game.display.addToDocument(app);
+editor.display.setResolution(1920, 1080);
+game.display.setResolution(1920, 1080);
+
+editor.loadScene("simple_scene");
+editor.time.play();
 
 game.onLoadScene((scene) => {
     editor.unloadScene();
@@ -177,6 +226,3 @@ game.onStop(() => {
     editor.unloadScene();
     editor.loadScene("simple_scene");
 })
-editor.loadScene("simple_scene");
-editor.getScene()?.serialize();
-editor.time.play();

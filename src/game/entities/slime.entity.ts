@@ -9,13 +9,14 @@ import { Transform } from "../../engine/modules/components/spatial/Transform";
 import { SLIME_ANIMATOR_CONTROLLER } from "../controllers/slime.animator.controller";
 import { SLIME_SPRITE } from "../sprites/slime.sprite";
 
-export function createSlime(scene: Scene, entity: GameEntity){
+export function configureSlime(scene: Scene, entity: GameEntity){
   const transform: Transform = new Transform();
+  transform.position.z = 0
 
   const spriteReder: SpriteRender = new SpriteRender({
     sprite: SLIME_SPRITE,
-    layer: 1,
-    material: "advanced_material"
+    layer: 0,
+    material: "advancedMaterial"
   });
 
   const animator: Animator = new Animator({controller: SLIME_ANIMATOR_CONTROLLER});

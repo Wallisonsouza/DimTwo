@@ -26,7 +26,7 @@ export const ResolutionValues: Record<Resolution, ResolutionSize> = {
 export function CreateResolutionSelectorComponent(display: Display) {
     const dropdown = new LayoutDropdown({
         text: "Resolução",
-        initialOptionIndex: 0,
+        initialOptionIndex: 2,
         toogleOptions: true,
         dropdownOptions: [
             { text: "3840x2160 (4K)", value: Resolution.R3840x2160 },
@@ -46,6 +46,8 @@ export function CreateResolutionSelectorComponent(display: Display) {
             }
         }
     });
+
+
 
     return dropdown;
 }

@@ -1,14 +1,14 @@
-
+import { Color } from "../../../core/math/Color";
 import { Mat4 } from "../../../core/math/Mat4";
-import type { Scene } from "../../../core/scene/scene";
-import type { Engine } from "../../../Engine";
-import type { SpriteRender } from "../../components/render/SpriteRender";
+import { Scene } from "../../../core/scene/scene";
+import { Engine } from "../../../Engine";
+import { SpriteRender } from "../../components/render/SpriteRender";
 import { Transform } from "../../components/spatial/Transform";
 import { ComponentType } from "../../enums/ComponentType";
-import type { Shader } from "../shader/Shader";
+import { Shader } from "../shader/Shader";
 import { ShaderSystem } from "../shader/ShaderSystem";
 
-export class SimpleShaderSystem extends ShaderSystem {
+export class GizmosShaderSystem extends ShaderSystem {
 
     global(engine: Engine, scene: Scene, shader: Shader) {
 
@@ -17,7 +17,6 @@ export class SimpleShaderSystem extends ShaderSystem {
         let cameraTransform = scene.components.getComponent<Transform>(camera.getEntityID(), ComponentType.Transform);
 
         camera.aspect = engine.display.getAspectRatio();
-        console.log(camera.aspect)
 
         if (!cameraTransform) return;
 
@@ -45,10 +44,10 @@ export class SimpleShaderSystem extends ShaderSystem {
 
         shader.shader_set_uniform_4f(
             "uColor",
-            spriteRender.color.r,
-            spriteRender.color.g,
-            spriteRender.color.b,
-            spriteRender.color.a,
+            Color.green.r,
+            Color.green.g,
+            Color.green.b,
+            Color.green.a,
         );
     }
 }

@@ -1,19 +1,29 @@
-/* import { distanceSq, getBoundsCenterInto, getBoxOverlapInto, getClosestPoint, getSeparationDirection, type Bounds } from "../../../core/math/geometry/Bounds";
-import { Vec2 } from "../../../core/math/Vec2";
 import { Vec3 } from "../../../core/math/Vec3";
+import { ComponentGroup } from "../../enums/ComponentGroup";
 import { ComponentType } from "../../enums/ComponentType";
 import { Collider } from "./collider/types";
+
+
+export interface BoxCollider2DOptions {
+  size?: Vec3;
+}
 
 export class BoxCollider2D extends Collider {
   size: Vec3;
 
-
-  constructor() {
-    super(ComponentType.BoxCollider2D, ComponentType.Collider);
-    this.size = new Vec3(1, 1, 0);
+  constructor(options: BoxCollider2DOptions  = {}) {
+    super(ComponentType.BoxCollider2D, ComponentGroup.Collider);
+    this.size = options.size ?? new Vec3(1, 1, 0);
   }
 
-  static VEC2_CACHE: Vec2 = new Vec2();
+  clone(): BoxCollider2D {
+    return  new BoxCollider2D({
+      size: this.size
+    })
+    
+  }
+
+  /* static VEC2_CACHE: Vec2 = new Vec2();
 
   public static testBoxBoxOverlap(a: Bounds, b: Bounds): boolean {
     if (a.right <= b.left) return false;
@@ -34,8 +44,8 @@ export class BoxCollider2D extends Collider {
     const distSq = distanceSq(circlePos, this.VEC2_CACHE);
     return distSq <= (circleRadius * circleRadius);
   }
-
-  private static _overlap = new Vec2();
+ */
+ /*  private static _overlap = new Vec2();
   private static _centerA = new Vec2();
   private static _centerB = new Vec2();
 
@@ -86,9 +96,6 @@ export class BoxCollider2D extends Collider {
       y: -this.normal.y * overlap,
     };
   }
-
-
-
+ */
 
 }
- */

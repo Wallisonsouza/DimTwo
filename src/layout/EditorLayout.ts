@@ -9,7 +9,7 @@ export class EditorLayout extends Display {
         super();
         const file = CreateSceneOptionsArea(engine);
         this.optionsBar.appendChild(file.getRenderElement());
-        
+
         const loadBtn = new LayoutButton({
             text: "Load",
             onClick: () => {
@@ -24,7 +24,6 @@ export class EditorLayout extends Display {
                 console.log("Save clicked");
             }
         });
-
 
 
         this.optionsBar.appendChild(saveBtn.getRenderElement());

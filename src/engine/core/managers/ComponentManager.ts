@@ -1,4 +1,5 @@
-import type { ComponentGroup, ComponentType } from "../../modules/enums/ComponentType";
+import type { ComponentGroup } from "../../modules/enums/ComponentGroup";
+import type { ComponentType } from "../../modules/enums/ComponentType";
 import type { Component } from "../base/Component";
 
 export class ComponentManager {

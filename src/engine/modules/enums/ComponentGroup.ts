@@ -3,7 +3,7 @@ export enum ComponentGroup {
     Animator = "Animator",
     Controller = "Controllers",
     Render = "Render",
-    Colliders = "Colliders",
+    Collider = "Colliders",
     RigidBody2D = "RigidBody2D",
     Transform = "Transform"
 

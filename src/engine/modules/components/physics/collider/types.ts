@@ -1,7 +1,8 @@
-/* import { Component } from "../../../../core/base/Component";
+import { Component } from "../../../../core/base/Component";
 import { Vec3 } from "../../../../core/math/Vec3";
-import { Bounds } from "../../../../core/math/geometry/Bounds";
+import type { ComponentGroup } from "../../../enums/ComponentGroup";
 import { ComponentType } from "../../../enums/ComponentType";
+import type { CollisionMask } from "../../../physics/collision/CollisionLayer";
 
 export class Collider extends Component {
   isColliding: boolean;
@@ -9,9 +10,9 @@ export class Collider extends Component {
   isTrigger: boolean;
   collisionMask: CollisionMask;
   ignoreSelfCollisions: boolean;
-  private bounds: Bounds;
+ /*  private bounds: Bounds; */
 
-  public getBounds(): Bounds {
+/*   public getBounds(): Bounds {
     const t = this.getEntityID().getTransform();
 
     const x = t.position.x + this.center.x - this.bounds.right / 2;
@@ -24,16 +25,15 @@ export class Collider extends Component {
 
     return this.bounds;
   }
+ */
 
-
-  constructor(type: ComponentType, category: ComponentType) {
-    super(type, category);
+  constructor(type: ComponentType, group: ComponentGroup) {
+    super(type, group);
     this.isColliding = false;
     this.center = new Vec3(0, 0, 0);
     this.isTrigger = false;
     this.collisionMask = 0;
     this.ignoreSelfCollisions = false;
-    this.bounds = new Bounds();
+  /*   this.bounds = new Bounds(); */
   }
 }
- */
