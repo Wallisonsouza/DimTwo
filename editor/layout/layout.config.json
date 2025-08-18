@@ -1,0 +1,16 @@
+{
+     "icons": {
+            "play": {
+                "path": "editor/layout/svg/play-fill.svg"
+            },
+            "pause": {
+                "path": "editor/layout/svg/pause-fill.svg"
+            },
+            "resume": {
+                "path": "editor/layout/svg/resume-fill.svg"
+            },
+            "stop": {
+                "path": "editor/layout/svg/stop-fill.svg"
+            }
+        }
+}

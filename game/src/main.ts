@@ -1,6 +1,5 @@
 import { GameEntity } from "@engine/core/base/GameEntity";
 import { ImageFileLoader } from "@engine/core/loaders/ImageFileLoader";
-import { TextFileLoader } from "@engine/core/loaders/TextFileLoader";
 import { EngineResourceManager } from "@engine/core/managers/EngineResourceManager";
 import { EngineSystem, EngineSystemManager } from "@engine/core/managers/EngineSystemManager";
 import { Vec3 } from "@engine/core/math/Vec3";
@@ -15,9 +14,11 @@ import { Texture } from "@engine/modules/resources/texture/types";
 import { AnimatorSystem, PhysicsSystem, RenderSystem } from "@engine/modules/systems";
 import { createFillSquareMesh, createWireSquareMesh } from "@engine/resources/geometries/Square";
 import { GameLayout } from "editor/layout/GameLayout";
+import { loadEditor } from "editor/main";
 import { Editor } from "editor/src/EditorEngine";
 import { FreeCameraSystem } from "editor/src/FreeCamera";
 import { GizmosSystem } from "editor/src/GizmosSystem";
+import { loadEngine } from "engine/main";
 import { configureCamera } from "./entities/camera.entity";
 import { configurePlayer } from "./entities/player.entity";
 import { configureSlime } from "./entities/slime.entity";
@@ -27,6 +28,8 @@ import { CharacterControllerAnimationSystem } from "./systems/CharacterControlle
 import { InputSystem } from "./systems/InputSystem";
 import { TerrainSystem } from "./systems/procedural-world/TerrainSystem";
 
+await loadEngine();
+await loadEditor();
 
 export class GameEngine extends Engine {
     constructor() {
@@ -47,39 +50,10 @@ new Material({ name: "gizmosMaterial", shaderName: "gizmos" });
 const editor = new Editor();
 const game = new GameEngine();
 
-// simple
-EngineResourceManager.register(
-    "simpleShaderVertex",
-    new TextFileLoader("../engine/src/assets/shaders/simpleShader.vert")
-);
 
-EngineResourceManager.register(
-    "simpleShaderFragment",
-    new TextFileLoader("../engine/src/assets/shaders/simpleShader.frag")
-);
 
-// advanced
-EngineResourceManager.register(
-    "advancedShaderVertex",
-    new TextFileLoader("../engine/src/assets/shaders/advancedShader.vert")
-);
-
-EngineResourceManager.register(
-    "advancedShaderFragment",
-    new TextFileLoader("../engine/src/assets/shaders/advancedShader.frag")
-);
-
-// gizmos
-EngineResourceManager.register(
-    "gizmosShaderFragment",
-    new TextFileLoader("../engine/src/assets/shaders/gizmos.frag")
-);
-
-EngineResourceManager.register(
-    "gizmosShaderVertex",
-    new TextFileLoader("../engine/src/assets/shaders/gizmos.vert")
-);
-
+const playerTexture = new Texture("player", "player");
+const slimeTexture = new Texture("slime", "slime");
 
 EngineResourceManager.register(
     "player",
@@ -92,9 +66,6 @@ EngineResourceManager.register(
 );
 
 await EngineResourceManager.load();
-
-const playerTexture = new Texture("player", "player");
-const slimeTexture = new Texture("slime", "slime");
 
 
 

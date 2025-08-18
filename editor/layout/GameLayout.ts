@@ -3,13 +3,19 @@ import { Display } from "../../engine/src/core/display/Display";
 import { LayoutButton } from "./elements/LayoutButton";
 import { CreateResolutionSelectorComponent } from "./elements/ResolutionSelector";
 
+
+import layout from './layout.config.json';
+
+
+
+
 export class GameLayout extends Display {
     constructor(engine: Engine) {
         super();
 
         const playBtn = new LayoutButton({
             icon: {
-                svgSrc: "./src/layout/svg/play-fill.svg"
+                svgSrc: layout.icons.play.path
             },
             onClick() {
                 engine.time.play();
@@ -19,7 +25,7 @@ export class GameLayout extends Display {
 
         const pauseBtn = new LayoutButton({
             icon: {
-                svgSrc: "./src/layout/svg/pause-fill.svg"
+                svgSrc: layout.icons.pause.path
             },
             onClick() {
                 engine.time.pause();
@@ -28,7 +34,7 @@ export class GameLayout extends Display {
 
         const resumeBtn = new LayoutButton({
             icon: {
-                svgSrc: "./src/layout/svg/resume-fill.svg"
+                svgSrc: layout.icons.resume.path
             },
             onClick() {
                 engine.time.resume();
@@ -37,7 +43,7 @@ export class GameLayout extends Display {
 
         const stopBtn = new LayoutButton({
             icon: {
-                svgSrc: "./src/layout/svg/stop-fill.svg"
+                svgSrc: layout.icons.stop.path
             },
             onClick() {
                 engine.time.stop();
