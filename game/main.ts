@@ -128,27 +128,19 @@ EngineSystemManager.register(EngineSystem.CharacterControlerSystem, () => new Ch
 EngineSystemManager.register(EngineSystem.CharacterControlerAnimationSystem, () => new CharacterControllerAnimationSystem());
 
 
-
-
-
-
-
-
-
-
-game.useSystem(EngineSystem.RenderSystem);
-game.useSystem(EngineSystem.AnimatorSystem);
-game.useSystem(EngineSystem.InputSystem);
-game.useSystem(EngineSystem.PhysicsSystem);
-game.useSystem(EngineSystem.CharacterControlerSystem);
-game.useSystem(EngineSystem.CharacterControlerAnimationSystem);
-game.useSystem(EngineSystem.CameraSystem);
-game.useSystem(EngineSystem.TerrainSystem);
+game.enableSystem(EngineSystem.RenderSystem);
+game.enableSystem(EngineSystem.AnimatorSystem);
+game.enableSystem(EngineSystem.InputSystem);
+game.enableSystem(EngineSystem.PhysicsSystem);
+game.enableSystem(EngineSystem.CharacterControlerSystem);
+game.enableSystem(EngineSystem.CharacterControlerAnimationSystem);
+game.enableSystem(EngineSystem.CameraSystem);
+game.enableSystem(EngineSystem.TerrainSystem);
 
 EngineSystemManager.register(EngineSystem.EditorFreeCameraSystem, () => new FreeCameraSystem());
 EngineSystemManager.register(EngineSystem.EditorGizmosSystem, () => new GizmosSystem());
-editor.useSystem(EngineSystem.RenderSystem);
-editor.useSystem(EngineSystem.EditorGizmosSystem);
+editor.enableSystem(EngineSystem.RenderSystem);
+editor.enableSystem(EngineSystem.EditorGizmosSystem);
 
 
 

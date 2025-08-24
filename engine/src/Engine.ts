@@ -32,7 +32,7 @@ export class Engine {
     public systems: SystemManager = new SystemManager();
     public usedSystems: EngineSystem[] = [];
 
-    public useSystem(systemType: EngineSystem) {
+    public enableSystem(systemType: EngineSystem) {
         this.usedSystems.push(systemType);
     }
 
