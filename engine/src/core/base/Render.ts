@@ -3,6 +3,16 @@ import type { ComponentType } from "../../modules/enums/ComponentType";
 import { Color } from "../math/Color";
 import { Component } from "./Component";
 
+
+export interface RenderOptions {
+  material?: string;
+  color?: Color;
+  alpha?: number;
+  meshName?: string;
+  subMeshes?: number[];
+  layer?: number;
+}
+
 export abstract class Render extends Component {
   color: Color;
   alpha: number;
@@ -11,20 +21,13 @@ export abstract class Render extends Component {
   subMeshes: number[] | null;
   layer: number = 0;
 
-  constructor(
-    type: ComponentType,
-    group: ComponentGroup,
-    material: string,
-    color: Color = Color.white,
-    alpha: number = 1.0,
-    meshName: string | null = "fillQuad",
-    subMeshes: number[] | null = null
-  ) {
+  constructor(type: ComponentType, group: ComponentGroup, options: RenderOptions) {
     super(type, group);
-    this.material = material;
-    this.color = color;
-    this.alpha = alpha;
-    this.meshName = meshName;
-    this.subMeshes = subMeshes;
+    this.material = options.material ?? "simpleMaterial";
+    this.color = options.color ?? Color.white;
+    this.alpha = options.alpha ?? 1.0;
+    this.meshName = options.meshName ?? "fillQuad";
+    this.subMeshes = options.subMeshes ?? [];
+    this.layer = options.layer ?? 0;
   }
 }

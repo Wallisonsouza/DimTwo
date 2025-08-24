@@ -17,7 +17,6 @@ export class SimpleShaderSystem extends ShaderSystem {
         let cameraTransform = scene.components.getComponent<Transform>(camera.getEntityID(), ComponentType.Transform);
 
         camera.aspect = engine.display.getAspectRatio();
-        console.log(camera.aspect)
 
         if (!cameraTransform) return;
 

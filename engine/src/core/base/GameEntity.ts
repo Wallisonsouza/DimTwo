@@ -1,4 +1,4 @@
-import type { Clonable } from "./Component";
+import type { Clonable } from "./Clonable";
 import { Entity } from "./Entity";
 
 export interface GameEntityOptions {

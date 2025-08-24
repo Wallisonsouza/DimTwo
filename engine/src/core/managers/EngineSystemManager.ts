@@ -12,6 +12,7 @@ export enum EngineSystem {
     CharacterControlerSystem,
     CharacterControlerAnimationSystem,
     EditorGizmosSystem,
+    EditorTransformSystem,
     TerrainSystem
 }
 

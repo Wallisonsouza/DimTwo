@@ -1,10 +1,9 @@
-import type { Clonable } from "../../../core/base/Component.ts";
-import { Render } from "../../../core/base/Render.ts";
+import { Render, type RenderOptions } from "../../../core/base/Render.ts";
 import { ComponentGroup } from "../../enums/ComponentGroup.ts";
 import { ComponentType } from "../../enums/ComponentType.ts";
 import type { Sprite } from "../../resources/sprite/types.ts";
 
-export interface SpriteRenderOptions {
+export interface SpriteRenderOptions extends RenderOptions {
   sprite?: Sprite | null;
   material?: string;
   layer?: number;
@@ -12,13 +11,13 @@ export interface SpriteRenderOptions {
   flipVertical?: boolean;
 }
 
-export class SpriteRender extends Render implements Clonable<SpriteRender> {
+export class SpriteRender extends Render {
   sprite: Sprite | null;
   flipHorizontal: boolean;
   flipVertical: boolean;
 
   constructor(options: SpriteRenderOptions = {}) {
-    super(ComponentType.SpriteRender, ComponentGroup.Render, options.material ?? "");
+    super(ComponentType.SpriteRender, ComponentGroup.Render, options);
     this.sprite = options.sprite ?? null;
     this.layer = options.layer ?? 0;
     this.flipHorizontal = options.flipHorizontal ?? false;

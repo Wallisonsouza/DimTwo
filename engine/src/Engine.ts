@@ -6,8 +6,8 @@ import type { Mat4 } from "./core/math/Mat4";
 import type { Scene } from "./core/scene/scene";
 import { SceneManager } from "./core/scene/SceneManager";
 import Time from "./core/time/Time";
+import { ResourcesManager } from "./global/manager/manager";
 import type { MeshBuffer, TextureBuffer } from "./interfaces/IMeshBuffer";
-import type { Mesh } from "./modules/resources/mesh/Mesh";
 import { Shader } from "./modules/resources/shader/Shader";
 import { Texture } from "./modules/resources/texture/Texture";
 
@@ -47,6 +47,7 @@ export class Engine {
         });
 
         this.time.on("fixedUpdate", () => {
+            console.log(this.time.fps)
             this.systems.callFixedUpdate(this.time.fixedDeltaTime);
         });
 
@@ -145,7 +146,12 @@ export class Engine {
         this.textureBuffers.add(texture.name, textureBuffer);
     }
 
-    public compileMesh(mesh: Mesh) {
+    public compileMesh(id: string) {
+        const mesh = ResourcesManager.MeshManager.get(id);
+        if(!mesh) {
+            return;
+        }
+
         const meshBuffer = mesh.compile(this.getContext());
         this.meshBuffers.add(mesh.name, meshBuffer);
     }

@@ -24,8 +24,6 @@ export class RenderSystem extends System {
         continue;
       }
 
-
-      console.log(material.transparent)
       const shader = engine.shaders.get(material.shaderName);
       if (!shader || !shader.systemName) continue;
 

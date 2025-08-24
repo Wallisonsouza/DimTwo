@@ -33,7 +33,6 @@
     }
   },
   "include": [
-    "src",
     "editor",
     "game",
     "engine"

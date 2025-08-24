@@ -1,7 +1,17 @@
+import { Vec3 } from "@engine/core/math/Vec3";
+import { Material } from "@engine/modules/resources/material/Material";
+import { Quad } from "@engine/resources/geometries/Square";
 import { TextFileLoader } from "./src/core/loaders/TextFileLoader";
 import { EngineResourceManager } from "./src/core/managers/EngineResourceManager";
 
 export async function loadEngine() {
+
+    Quad.createFillQuadMesh("fillQuad", new Vec3(1, 1, 0));
+    Quad.createWireQuadMesh("wireQuad", new Vec3(1, 1, 0));
+
+    new Material({ name: "advancedMaterial", shaderName: "advanced", transparent: true });
+    new Material({ name: "simpleMaterial", shaderName: "simple" });
+    new Material({ name: "gizmosMaterial", shaderName: "gizmos" });
 
     // simple
     EngineResourceManager.register(

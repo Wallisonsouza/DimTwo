@@ -1,9 +1,12 @@
+import { Transform } from "@engine/modules/components/spatial/Transform";
+import type { Prefab } from "@game/systems/Prefab";
 import { Camera } from "../../modules/components/render/Camera";
 import { ComponentType } from "../../modules/enums/ComponentType";
 import { Component } from "../base/Component";
-import type { GameEntity } from "../base/GameEntity";
+import { GameEntity } from "../base/GameEntity";
 import { ComponentManager } from "../managers/ComponentManager";
 import { EntityManager } from "../managers/EntityManager";
+import type { Vec3 } from "../math/Vec3";
 
 export class Scene {
     public name: string;
@@ -21,6 +24,26 @@ export class Scene {
 
     public addComponent(entity: GameEntity, component: Component) {
         this.components.addComponent(entity.id.getValue(), component);
+    }
+
+    public instantiate(prefab: Prefab, position: Vec3) {
+        const entity = new GameEntity(prefab);
+        const id = entity.id.getValue();
+
+        entity.name = `${entity.name}_${id}`;
+
+        if (!prefab.components) return;
+
+        for (const component of prefab.components) {
+            const clone = component.clone();
+
+            if (clone instanceof Transform) clone.position = position;
+
+            clone.setEntityID(id)
+            this.addComponent(entity, clone);
+        }
+
+        return entity;
     }
 
     private injectedCamera: Camera | null = null;
