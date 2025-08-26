@@ -15,7 +15,6 @@ interface CollisionPair {
 }
 
 export class ColliderSystem extends System {
-
   spatialHash = new SpatialHash<Collider2D>(64);
   previous: Map<string, CollisionPair> = new Map();
   current: Map<string, CollisionPair> = new Map();
@@ -23,64 +22,68 @@ export class ColliderSystem extends System {
   collision: Set<string> = new Set();
 
   fixedUpdate() {
+    this.spatialHash.clear();
 
     const scene = this.getScene();
     const colliders = EasyGetter.getAllByGroup<Collider2D>(scene, ComponentGroup.Collider);
 
-    for (let i = 0; i < colliders.length; i++) {
-      const a = colliders[i];
+    for (const collider of colliders) {
+      if (!collider.enabled) continue;
+      this.spatialHash.insert(collider.bounds.min, collider.bounds.max, collider);
+    }
 
-      const aEntity = EasyGetter.getEntity(scene, a);
-      if (!aEntity) continue;
+    for (const bucket of this.spatialHash.getBuckets()) {
 
-      const aTransform = EasyGetter.getTransform(scene, aEntity);
-      if (!aTransform) continue;
+      for (let i = 0; i < bucket.length; i++) {
+        const a = bucket[i];
 
-      if (!aEntity.static) a.updateBounds(aTransform.position);
+        const aEntity = EasyGetter.getEntity(scene, a);
+        if (!aEntity) continue;
 
-      for (let j = i + 1; j < colliders.length; j++) {
-        const b = colliders[j];
+        const aTransform = EasyGetter.getTransform(scene, aEntity);
+        if (!aTransform) continue;
 
-        const bEntity = EasyGetter.getEntity(scene, b);
-        if (!bEntity) continue;
+        if (!aEntity.static) a.updateBounds(aTransform.position);
 
-        const bTransform = EasyGetter.getTransform(scene, bEntity);
-        if (!bTransform) continue;
+        for (let j = i + 1; j < bucket.length; j++) {
+          const b = bucket[j];
 
-        if (!bEntity.static) b.updateBounds(bTransform.position);
+          const bEntity = EasyGetter.getEntity(scene, b);
+          if (!bEntity) continue;
 
+          const bTransform = EasyGetter.getTransform(scene, bEntity);
+          if (!bTransform) continue;
 
-        if (a.intersects(b)) {
-          console.log("Colisão detectada:", a, b);
+          if (!bEntity.static) b.updateBounds(bTransform.position);
+
+          if (a.intersects(b)) { console.log("Colisão detectada:", a, b); }
         }
       }
     }
-
-
-
-    /*  collisionState.current.clear();
-     collisionState.checked.clear();
-     collisionState.collision.clear();
-     spatialHash.clear();
- 
-     const colliders = components.getComponentsByCategory<Collider>(
-       ComponentType.Collider,
-     );
- 
-     for (const collider of colliders) {
-       if (!collider.enabled) continue;
- 
-       const transform = components.getComponent<Transform>(
-         collider.getGameEntity(),
-         ComponentType.Transform,
-       );
-       if (!transform) continue;
- 
-       getColliderMinMax(collider, transform.position, tempMin, tempMax);
-       spatialHash.insert(tempMin, tempMax, collider);
-     } */
   }
 }
+
+/*  collisionState.current.clear();
+   collisionState.checked.clear();
+   collisionState.collision.clear();
+   spatialHash.clear();
+ 
+   const colliders = components.getComponentsByCategory<Collider>(
+     ComponentType.Collider,
+   );
+ 
+   for (const collider of colliders) {
+     if (!collider.enabled) continue;
+ 
+     const transform = components.getComponent<Transform>(
+       collider.getGameEntity(),
+       ComponentType.Transform,
+     );
+     if (!transform) continue;
+ 
+     getColliderMinMax(collider, transform.position, tempMin, tempMax);
+     spatialHash.insert(tempMin, tempMax, collider);
+   } */
 
 /* function detectCollisions(
   components: ECSComponent,
