@@ -5,6 +5,7 @@ export interface GameEntityOptions {
     name?: string;
     tag?: string;
     active?: boolean;
+    static?: boolean;
     parentID?: number | null;
 }
 
@@ -13,6 +14,7 @@ export class GameEntity extends Entity implements Clonable<GameEntity> {
     active: boolean;
     name: string;
     parentID: number | null;
+    static: boolean;
 
     constructor(options: GameEntityOptions = {}) {
         super();
@@ -20,6 +22,7 @@ export class GameEntity extends Entity implements Clonable<GameEntity> {
         this.tag = options.tag ?? "";
         this.active = options.active ?? true;
         this.parentID = options.parentID ?? null;
+        this.static = options.static ?? false;
     }
 
     clone(): GameEntity {

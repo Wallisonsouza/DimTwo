@@ -4,7 +4,6 @@
     padding: 1px;
     display: flex;
     border-radius: 8px;
-    overflow: hidden;
     flex-direction: column;
     border: 1px solid #3a3a3a;
 }

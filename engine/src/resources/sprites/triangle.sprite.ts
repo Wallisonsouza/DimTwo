@@ -1,4 +1,4 @@
-import { Vec2 } from "../../core/math/Vec2";
+/* import { Vec2 } from "../../core/math/Vec2";
 import type { Sprite } from "../../modules/resources/sprite";
 
 export const TRIANGLE_SPRITE: Sprite = {
@@ -8,3 +8,4 @@ export const TRIANGLE_SPRITE: Sprite = {
     position: new Vec2(0, 0),
     size: new Vec2(512, 512),
 };
+ */

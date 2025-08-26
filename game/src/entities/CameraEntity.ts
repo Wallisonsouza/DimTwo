@@ -6,7 +6,7 @@ import { Transform } from "@engine//modules/components/spatial/Transform";
 export function configureCamera(scene: Scene, entity: GameEntity){
   const camera: Camera = new Camera();
   const transform: Transform = new Transform();
-  transform.position.z = 20;
+  transform.position.z = 10;
 
   scene.addComponent(entity, camera);
   scene.addComponent(entity, transform);

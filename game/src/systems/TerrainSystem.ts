@@ -1,5 +1,6 @@
 
 import { Mulberry32 } from "@engine/core/algorithms/mulberry32/mulberry32";
+import type { Component } from "@engine/core/base/Component";
 import { GameEntity } from "@engine/core/base/GameEntity";
 import { System } from "@engine/core/base/System";
 import { Vec2 } from "@engine/core/math/Vec2";
@@ -7,9 +8,11 @@ import { Vec3 } from "@engine/core/math/Vec3";
 import type { Scene } from "@engine/core/scene/scene";
 import { SpriteRender } from "@engine/modules/components/render/SpriteRender";
 import { Transform } from "@engine/modules/components/spatial/Transform";
+import type { ComponentGroup } from "@engine/modules/enums/ComponentGroup";
 import { ComponentType } from "@engine/modules/enums/ComponentType";
-import { BiomeName, getBiomeColor } from "./biome";
-import { BUSHE_0_PREFAB, BUSHE_1_PREFAB, BUSHE_2_PREFAB, BUSHE_3_PREFAB, GROUND_PREFAB, OAK_TREE_PREFAB, PINE_TREE_PREFAB, type Prefab } from "./Prefab";
+import { BiomeName } from "@game/enums/BiomeName";
+import { getBiomeColor } from "./biome";
+import { BUSHE_0_PREFAB, BUSHE_1_PREFAB, BUSHE_2_PREFAB, BUSHE_3_PREFAB, BUSHE_4_PREFAB, BUSHE_5_PREFAB, BUSHE_6_PREFAB, GRASS_0_PREFAB, GROUND_PREFAB, OAK_TREE_PREFAB, type Prefab } from "./Prefab";
 import { World, type TerrainCell } from "./Word";
 
 export class EasyGetter {
@@ -18,9 +21,16 @@ export class EasyGetter {
 
   }
 
+  public static getAllByGroup<T extends Component>(scene: Scene, group: ComponentGroup): T[]  {
+    return scene.components.getAllByGroup<T>(group);
+  }
+
   public static getTransform(scene: Scene, entity: GameEntity): Transform | null {
     return scene.components.getComponent<Transform>(entity.id.getValue(), ComponentType.Transform);
+  }
 
+    public static getEntity(scene: Scene, component: Component): GameEntity | null {
+    return scene.entities.getById(component.getEntityID());
   }
 }
 
@@ -40,7 +50,7 @@ export class TerrainSystem extends System {
     const playerTranform = EasyGetter.getTransform(scene, playerEntity);
     if (!playerTranform) return;
 
-    const cells = this.world.generateCells(16, 16, 0, 0);
+    const cells = this.world.generateCells(32, 32, 0, 0);
 
     generateGrounds(this.getScene(), cells);
     generateTrees(this.getScene(), cells, new Vec2(0, 0))
@@ -70,25 +80,30 @@ function seedFromXY(x: number, y: number): number {
 
 interface BiomePrefab {
   prefab: Prefab;
+  offset: Vec3;
   chance: number; // 0 a 1
 }
 
 const biomeTrees: Record<BiomeName, BiomePrefab[]> = {
   [BiomeName.FOREST]: [
-    { prefab: OAK_TREE_PREFAB, chance: 0.2 },
+    { prefab: OAK_TREE_PREFAB, chance: 0.2, offset: new Vec3(0.25, 1.25, 0) },
+    { prefab: BUSHE_0_PREFAB, chance: 0.3, offset: new Vec3(0, 0, 0) },
+    { prefab: BUSHE_1_PREFAB, chance: 0.1, offset: new Vec3(0, 0, 0) },
+    { prefab: BUSHE_2_PREFAB, chance: 0.4, offset: new Vec3(0, 0, 0) },
+    { prefab: BUSHE_3_PREFAB, chance: 0.2, offset: new Vec3(0, 0, 0) },
+    { prefab: BUSHE_4_PREFAB, chance: 0.2, offset: new Vec3(0, 0, 0) },
+    { prefab: BUSHE_5_PREFAB, chance: 0.2, offset: new Vec3(0, 0, 0) },
+    { prefab: BUSHE_6_PREFAB, chance: 0.2, offset: new Vec3(0, 0, 0) }
 
   ],
   [BiomeName.DEEP_WATER]: [],
   [BiomeName.SHALLOW_WATER]: [],
   [BiomeName.SAND]: [],
   [BiomeName.GRASSLAND]: [
-    { prefab: BUSHE_0_PREFAB, chance: 0.3 },
-    { prefab: BUSHE_1_PREFAB, chance: 0.1 },
-    { prefab: BUSHE_2_PREFAB, chance: 0.4 },
-    { prefab: BUSHE_3_PREFAB, chance: 0.2 }
+    { prefab: GRASS_0_PREFAB, chance: 0.7, offset: new Vec3(0, 0, 0) },
   ],
   [BiomeName.FLOWER_FIELD]: [],
-  [BiomeName.SPARSE_FOREST]: [{ prefab: PINE_TREE_PREFAB, chance: 0.3 }],
+  [BiomeName.SPARSE_FOREST]: [],
   [BiomeName.DENSE_FOREST]: [],
   [BiomeName.SWAMP]: [],
   [BiomeName.SAVANNA]: [],
@@ -99,30 +114,36 @@ const biomeTrees: Record<BiomeName, BiomePrefab[]> = {
 };
 
 
-const offset = new Vec3(1, -1, 0);
 function generateTrees(scene: Scene, terrainCells: TerrainCell[], chunkPos: Vec2) {
   const seed = seedFromXY(chunkPos.x, chunkPos.y);
   const rng = new Mulberry32(seed);
 
   for (const cell of terrainCells) {
-  if (!cell.biome) continue;
+    if (!cell.biome) continue;
 
-  const prefabs = biomeTrees[cell.biome];
-  if (!prefabs || prefabs.length === 0) continue;
+    const prefabs = biomeTrees[cell.biome];
+    if (!prefabs || prefabs.length === 0) continue;
 
-  for (const entry of prefabs) {
-    if (rng.nextFloat() < entry.chance) {
+    for (const entry of prefabs) {
+      if (rng.nextFloat() < entry.chance) {
 
-      const out = new Vec3(0, 0, 0);
-      const position = Vec3.add(out, cell.position, offset); 
-      const entity = scene.instantiate(entry.prefab, position);
-      if (!entity) break;
-      const sprite = EasyGetter.getSpriteRender(scene, entity);
-      if (sprite) sprite.layer = -cell.position.y;
-      scene.addEntity(entity);
-      break; // evita múltiplas instâncias para o mesmo cell
+        const tempVec3 = new Vec3();
+        Vec3.add(tempVec3, entry.offset, cell.position);
+
+        const entity = scene.instantiate(entry.prefab, tempVec3);
+        if (!entity) break;
+
+        const transform = EasyGetter.getTransform(scene, entity);
+        if (!transform) break;
+
+        const sprite = EasyGetter.getSpriteRender(scene, entity);
+        if (!sprite) break;
+        sprite.layer = -cell.position.y;
+
+        scene.addEntity(entity);
+        break;
+      }
     }
   }
-}
 
 }

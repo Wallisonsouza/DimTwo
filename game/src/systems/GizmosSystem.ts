@@ -1,3 +1,9 @@
+import { System } from "@engine/core/base/System";
+import { ResourcesManager } from "@engine/global/manager/manager";
+import type { Collider2D } from "@engine/modules/components/physics/collider/Collider2D";
+import { ComponentGroup } from "@engine/modules/enums/ComponentGroup";
+import type { Mesh } from "@engine/modules/resources/mesh/Mesh";
+
 
 export class GizmosSystem extends System {
     onDrawGizmos(): void {
@@ -14,7 +20,7 @@ export class GizmosSystem extends System {
         gl.useProgram(shader.program);
         shaderSystem.global?.(engine, scene, shader);
 
-        const colliders = scene.components.getAllByGroup<Collider>(ComponentGroup.Collider);
+        const colliders = scene.components.getAllByGroup<Collider2D>(ComponentGroup.Collider);
         const mesh = ResourcesManager.MeshManager.get("wireQuad") as Mesh;
         if (!mesh) return;
 

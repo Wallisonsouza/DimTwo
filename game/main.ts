@@ -8,7 +8,8 @@ import { Engine } from "@engine/Engine";
 import { AdvancedShaderSystem } from "@engine/modules/resources/material/AdvancedShaderSystem";
 import { SimpleShaderSystem } from "@engine/modules/resources/material/SimpleShaderSystem";
 import { Texture } from "@engine/modules/resources/texture/Texture";
-import { AnimatorSystem, PhysicsSystem, RenderSystem } from "@engine/modules/systems";
+import { AnimatorSystem, ColliderSystem, PhysicsSystem, RenderSystem } from "@engine/modules/systems";
+import { GizmosSystem } from "@game/systems/GizmosSystem";
 import { loadEngine } from "engine/main";
 import { configureCamera } from "./src/entities/CameraEntity";
 import { configurePlayer } from "./src/entities/PlayerEntity";
@@ -43,12 +44,20 @@ EngineResourceManager.register(
     new ImageFileLoader("../game/src/assets/images/Bushes.png")
 );
 
+EngineResourceManager.register(
+    "grass_image",
+    new ImageFileLoader("../game/src/assets/images/Grass.png")
+);
+
+
 await EngineResourceManager.load();
+
 
 const playerTexture = new Texture("player", "player_image");
 const slimeTexture = new Texture("slime", "slime_image");
 const treeTexture = new Texture("tree", "tree_image");
 const busheTexture = new Texture("bushe", "bushe_image");
+const grassTexture = new Texture("grass", "grass_image");
 
 new AdvancedShaderSystem("advancedShaderSystem");
 new SimpleShaderSystem("simpleShaderSystem");
@@ -66,12 +75,19 @@ game.compileShader("simple",
     "simpleShaderSystem"
 );
 
+game.compileShader("gizmos",
+    EngineResourceManager.get("gizmosShaderVertex")!,
+    EngineResourceManager.get("gizmosShaderFragment")!,
+    "simpleShaderSystem"
+);
+
 game.compileTexture(playerTexture);
 game.compileTexture(slimeTexture);
 game.compileTexture(treeTexture);
 game.compileTexture(busheTexture);
+game.compileTexture(grassTexture);
 game.compileMesh("fillQuad");
-
+game.compileMesh("wireQuad");
 
 EngineSystemManager.register(EngineSystem.RenderSystem, () => new RenderSystem());
 EngineSystemManager.register(EngineSystem.TerrainSystem, () => new TerrainSystem());
@@ -81,6 +97,9 @@ EngineSystemManager.register(EngineSystem.PhysicsSystem, () => new PhysicsSystem
 EngineSystemManager.register(EngineSystem.CameraSystem, () => new CameraSystem());
 EngineSystemManager.register(EngineSystem.CharacterControlerSystem, () => new CharacterControlerSystem());
 EngineSystemManager.register(EngineSystem.CharacterControlerAnimationSystem, () => new CharacterControllerAnimationSystem());
+EngineSystemManager.register(EngineSystem.EditorGizmosSystem, () => new GizmosSystem());
+EngineSystemManager.register(EngineSystem.ColliderSystem, () => new ColliderSystem());
+
 
 game.enableSystem(EngineSystem.RenderSystem);
 game.enableSystem(EngineSystem.AnimatorSystem);
@@ -89,9 +108,8 @@ game.enableSystem(EngineSystem.PhysicsSystem);
 game.enableSystem(EngineSystem.CharacterControlerSystem);
 game.enableSystem(EngineSystem.CharacterControlerAnimationSystem);
 game.enableSystem(EngineSystem.CameraSystem);
-game.enableSystem(EngineSystem.TerrainSystem);
-
-
+game.enableSystem(EngineSystem.EditorGizmosSystem);
+game.enableSystem(EngineSystem.ColliderSystem);
 //-------------------
 const scene = new Scene("simple_scene");
 SceneManager.addScene(scene);

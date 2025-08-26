@@ -1,11 +1,10 @@
 import { Vec2 } from "@engine/core/math/Vec2";
 import { Sprite } from "@engine/modules/resources/sprite/types";
 
-
-export const SLIME_SPRITE: Sprite = {
-    meshID: null,
+export const GRASS_0_SPRITE: Sprite = {
+    meshID: "fillQuad",
     origin: new Vec2(0, 0),
-    position: new Vec2(0, 0),
+    position: new Vec2(64,32),
     size: new Vec2(32, 32),
-    textureID: null,
-};
+    textureID: "grass"
+}

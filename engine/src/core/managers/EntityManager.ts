@@ -32,7 +32,7 @@ export class EntityManager {
     }
 
     getById(id: number) {
-        return this.byId.get(id);
+        return this.byId.get(id) ?? null;
     }
 
     getByName(name: string) {

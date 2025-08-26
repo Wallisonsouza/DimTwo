@@ -1,6 +1,7 @@
 import { SimplexNoise } from "@engine/core/algorithms/noise/SimplexNoise";
 import { Vec3 } from "@engine/core/math/Vec3";
-import { BiomeName, classifyBiomes } from "./biome";
+import type { BiomeName } from "@game/enums/BiomeName";
+import { classifyBiomes } from "./biome";
 
 export interface TerrainCell {
   position: Vec3;
@@ -20,7 +21,7 @@ export class World {
   private readonly OCTAVES = 6;
   private readonly PERSISTENCE = 0.4;
 
-  public readonly TILE_SIZE = 1;
+  public readonly TILE_SIZE = 0.5;
 
   constructor(seed: number) {
     this.heightNoiseGenerator = new SimplexNoise(seed);

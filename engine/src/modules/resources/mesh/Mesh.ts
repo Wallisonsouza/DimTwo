@@ -68,4 +68,85 @@ export class Mesh extends Instantiable {
             indexCount: this.indices.length,
         };
     }
+
+    generateMeshFromImage(image: HTMLImageElement) {
+
+    }
+}
+
+
+function simplifyPolygon(points: number[], tolerance: number): number[] {
+    function getSqDist(px: number, py: number, qx: number, qy: number) {
+        const dx = px - qx;
+        const dy = py - qy;
+        return dx * dx + dy * dy;
+    }
+
+    function simplifyDP(start: number, end: number, pts: number[], out: number[]) {
+        let maxDist = 0;
+        let index = 0;
+        const sx = pts[start * 2], sy = pts[start * 2 + 1];
+        const ex = pts[end * 2], ey = pts[end * 2 + 1];
+
+        for (let i = start + 1; i < end; i++) {
+            const px = pts[i * 2], py = pts[i * 2 + 1];
+            const dist = Math.abs((ey - sy) * px - (ex - sx) * py + ex * sy - ey * sx) /
+                         Math.sqrt((ey - sy) ** 2 + (ex - sx) ** 2);
+            if (dist > maxDist) { index = i; maxDist = dist; }
+        }
+
+        if (maxDist > tolerance) {
+            simplifyDP(start, index, pts, out);
+            simplifyDP(index, end, pts, out);
+        } else {
+            out.push(pts[start * 2], pts[start * 2 + 1]);
+        }
+    }
+
+    const result: number[] = [];
+    simplifyDP(0, points.length / 2 - 1, points, result);
+    // adicionar último ponto
+    result.push(points[points.length - 2], points[points.length - 1]);
+    return result;
+}
+
+
+
+function marchingSquares(mask: boolean[][]): number[] {
+    const h = mask.length;
+    const w = mask[0].length;
+    const polygon: number[] = [];
+
+    // Encontra primeiro pixel opaco
+    let startX = -1, startY = -1;
+    outer: for (let y = 0; y < h; y++) {
+        for (let x = 0; x < w; x++) {
+            if (mask[y][x]) { startX = x; startY = y; break outer; }
+        }
+    }
+    if (startX === -1) return polygon;
+
+    let x = startX, y = startY, dir = 0;
+    const visited = new Set<string>();
+
+    do {
+        polygon.push(x, y);
+        visited.add(`${x},${y}`);
+
+        const right = (x + 1 < w) ? mask[y][x + 1] : false;
+        const down = (y + 1 < h) ? mask[y + 1][x] : false;
+        const left = (x - 1 >= 0) ? mask[y][x - 1] : false;
+        const up = (y - 1 >= 0) ? mask[y - 1][x] : false;
+
+        if (dir !== 2 && right) { x++; dir = 0; }
+        else if (dir !== 3 && down) { y++; dir = 1; }
+        else if (dir !== 0 && left) { x--; dir = 2; }
+        else if (dir !== 1 && up) { y--; dir = 3; }
+        else break;
+
+        if (x === startX && y === startY) break;
+        if (visited.has(`${x},${y}`)) break;
+    } while (true);
+
+    return polygon;
 }

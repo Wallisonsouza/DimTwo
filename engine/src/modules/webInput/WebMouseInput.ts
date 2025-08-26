@@ -1,7 +1,9 @@
-import { Vec2 } from "../../core/math/Vec2";
-import type { IMouseInput } from "../../interfaces/IInput";
+import { Vec2 } from "@engine/core/math/Vec2";
+import type { IMouseInput } from "@engine/interfaces/IInput";
 
 export class WebMouseInput implements IMouseInput {
+  private targetElement: HTMLElement | null = null;
+
   private button = new Map<number, boolean>();
   private buttonDown = new Map<number, boolean>();
   private buttonUp = new Map<number, boolean>();
@@ -15,18 +17,20 @@ export class WebMouseInput implements IMouseInput {
   private onMouseMove = (e: MouseEvent) => this.handleMouseMove(e);
   private onWheel = (e: WheelEvent) => this.handleScroll(e);
 
-  enable() {
-    document.addEventListener('mousedown', this.onMouseDown);
-    document.addEventListener('mouseup', this.onMouseUp);
-    document.addEventListener('mousemove', this.onMouseMove);
-    document.addEventListener('wheel', this.onWheel);
+  enable(target: HTMLElement) {
+    this.targetElement = target;
+    target.addEventListener('mousedown', this.onMouseDown);
+    target.addEventListener('mouseup', this.onMouseUp);
+    target.addEventListener('mousemove', this.onMouseMove);
+    target.addEventListener('wheel', this.onWheel);
   }
 
-  disable() {
-    document.removeEventListener('mousedown', this.onMouseDown);
-    document.removeEventListener('mouseup', this.onMouseUp);
-    document.removeEventListener('mousemove', this.onMouseMove);
-    document.removeEventListener('wheel', this.onWheel);
+  disable(target: HTMLElement) {
+    target.removeEventListener('mousedown', this.onMouseDown);
+    target.removeEventListener('mouseup', this.onMouseUp);
+    target.removeEventListener('mousemove', this.onMouseMove);
+    target.removeEventListener('wheel', this.onWheel);
+    this.targetElement = null;
   }
 
   private handleButtonDown(e: MouseEvent): void {
@@ -42,15 +46,16 @@ export class WebMouseInput implements IMouseInput {
   }
 
   private handleMouseMove(e: MouseEvent): void {
-    this.position = new Vec2(e.clientX, e.clientY);
+    if (!this.targetElement) return;
+
+    const rect = this.targetElement.getBoundingClientRect();
+    this.position = new Vec2(e.clientX - rect.left, e.clientY - rect.top);
     this.movement = new Vec2(e.movementX, e.movementY);
   }
 
   private handleScroll(e: WheelEvent): void {
     this.scrollDelta = new Vec2(e.deltaX, e.deltaY);
-    if (this.scrollCallback) {
-      this.scrollCallback(this.scrollDelta);
-    }
+    if (this.scrollCallback) this.scrollCallback(this.scrollDelta);
   }
 
   clear(): void {

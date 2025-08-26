@@ -1,17 +1,8 @@
-/* import { SpatialHash } from "../../core/algorithms/spatialHash/SpatialHash";
-import type { System } from "../../core/base/System";
-import type { ECSComponent } from "../../core/ecs/ECSComponent";
-import type { ECSSystem } from "../../core/ecs/ECSSystem";
-import type { Vec2 } from "../../core/math/Vec2";
-import { SceneManager } from "../../core/scene/SceneManager";
-import type { BoxCollider2D } from "../components/physics/BoxCollider2D";
-import type { CircleCollider2D } from "../components/physics/CircleCollider2D";
-import { resolveOverlap } from "../components/physics/collider/CollisionResolver";
-import { testOverlap } from "../components/physics/collider/CollisionTester";
-import type { Collider } from "../components/physics/collider/types";
-import { RigidBody2D } from "../components/physics/RigidBody2D";
-import { Transform } from "../components/spatial/Transform";
-import { ComponentType } from "../enums/ComponentType";
+import { EasyGetter } from "@game/systems/TerrainSystem";
+import { SpatialHash } from "../../core/algorithms/spatialHash/SpatialHash";
+import { System } from "../../core/base/System";
+import { Collider2D } from "../components/physics/collider/Collider2D";
+import { ComponentGroup } from "../enums/ComponentGroup";
 
 // Util
 function makePairKey(id1: number, id2: number): string {
@@ -19,102 +10,79 @@ function makePairKey(id1: number, id2: number): string {
 }
 
 interface CollisionPair {
-  a: Collider;
-  b: Collider;
+  a: Collider2D;
+  b: Collider2D;
 }
 
-function getColliderMinMax(
-  collider: Collider,
-  position: Vec2,
-  outMin: Vec2,
-  outMax: Vec2,
-) {
-  const offset = collider.center ?? { x: 0, y: 0 };
-  const centerX = position.x + offset.x;
-  const centerY = position.y + offset.y;
+export class ColliderSystem extends System {
 
-  if (collider.type === ComponentType.BoxCollider2D) {
-    const box = collider as BoxCollider2D;
-    const halfW = box.size.x / 2;
-    const halfH = box.size.y / 2;
+  spatialHash = new SpatialHash<Collider2D>(64);
+  previous: Map<string, CollisionPair> = new Map();
+  current: Map<string, CollisionPair> = new Map();
+  checked: Set<string> = new Set()
+  collision: Set<string> = new Set();
 
-    outMin.x = centerX - halfW;
-    outMin.y = centerY - halfH;
-    outMax.x = centerX + halfW;
-    outMax.y = centerY + halfH;
-  } else if (collider.type === ComponentType.CircleCollider2D) {
-    const circle = collider as CircleCollider2D;
-    const r = circle.radius;
+  fixedUpdate() {
 
-    outMin.x = centerX - r;
-    outMin.y = centerY - r;
-    outMax.x = centerX + r;
-    outMax.y = centerY + r;
+    const scene = this.getScene();
+    const colliders = EasyGetter.getAllByGroup<Collider2D>(scene, ComponentGroup.Collider);
+
+    for (let i = 0; i < colliders.length; i++) {
+      const a = colliders[i];
+
+      const aEntity = EasyGetter.getEntity(scene, a);
+      if (!aEntity) continue;
+
+      const aTransform = EasyGetter.getTransform(scene, aEntity);
+      if (!aTransform) continue;
+
+      if (!aEntity.static) a.updateBounds(aTransform.position);
+
+      for (let j = i + 1; j < colliders.length; j++) {
+        const b = colliders[j];
+
+        const bEntity = EasyGetter.getEntity(scene, b);
+        if (!bEntity) continue;
+
+        const bTransform = EasyGetter.getTransform(scene, bEntity);
+        if (!bTransform) continue;
+
+        if (!bEntity.static) b.updateBounds(bTransform.position);
+
+
+        if (a.intersects(b)) {
+          console.log("Colisão detectada:", a, b);
+        }
+      }
+    }
+
+
+
+    /*  collisionState.current.clear();
+     collisionState.checked.clear();
+     collisionState.collision.clear();
+     spatialHash.clear();
+ 
+     const colliders = components.getComponentsByCategory<Collider>(
+       ComponentType.Collider,
+     );
+ 
+     for (const collider of colliders) {
+       if (!collider.enabled) continue;
+ 
+       const transform = components.getComponent<Transform>(
+         collider.getGameEntity(),
+         ComponentType.Transform,
+       );
+       if (!transform) continue;
+ 
+       getColliderMinMax(collider, transform.position, tempMin, tempMax);
+       spatialHash.insert(tempMin, tempMax, collider);
+     } */
   }
 }
 
-export interface CollisionState {
-  previous: Map<string, CollisionPair>;
-  current: Map<string, CollisionPair>;
-  checked: Set<string>;
-  collision: Set<string>;
-}
-
-export function ColliderSystem(): System {
-
-  const tempMin = { x: 0, y: 0 };
-  const tempMax = { x: 0, y: 0 };
-
-  const spatialHash = new SpatialHash<Collider>(64);
-
-  const collisionState: CollisionState = {
-    previous: new Map<string, CollisionPair>(),
-    current: new Map<string, CollisionPair>(),
-    checked: new Set<string>(),
-    collision: new Set<string>(),
-  };
-
-  return {
-    fixedUpdate() {
-
-      const scene =SceneManager.getCurrentScene();
-      const systems = scene.ECSSystems;
-      const components = scene.ECSComponents;
-
-
-      collisionState.current.clear();
-      collisionState.checked.clear();
-      collisionState.collision.clear();
-      spatialHash.clear();
-
-      const colliders = components.getComponentsByCategory<Collider>(
-        ComponentType.Collider,
-      );
-
-      for (const collider of colliders) {
-        if (!collider.enabled) continue;
-
-        const transform = components.getComponent<Transform>(
-          collider.getGameEntity(),
-          ComponentType.Transform,
-        );
-        if (!transform) continue;
-
-        getColliderMinMax(collider, transform.position, tempMin, tempMax);
-        spatialHash.insert(tempMin, tempMax, collider);
-      }
-
-      detectCollisions(
-        components,
-        spatialHash,
-        collisionState,
-        systems,
-      );
-    },
-  };
-}
-
-function detectCollisions(
+/* function detectCollisions(
   components: ECSComponent,
   spatialHash: SpatialHash<Collider>,
   collisionState: CollisionState,

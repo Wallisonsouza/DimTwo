@@ -54,7 +54,7 @@ export class AdvancedShaderSystem extends ShaderSystem {
         shader.shader_set_uniform_mat4("uModel", modelMatrix.data);
         shader.shader_set_uniform_4f("uColor", spriteRender.color.r, spriteRender.color.g, spriteRender.color.b, spriteRender.color.a);
 
-        const texture = engine.textureBuffers.get(spriteRender.sprite.textureName)!;
+        const texture = engine.textureBuffers.get(spriteRender.sprite.textureID)!;
         shader.shader_set_uniform_texture("uTexture", texture, 0);
 
         const uvScaleX = spriteRender.sprite.size.x / texture.width;

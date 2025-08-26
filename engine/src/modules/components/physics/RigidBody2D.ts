@@ -1,4 +1,5 @@
-import { Component, type Clonable } from "../../../core/base/Component";
+import type { Clonable } from "@engine/core/base/Clonable";
+import { Component } from "../../../core/base/Component";
 import { Vec2 } from "../../../core/math/Vec2";
 import { ComponentGroup } from "../../enums/ComponentGroup";
 import { ComponentType } from "../../enums/ComponentType";

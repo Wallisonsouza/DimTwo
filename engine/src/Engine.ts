@@ -47,7 +47,6 @@ export class Engine {
         });
 
         this.time.on("fixedUpdate", () => {
-            console.log(this.time.fps)
             this.systems.callFixedUpdate(this.time.fixedDeltaTime);
         });
 

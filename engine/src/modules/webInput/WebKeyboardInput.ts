@@ -8,14 +8,16 @@ export class WebKeyboardInput implements IKeyboardInput {
   private onKeyDown = (e: KeyboardEvent) => this.handleKeyDown(e);
   private onKeyUp = (e: KeyboardEvent) => this.handleKeyUp(e);
 
-  enable() {
-    window.addEventListener('keydown', this.onKeyDown);
-    window.addEventListener('keyup', this.onKeyUp);
+  enable(target: HTMLElement) {
+
+   target.tabIndex = 0;
+    target.addEventListener('keydown', this.onKeyDown);
+    target.addEventListener('keyup', this.onKeyUp);
   }
 
-  disable() {
-    window.removeEventListener('keydown', this.onKeyDown);
-    window.removeEventListener('keyup', this.onKeyUp);
+  disable(target: HTMLElement) {
+    target.removeEventListener('keydown', this.onKeyDown);
+    target.removeEventListener('keyup', this.onKeyUp);
   }
 
   private handleKeyDown(e: KeyboardEvent): void {
@@ -32,27 +34,24 @@ export class WebKeyboardInput implements IKeyboardInput {
     this.keyUp.set(code, true);
   }
 
+  /** Limpa os estados de teclas de um frame */
   clear(): void {
     this.keyDown.clear();
     this.keyUp.clear();
   }
 
-  private getButtonState(map: Map<string, boolean>, code: string): boolean {
-    const state = map.get(code) ?? false;
-    map.delete(code);
-    return state;
-  }
-
+  /** Retorna true se a tecla foi pressionada neste frame */
   getKeyDown(code: string): boolean {
-    return this.getButtonState(this.keyDown, code);
+    return this.keyDown.get(code) ?? false;
   }
 
+  /** Retorna true se a tecla está pressionada atualmente */
   getKey(code: string): boolean {
     return this.key.get(code) ?? false;
   }
 
+  /** Retorna true se a tecla foi solta neste frame */
   getKeyUp(code: string): boolean {
-    return this.getButtonState(this.keyUp, code);
+    return this.keyUp.get(code) ?? false;
   }
 }
-

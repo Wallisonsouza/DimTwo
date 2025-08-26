@@ -1,4 +1,4 @@
-import { Mathf } from "./Mathf";
+/* import { Mathf } from "./Mathf";
 import type { Vec2 } from "./Vec2";
 
 export class Bounds {
@@ -89,4 +89,4 @@ export function getBoxOverlapInto(a: Bounds, b: Bounds, out: Vec2): void {
 
 export function getSeparationDirection(aCenter: number, bCenter: number, overlap: number): number {
   return aCenter < bCenter ? -overlap : overlap;
-}
+} */

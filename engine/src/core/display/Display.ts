@@ -1,9 +1,15 @@
+import type { Camera } from "@engine/modules/components/render/Camera";
+import { Input } from "@game/systems/InputSystem";
+import { Mat4 } from "../math/Mat4";
+import { Vec2 } from "../math/Vec2";
+import { Vec3 } from "../math/Vec3";
+import { Vec4 } from "../math/Vec4";
+
 export class Display {
 
     private readonly context: WebGL2RenderingContext;
     private readonly canvas: HTMLCanvasElement;
     protected readonly container: HTMLDivElement;
-    protected readonly optionsBar: HTMLDivElement;
 
     private static focused: Display | null = null;
 
@@ -14,13 +20,9 @@ export class Display {
         this.container = document.createElement("div");
         this.container.className = "window-container";
 
-        this.optionsBar = document.createElement("div");
-        this.optionsBar.className = "engine-options-bar";
-
         this.canvas = document.createElement("canvas");
         this.canvas.className = "engine-canvas";
 
-        this.container.appendChild(this.optionsBar);
         this.container.appendChild(this.canvas);
 
         const gl = this.canvas.getContext("webgl2");
@@ -81,9 +83,44 @@ export class Display {
     }
 
     public setFocused(display: Display) {
-        if (Display.focused) Display.focused.container.classList.remove("focused");
+        if (Display.focused) {
+            Input.mouse.disable(display.container);
+            Input.keyboard.disable(display.container);
+            Display.focused.container.classList.remove("focused");
+        }
 
         display.container.classList.add("focused");
         Display.focused = display;
+        Input.mouse.enable(display.container);
+        Input.keyboard.enable(display.container);
     }
+
+    public toNDC(p: Vec2): Vec2 {
+        const rect = this.container.getBoundingClientRect();
+        const xInContainer = p.x - rect.left;
+        const yInContainer = p.y - rect.top;
+
+        const ndcX = (2 * xInContainer) / rect.width - 1;
+        const ndcY = 1 - (2 * yInContainer) / rect.height;
+
+        return new Vec2(ndcX, ndcY);
+    }
+
+    toWorld(mouse: Vec2, camera: Camera, zDepth: number = -1): Vec3 {
+
+        const ndc = this.toNDC(mouse);
+
+        const clip = new Vec4(ndc.x, ndc.y, zDepth, 1);
+
+        const projInverse = camera.projection;
+        const worldVec4 = Mat4.multiplyVec4(projInverse, clip);
+
+        worldVec4.x /= worldVec4.w;
+        worldVec4.y /= worldVec4.w;
+        worldVec4.z /= worldVec4.w;
+
+        return new Vec3(worldVec4.x, worldVec4.y, worldVec4.z);
+    }
+
+
 }
