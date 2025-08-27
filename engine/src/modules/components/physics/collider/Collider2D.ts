@@ -2,14 +2,15 @@ import { Vec2 } from "@engine/core/math/Vec2";
 import { Component } from "../../../../core/base/Component";
 import type { ComponentGroup } from "../../../enums/ComponentGroup";
 import { ComponentType } from "../../../enums/ComponentType";
-import type { CollisionMask } from "../../../physics/collision/CollisionLayer";
+
+import { CollisionLayer } from "@engine/modules/physics/collision/CollisionLayer";
 import { Bounds2D } from "./Bounds2D";
 
-export interface ColliderOptions {
+export interface Collider2DOptions  {
   center?: Vec2;
   size?: Vec2;
   isTrigger?: boolean;
-  collisionMask?: CollisionMask;
+  collisionLayer?: CollisionLayer;
   ignoreSelfCollisions?: boolean;
 }
 
@@ -18,19 +19,18 @@ export abstract class Collider2D extends Component {
   center: Vec2;
   size: Vec2;
   isTrigger: boolean;
-  collisionMask: CollisionMask;
+  collisionLayer: number;
   ignoreSelfCollisions: boolean;
   bounds: Bounds2D;
 
-  constructor(type: ComponentType, group: ComponentGroup, options: ColliderOptions) {
-    super(type, group);
-
+  constructor(type: ComponentType, group: ComponentGroup, options?: Collider2DOptions) {
+    super(type, group, {});
     this.isColliding = false;
-    this.center = options.center ?? new Vec2(0, 0);
-    this.size = options.size ?? new Vec2(1, 1);
-    this.isTrigger = options.isTrigger ?? false;
-    this.collisionMask = options.collisionMask ?? 0;
-    this.ignoreSelfCollisions = options.ignoreSelfCollisions ?? true;
+    this.center = options?.center ?? new Vec2(0, 0);
+    this.size = options?.size ?? new Vec2(1, 1);
+    this.isTrigger = options?.isTrigger ?? false;
+    this.collisionLayer = options?.collisionLayer ?? CollisionLayer.Default;
+    this.ignoreSelfCollisions = options?.ignoreSelfCollisions ?? true;
     this.bounds = new Bounds2D();
   }
 
@@ -42,8 +42,5 @@ export abstract class Collider2D extends Component {
 
     this.bounds.setFromCenterAndSize(worldCenter, this.size);
   }
-
-  public abstract intersects(  other: Collider2D): boolean;
-  
- 
+  public abstract intersects(other: Collider2D): boolean;
 }

@@ -1,11 +1,11 @@
 import type { Clonable } from "@engine/core/base/Clonable";
-import { Component } from "@engine/core/base/Component";
+import { Component, type ComponentOptions } from "@engine/core/base/Component";
 import { Color } from "../../../core/math/Color";
 import { Mat4 } from "../../../core/math/Mat4";
 import { ComponentGroup } from "../../enums/ComponentGroup";
 import { ComponentType } from "../../enums/ComponentType";
 
-export interface CameraOptions {
+export interface CameraOptions extends ComponentOptions {
   near?: number;
   far?: number;
   fov?: number;
@@ -24,7 +24,7 @@ export class Camera extends Component implements Clonable<Camera> {
   public projection: Mat4;
  
   constructor(options: CameraOptions = {}) {
-    super(ComponentType.Camera, ComponentGroup.Camera);
+    super(ComponentType.Camera, ComponentGroup.Camera, options);
     this.near = options.near ?? 0.1;
     this.far = options.far ?? 1000;
     this.fov = options.fov ?? 60;

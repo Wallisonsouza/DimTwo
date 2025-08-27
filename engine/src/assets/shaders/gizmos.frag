@@ -1,5 +1,5 @@
 #version 300 es
-precision lowp float;
+precision highp float;
 
 uniform vec4 uColor;
 out vec4 outColor;

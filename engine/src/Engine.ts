@@ -11,6 +11,8 @@ import type { MeshBuffer, TextureBuffer } from "./interfaces/IMeshBuffer";
 import { Shader } from "./modules/resources/shader/Shader";
 import { Texture } from "./modules/resources/texture/Texture";
 
+const debug = document.querySelector("#debug") as HTMLDivElement;
+
 export class Engine {
     public display: Display;
 
@@ -39,7 +41,7 @@ export class Engine {
     constructor() {
 
         this.display = new Display();
-
+        const context = this.display.getContext();
         this.time = new Time();
 
         this.time.on("start", () => {
@@ -47,6 +49,7 @@ export class Engine {
         });
 
         this.time.on("fixedUpdate", () => {
+            debug.innerText = `${this.time.fps}`
             this.systems.callFixedUpdate(this.time.fixedDeltaTime);
         });
 
@@ -56,8 +59,6 @@ export class Engine {
         });
 
 
-        const context = this.display.getContext();
-
         this.time.on("render", () => {
             if (!this.scene) return;
             const camera = this.scene.getActiveCamera();
@@ -65,7 +66,7 @@ export class Engine {
             const color = camera.clearColor;
 
             context.clearColor(color.r, color.g, color.b, color.a);
-            context.clear(context.COLOR_BUFFER_BIT);
+            context.clear(context.COLOR_BUFFER_BIT | context.DEPTH_BUFFER_BIT);
 
             this.systems.callRender(this.time.deltaTime);
             this.systems.callDrawGizmos();
@@ -141,13 +142,13 @@ export class Engine {
 
     public compileTexture(texture: Texture) {
         const textureBuffer = texture.compile(this.getContext());
-        if(!textureBuffer) return;
+        if (!textureBuffer) return;
         this.textureBuffers.add(texture.name, textureBuffer);
     }
 
     public compileMesh(id: string) {
         const mesh = ResourcesManager.MeshManager.get(id);
-        if(!mesh) {
+        if (!mesh) {
             return;
         }
 

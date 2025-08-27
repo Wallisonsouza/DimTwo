@@ -15,7 +15,7 @@ export class CharacterControler2D extends Component {
   facing: FacingDirection;
 
   constructor() {
-    super(ComponentType.CharacterController, ComponentGroup.Controller);
+    super(ComponentType.CharacterController, ComponentGroup.Controller, {});
     this.direction = new Vec2(0, 0);
     this.speed = 0.5;
     this.runSpeed = 1;

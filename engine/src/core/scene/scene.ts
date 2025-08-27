@@ -36,12 +36,12 @@ export class Scene {
 
         for (const component of prefab.components) {
             const clone = component.clone();
+         
 
             if(clone instanceof Transform) {
                 clone.position = position;
             }
             clone.setEntityID(id)
-            console.log(clone)
             this.addComponent(entity, clone);
         }
 

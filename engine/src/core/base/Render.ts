@@ -1,10 +1,9 @@
 import type { ComponentGroup } from "../../modules/enums/ComponentGroup";
 import type { ComponentType } from "../../modules/enums/ComponentType";
 import { Color } from "../math/Color";
-import { Component } from "./Component";
+import { Component, type ComponentOptions } from "./Component";
 
-
-export interface RenderOptions {
+export interface RenderOptions extends ComponentOptions {
   material?: string;
   color?: Color;
   alpha?: number;
@@ -22,7 +21,7 @@ export abstract class Render extends Component {
   layer: number = 0;
 
   constructor(type: ComponentType, group: ComponentGroup, options: RenderOptions) {
-    super(type, group);
+    super(type, group, options);
     this.material = options.material ?? "simpleMaterial";
     this.color = options.color ?? Color.white;
     this.alpha = options.alpha ?? 1.0;

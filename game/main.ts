@@ -104,12 +104,11 @@ EngineSystemManager.register(EngineSystem.ColliderSystem, () => new ColliderSyst
 game.enableSystem(EngineSystem.RenderSystem);
 game.enableSystem(EngineSystem.AnimatorSystem);
 game.enableSystem(EngineSystem.InputSystem);
-game.enableSystem(EngineSystem.PhysicsSystem);
-game.enableSystem(EngineSystem.CharacterControlerSystem);
-game.enableSystem(EngineSystem.CharacterControlerAnimationSystem);
 game.enableSystem(EngineSystem.CameraSystem);
+game.enableSystem(EngineSystem.CharacterControlerSystem);
+game.enableSystem(EngineSystem.TerrainSystem);
+game.enableSystem(EngineSystem.CharacterControlerAnimationSystem);
 game.enableSystem(EngineSystem.EditorGizmosSystem);
-game.enableSystem(EngineSystem.ColliderSystem);
 //-------------------
 const scene = new Scene("simple_scene");
 SceneManager.addScene(scene);
@@ -131,6 +130,8 @@ scene.addEntity(cameraEntity);
 const app = document.querySelector("#app") as HTMLDivElement;
 game.display.addToDocument(app);
 
-game.display.setResolution(1920, 1080);
+
 game.loadScene("simple_scene");
 game.time.play();
+
+game.display.updateDimensions(); 

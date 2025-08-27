@@ -13,6 +13,7 @@ export class AdvancedShaderSystem extends ShaderSystem {
 
     global(engine: Engine, scene: Scene, shader: Shader) {
 
+   
         let camera = scene.getActiveCamera();
         let cameraTransform = scene.components.getComponent<Transform>(camera.getEntityID(), ComponentType.Transform);
 
@@ -31,6 +32,7 @@ export class AdvancedShaderSystem extends ShaderSystem {
     local(engine: Engine, entityID: number, scene: Scene, shader: Shader) {
         const transform = scene.components.getComponent<Transform>(entityID, ComponentType.Transform);
         if (!transform) return;
+        
 
         const spriteRender = scene.components.getComponent<SpriteRender>(entityID, ComponentType.SpriteRender);
         if (!spriteRender) return;

@@ -13,8 +13,7 @@ export class Display {
 
     private static focused: Display | null = null;
 
-    public width: number = 800;
-    public height: number = 600;
+   
 
     constructor() {
         this.container = document.createElement("div");
@@ -33,24 +32,14 @@ export class Display {
     }
 
     public getAspectRatio(): number {
-        return this.width / this.height;
+       return this.canvas.width / this.canvas.height;
     }
 
-    public getInternalAspectRatio(): number {
-        return this.canvas.width / this.canvas.height;
-    }
-    public setResolution(width: number, height: number) {
-        this.canvas.width = width;
-        this.canvas.height = height;
-
-        this.updateDimensions();
-        this.context.viewport(0, 0, width, height);
-    }
-
-    private updateDimensions() {
+    public updateDimensions() {
         const rect = this.canvas.getBoundingClientRect();
-        this.width = rect.width;
-        this.height = rect.height;
+        this.canvas.width = rect.width;
+        this.canvas.height = rect.height;
+          this.context.viewport(0, 0, this.canvas.width, this.canvas.height);
     }
 
     public addToDocument(parent: HTMLElement) {
@@ -62,7 +51,7 @@ export class Display {
 
         window.addEventListener("resize", () => {
             this.updateDimensions();
-            this.context.viewport(0, 0, this.canvas.width, this.canvas.height);
+          
         });
     }
 

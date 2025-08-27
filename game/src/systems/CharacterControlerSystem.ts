@@ -9,21 +9,20 @@ import { Input } from "./InputSystem";
 
 export class CharacterControlerSystem extends System {
   update(dt: number) {
-
-
     const components = this.getScene().components;
-
     const characterControlers = components.getAllOfType<CharacterControler2D>(
       ComponentType.CharacterController
     );
-    for (const characterControler of characterControlers) {
 
+    for (const characterControler of characterControlers) {
       const characterTransform = components.getComponent<Transform>(
         characterControler.getEntityID(),
         ComponentType.Transform
       );
       if (!characterTransform) continue;
 
+      characterTransform.previousPosition.x = characterTransform.position.x;
+      characterTransform.previousPosition.y = characterTransform.position.y;
 
       characterControler.direction.x = 0;
       characterControler.direction.y = 0;
@@ -38,13 +37,11 @@ export class CharacterControlerSystem extends System {
         ? characterControler.runSpeed
         : characterControler.speed;
 
-
       const deltaX = characterControler.direction.x * speed * dt;
       const deltaY = characterControler.direction.y * speed * dt;
 
       characterTransform.position.x += deltaX;
       characterTransform.position.y += deltaY;
-
     }
   }
 }

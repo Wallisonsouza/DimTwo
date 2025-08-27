@@ -12,7 +12,7 @@ import type { ComponentGroup } from "@engine/modules/enums/ComponentGroup";
 import { ComponentType } from "@engine/modules/enums/ComponentType";
 import { BiomeName } from "@game/enums/BiomeName";
 import { getBiomeColor } from "./biome";
-import { BUSHE_0_PREFAB, BUSHE_1_PREFAB, BUSHE_2_PREFAB, BUSHE_3_PREFAB, BUSHE_4_PREFAB, BUSHE_5_PREFAB, BUSHE_6_PREFAB, GRASS_0_PREFAB, GROUND_PREFAB, OAK_TREE_PREFAB, type Prefab } from "./Prefab";
+import { GRASS_0_PREFAB, GROUND_PREFAB, OAK_TREE_PREFAB, type Prefab } from "./Prefab";
 import { World, type TerrainCell } from "./Word";
 
 export class EasyGetter {
@@ -52,11 +52,11 @@ export class TerrainSystem extends System {
 
     const cells = this.world.generateCells(32, 32, 0, 0);
 
-    generateGrounds(this.getScene(), cells);
+    generateGrounds(scene, cells)
+
     generateTrees(this.getScene(), cells, new Vec2(0, 0))
   }
 }
-
 function generateGrounds(
   scene: Scene,
   terrainCells: TerrainCell[],
@@ -87,13 +87,13 @@ interface BiomePrefab {
 const biomeTrees: Record<BiomeName, BiomePrefab[]> = {
   [BiomeName.FOREST]: [
     { prefab: OAK_TREE_PREFAB, chance: 0.2, offset: new Vec3(0.25, 1.25, 0) },
-    { prefab: BUSHE_0_PREFAB, chance: 0.3, offset: new Vec3(0, 0, 0) },
+  /*   { prefab: BUSHE_0_PREFAB, chance: 0.3, offset: new Vec3(0, 0, 0) },
     { prefab: BUSHE_1_PREFAB, chance: 0.1, offset: new Vec3(0, 0, 0) },
     { prefab: BUSHE_2_PREFAB, chance: 0.4, offset: new Vec3(0, 0, 0) },
     { prefab: BUSHE_3_PREFAB, chance: 0.2, offset: new Vec3(0, 0, 0) },
     { prefab: BUSHE_4_PREFAB, chance: 0.2, offset: new Vec3(0, 0, 0) },
     { prefab: BUSHE_5_PREFAB, chance: 0.2, offset: new Vec3(0, 0, 0) },
-    { prefab: BUSHE_6_PREFAB, chance: 0.2, offset: new Vec3(0, 0, 0) }
+    { prefab: BUSHE_6_PREFAB, chance: 0.2, offset: new Vec3(0, 0, 0) } */
 
   ],
   [BiomeName.DEEP_WATER]: [],

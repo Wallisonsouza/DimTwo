@@ -5,7 +5,7 @@ export type TimeEvent = 'start' | 'stop' | 'update' | 'fixedUpdate' | 'lateUpdat
 export default class Time {
   private events = new EventEmitter();
 
-  private accumulator = 0;
+  public accumulator = 0;
   private isRunning = false;
   private isPaused = false;
   private readonly maxFrameSkip = 5;
@@ -107,15 +107,13 @@ export default class Time {
     this.accumulator += this._deltaTime;
     let steps = 0;
 
-    this.events.emit('loop');
-
     if (this.initialized) {
-      while (this.accumulator >= this.fixedDeltaTime && steps < this.maxFrameSkip) {
+     /*  while (this.accumulator >= this.fixedDeltaTime && steps < this.maxFrameSkip) {
         this.events.emit('fixedUpdate');
         this.accumulator -= this.fixedDeltaTime;
         steps++;
       }
-
+ */
       this.events.emit('update');
       this.events.emit('lateUpdate');
       this.events.emit('render');

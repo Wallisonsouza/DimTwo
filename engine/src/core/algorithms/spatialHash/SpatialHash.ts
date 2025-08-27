@@ -2,7 +2,7 @@ import type { Vec2 } from "../../math/Vec2";
 
 export class SpatialHash<T> {
   private readonly cellSize: number;
-  private readonly buckets = new Map<string, T[]>();
+   readonly buckets = new Map<string, T[]>();
 
   constructor(cellSize: number) {
     this.cellSize = cellSize;

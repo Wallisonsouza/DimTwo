@@ -1,4 +1,5 @@
-import { Component, type Clonable } from "../../../core/base/Component";
+import type { Clonable } from "@engine/core/base/Clonable";
+import { Component, type ComponentOptions } from "../../../core/base/Component";
 import { Result } from "../../../core/managers/result";
 import { ComponentGroup } from "../../enums/ComponentGroup";
 import { ComponentType } from "../../enums/ComponentType";
@@ -7,7 +8,7 @@ import type { SpriteRender } from "../render/SpriteRender";
 import type { AnimatorController } from "./AnimatorController";
 import type { AnimatorState } from "./AnimatorState";
 
-export interface AnimatorOptions {
+export interface AnimatorOptions extends ComponentOptions {
   controller?: AnimatorController | null;
   currentClip?: AnimationClip | null;
   isPlaying?: boolean;
@@ -27,7 +28,7 @@ export class Animator extends Component implements Clonable<Animator> {
   playbackSpeed: number;
 
   constructor(options: AnimatorOptions = {}) {
-    super(ComponentType.Animator, ComponentGroup.Animator);
+    super(ComponentType.Animator, ComponentGroup.Animator, options);
     this.controller = options.controller ?? null;
     this.currentClip = options.currentClip ?? null;
     this.isPlaying = options.isPlaying ?? false;

@@ -1,8 +1,11 @@
 import type { Component } from "@engine/core/base/Component";
 import { type GameEntityOptions } from "@engine/core/base/GameEntity";
 import { Vec3 } from "@engine/core/math/Vec3";
+import { BoxCollider2D } from "@engine/modules/components/physics/BoxCollider2D";
 import { SpriteRender } from "@engine/modules/components/render/SpriteRender";
 import { Transform } from "@engine/modules/components/spatial/Transform";
+import { CollisionLayer } from "@engine/modules/physics/collision/CollisionLayer";
+import { Physics } from "@engine/modules/systems/Physics";
 import { BUSHES } from "@game/sprites/Bushes";
 import { GRASS_0_SPRITE } from "@game/sprites/Grass";
 import { OAK_TRE_0 } from "@game/sprites/Trees";
@@ -22,6 +25,7 @@ export const OAK_TREE_PREFAB: Prefab = {
     components: [
         new Transform({ position: new Vec3(10, -2, 0), scale: new Vec3(2, 3, 0) }),
         new SpriteRender({ material: "advancedMaterial", layer: 2, sprite: OAK_TRE_0 }),
+        new BoxCollider2D({ collisionLayer: CollisionLayer.Tree }),
     ],
 
 };
@@ -41,7 +45,8 @@ export const BUSHE_0_PREFAB: Prefab = {
     tag: "Tree",
     components: [
         new Transform({ scale: new Vec3(0.8, 0.8, 0) }),
-        new SpriteRender({ material: "advancedMaterial", layer: 2, sprite: BUSHES[0] }),
+        new SpriteRender({ material: "advancedMaterial", sprite: BUSHES[0] }),
+
     ],
 
 };
@@ -51,7 +56,7 @@ export const BUSHE_1_PREFAB: Prefab = {
     tag: "Tree",
     components: [
         new Transform({ scale: new Vec3(0.8, 0.8, 0) }),
-        new SpriteRender({ material: "advancedMaterial", layer: 2, sprite: BUSHES[1] }),
+        new SpriteRender({ material: "advancedMaterial", sprite: BUSHES[1] }),
     ],
 
 };
@@ -61,7 +66,7 @@ export const BUSHE_2_PREFAB: Prefab = {
     tag: "Tree",
     components: [
         new Transform({ scale: new Vec3(1.2, 0.8, 0) }),
-        new SpriteRender({ material: "advancedMaterial", layer: 2, sprite: BUSHES[2] }),
+        new SpriteRender({ material: "advancedMaterial", sprite: BUSHES[2] }),
     ],
 
 };
@@ -71,7 +76,7 @@ export const BUSHE_3_PREFAB: Prefab = {
     tag: "Tree",
     components: [
         new Transform({ scale: new Vec3(1.6, 0.8, 0) }),
-        new SpriteRender({ material: "advancedMaterial", layer: 2, sprite: BUSHES[3] }),
+        new SpriteRender({ material: "advancedMaterial", sprite: BUSHES[3] }),
     ],
 
 };
@@ -81,7 +86,7 @@ export const BUSHE_4_PREFAB: Prefab = {
     tag: "Tree",
     components: [
         new Transform({ scale: new Vec3(0.8, 0.8, 0) }),
-        new SpriteRender({ material: "advancedMaterial", layer: 2, sprite: BUSHES[4] }),
+        new SpriteRender({ material: "advancedMaterial", sprite: BUSHES[4] }),
     ],
 
 };
@@ -91,7 +96,7 @@ export const BUSHE_5_PREFAB: Prefab = {
     tag: "Tree",
     components: [
         new Transform({ scale: new Vec3(0.8, 0.8, 0) }),
-        new SpriteRender({ material: "advancedMaterial", layer: 2, sprite: BUSHES[5] }),
+        new SpriteRender({ material: "advancedMaterial", sprite: BUSHES[5] }),
     ],
 
 };
@@ -101,7 +106,7 @@ export const BUSHE_6_PREFAB: Prefab = {
     tag: "Tree",
     components: [
         new Transform({ scale: new Vec3(0.8, 0.8, 0) }),
-        new SpriteRender({ material: "advancedMaterial", layer: 2, sprite: BUSHES[6] }),
+        new SpriteRender({ material: "advancedMaterial", sprite: BUSHES[6] }),
     ],
 
 };
@@ -111,8 +116,11 @@ export const GRASS_0_PREFAB: Prefab = {
     tag: "Grass",
     components: [
         new Transform({ scale: new Vec3(1.3, 1, 0) }),
-        new SpriteRender({ material: "advancedMaterial", layer: 2, sprite: GRASS_0_SPRITE }),
+        new SpriteRender({ material: "advancedMaterial", sprite: GRASS_0_SPRITE }),
+         new BoxCollider2D({ collisionLayer: CollisionLayer.Grass }),
     ],
 
 };
 
+Physics.collisionMatrix.setCollision(CollisionLayer.Tree, CollisionLayer.Player, true);
+Physics.collisionMatrix.setCollision(CollisionLayer.Grass, CollisionLayer.Player, true);

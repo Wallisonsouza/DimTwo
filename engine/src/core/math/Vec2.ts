@@ -91,6 +91,11 @@ export class Vec2 {
     return out;
   }
 
+  public static eq(a: Vec2, b: Vec2, tolerance: number = 1e-4): boolean {
+    return Math.abs(a.x - b.x) <= tolerance &&
+      Math.abs(a.y - b.y) <= tolerance;
+  }
+
   public clone() {
     return new Vec2(this.x, this.y);
   }
