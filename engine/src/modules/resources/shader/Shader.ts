@@ -45,7 +45,7 @@ export class Shader {
         return this.attributes.get(name) ?? null;
     }
 
-    public shader_set_uniform_mat4(name: string, matrix: Float32Array) {
+    public setMat4(name: string, matrix: Float32Array) {
         const gl = this.gl;
         const location = this.getUniform(name);
         if (!location) {
@@ -55,7 +55,7 @@ export class Shader {
         gl.uniformMatrix4fv(location, false, matrix);
     }
 
-    public shader_set_uniform_4f(name: string, x: number, y: number, z: number, w: number) {
+    public set4F(name: string, x: number, y: number, z: number, w: number) {
         const gl = this.gl;
         const location = this.getUniform(name);
         if (!location) {
@@ -75,7 +75,7 @@ export class Shader {
         gl.uniform3f(location, x, y, z);
     }
 
-    public shader_set_uniform_2f(name: string, x: number, y: number) {
+    public set2F(name: string, x: number, y: number) {
         const gl = this.gl;
         const location = this.getUniform(name);
         if (!location) {
@@ -105,7 +105,7 @@ export class Shader {
         gl.uniform1i(location, x);
     }
 
-    public shader_set_uniform_texture(
+    public setTexture(
         name: string,
         texture: TextureBuffer,
         unit: number = 0

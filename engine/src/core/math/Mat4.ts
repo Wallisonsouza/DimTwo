@@ -1,6 +1,15 @@
 import type { Vec3 } from "./Vec3";
 import { Vec4 } from "./Vec4";
-import type { Quat } from "./quat";
+import { Quat } from "./quat";
+
+export class Mat4Error extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = "Mat4Error";
+    }
+
+    public static readonly INVERT_ERROR = new Mat4Error("Matriz singular, não é possível inverter.");
+}
 
 export class Mat4 {
     public readonly data: Float32Array;
@@ -95,7 +104,7 @@ export class Mat4 {
         e[15] = 1;
     }
 
-    public static createTR(m: Mat4, t: Vec3, r: Quat) {
+    public static composeTR(m: Mat4, t: Vec3, r: Quat) {
         const x = r.x, y = r.y, z = r.z, w = r.w;
 
         const x2 = x + x;
@@ -136,6 +145,56 @@ export class Mat4 {
         e[14] = t.z;
         e[15] = 1;
     }
+
+    public static composeTRInverse(m: Mat4, t: Vec3, r: Quat) {
+        const conj = Quat.conjugate(r);
+        const ix = conj.x, iy = conj.y, iz = conj.z, iw = conj.w;
+
+        const x2 = ix + ix;
+        const y2 = iy + iy;
+        const z2 = iz + iz;
+
+        const xx = ix * x2;
+        const xy = ix * y2;
+        const xz = ix * z2;
+        const yy = iy * y2;
+        const yz = iy * z2;
+        const zz = iz * z2;
+        const wx = iw * x2;
+        const wy = iw * y2;
+        const wz = iw * z2;
+
+        const e = m.data;
+
+        // Rotação inversa
+        e[0] = 1 - (yy + zz);
+        e[1] = xy + wz;
+        e[2] = xz - wy;
+        e[3] = 0;
+
+        e[4] = xy - wz;
+        e[5] = 1 - (xx + zz);
+        e[6] = yz + wx;
+        e[7] = 0;
+
+        e[8] = xz + wy;
+        e[9] = yz - wx;
+        e[10] = 1 - (xx + yy);
+        e[11] = 0;
+
+        // Translação inversa: -Rᵀ * t
+        e[12] = -(e[0] * t.x + e[4] * t.y + e[8] * t.z);
+        e[13] = -(e[1] * t.x + e[5] * t.y + e[9] * t.z);
+        e[14] = -(e[2] * t.x + e[6] * t.y + e[10] * t.z);
+        e[15] = 1;
+    }
+
+
+
+
+
+
+
     public static projection(m: Mat4, fovY: number, aspect: number, near: number, far: number) {
         const fovRadians = (fovY * Math.PI) / 180;
         const f = 1.0 / Math.tan(fovRadians / 2);
@@ -161,133 +220,53 @@ export class Mat4 {
             e[3] * x + e[7] * y + e[11] * z + e[15] * w
         );
     }
-    
-    public static invert(m: Mat4): Mat4 | null {
-        const inv = new Mat4();
-        const a = m.data;
-        const b = inv.data;
 
-        b[0] = a[5] * a[10] * a[15] -
-            a[5] * a[11] * a[14] -
-            a[9] * a[6] * a[15] +
-            a[9] * a[7] * a[14] +
-            a[13] * a[6] * a[11] -
-            a[13] * a[7] * a[10];
+    public static invert(input: Mat4, output: Mat4): Mat4 | null {
+        const a = input.data;
+        const o = output.data;
 
-        b[4] = -a[4] * a[10] * a[15] +
-            a[4] * a[11] * a[14] +
-            a[8] * a[6] * a[15] -
-            a[8] * a[7] * a[14] -
-            a[12] * a[6] * a[11] +
-            a[12] * a[7] * a[10];
+        const a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3];
+        const a10 = a[4], a11 = a[5], a12 = a[6], a13 = a[7];
+        const a20 = a[8], a21 = a[9], a22 = a[10], a23 = a[11];
+        const a30 = a[12], a31 = a[13], a32 = a[14], a33 = a[15];
 
-        b[8] = a[4] * a[9] * a[15] -
-            a[4] * a[11] * a[13] -
-            a[8] * a[5] * a[15] +
-            a[8] * a[7] * a[13] +
-            a[12] * a[5] * a[11] -
-            a[12] * a[7] * a[9];
+        const b00 = a00 * a11 - a01 * a10;
+        const b01 = a00 * a12 - a02 * a10;
+        const b02 = a00 * a13 - a03 * a10;
+        const b03 = a01 * a12 - a02 * a11;
+        const b04 = a01 * a13 - a03 * a11;
+        const b05 = a02 * a13 - a03 * a12;
+        const b06 = a20 * a31 - a21 * a30;
+        const b07 = a20 * a32 - a22 * a30;
+        const b08 = a20 * a33 - a23 * a30;
+        const b09 = a21 * a32 - a22 * a31;
+        const b10 = a21 * a33 - a23 * a31;
+        const b11 = a22 * a33 - a23 * a32;
 
-        b[12] = -a[4] * a[9] * a[14] +
-            a[4] * a[10] * a[13] +
-            a[8] * a[5] * a[14] -
-            a[8] * a[6] * a[13] -
-            a[12] * a[5] * a[10] +
-            a[12] * a[6] * a[9];
-
-        b[1] = -a[1] * a[10] * a[15] +
-            a[1] * a[11] * a[14] +
-            a[9] * a[2] * a[15] -
-            a[9] * a[3] * a[14] -
-            a[13] * a[2] * a[11] +
-            a[13] * a[3] * a[10];
-
-        b[5] = a[0] * a[10] * a[15] -
-            a[0] * a[11] * a[14] -
-            a[8] * a[2] * a[15] +
-            a[8] * a[3] * a[14] +
-            a[12] * a[2] * a[11] -
-            a[12] * a[3] * a[10];
-
-        b[9] = -a[0] * a[9] * a[15] +
-            a[0] * a[11] * a[13] +
-            a[8] * a[1] * a[15] -
-            a[8] * a[3] * a[13] -
-            a[12] * a[1] * a[11] +
-            a[12] * a[3] * a[9];
-
-        b[13] = a[0] * a[9] * a[14] -
-            a[0] * a[10] * a[13] -
-            a[8] * a[1] * a[14] +
-            a[8] * a[2] * a[13] +
-            a[12] * a[1] * a[10] -
-            a[12] * a[2] * a[9];
-
-        b[2] = a[1] * a[6] * a[15] -
-            a[1] * a[7] * a[14] -
-            a[5] * a[2] * a[15] +
-            a[5] * a[3] * a[14] +
-            a[13] * a[2] * a[7] -
-            a[13] * a[3] * a[6];
-
-        b[6] = -a[0] * a[6] * a[15] +
-            a[0] * a[7] * a[14] +
-            a[4] * a[2] * a[15] -
-            a[4] * a[3] * a[14] -
-            a[12] * a[2] * a[7] +
-            a[12] * a[3] * a[6];
-
-        b[10] = a[0] * a[5] * a[15] -
-            a[0] * a[7] * a[13] -
-            a[4] * a[1] * a[15] +
-            a[4] * a[3] * a[13] +
-            a[12] * a[1] * a[7] -
-            a[12] * a[3] * a[5];
-
-        b[14] = -a[0] * a[5] * a[14] +
-            a[0] * a[6] * a[13] +
-            a[4] * a[1] * a[14] -
-            a[4] * a[2] * a[13] -
-            a[12] * a[1] * a[6] +
-            a[12] * a[2] * a[5];
-
-        b[3] = -a[1] * a[6] * a[11] +
-            a[1] * a[7] * a[10] +
-            a[5] * a[2] * a[11] -
-            a[5] * a[3] * a[10] -
-            a[9] * a[2] * a[7] +
-            a[9] * a[3] * a[6];
-
-        b[7] = a[0] * a[6] * a[11] -
-            a[0] * a[7] * a[10] -
-            a[4] * a[2] * a[11] +
-            a[4] * a[3] * a[10] +
-            a[8] * a[2] * a[7] -
-            a[8] * a[3] * a[6];
-
-        b[11] = -a[0] * a[5] * a[11] +
-            a[0] * a[7] * a[9] +
-            a[4] * a[1] * a[11] -
-            a[4] * a[3] * a[9] -
-            a[8] * a[1] * a[7] +
-            a[8] * a[3] * a[5];
-
-        b[15] = a[0] * a[5] * a[10] -
-            a[0] * a[6] * a[9] -
-            a[4] * a[1] * a[10] +
-            a[4] * a[2] * a[9] +
-            a[8] * a[1] * a[6] -
-            a[8] * a[2] * a[5];
-
-        let det = a[0] * b[0] + a[1] * b[4] + a[2] * b[8] + a[3] * b[12];
-
-        if (det === 0) return null;
-
+        // determinante
+        let det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
+        if (!det) return null;
         det = 1.0 / det;
 
-        for (let i = 0; i < 16; i++) b[i] *= det;
+        o[0] = (a11 * b11 - a12 * b10 + a13 * b09) * det;
+        o[1] = (a02 * b10 - a01 * b11 - a03 * b09) * det;
+        o[2] = (a31 * b05 - a32 * b04 + a33 * b03) * det;
+        o[3] = (a22 * b04 - a21 * b05 - a23 * b03) * det;
+        o[4] = (a12 * b08 - a10 * b11 - a13 * b07) * det;
+        o[5] = (a00 * b11 - a02 * b08 + a03 * b07) * det;
+        o[6] = (a32 * b02 - a30 * b05 - a33 * b01) * det;
+        o[7] = (a20 * b05 - a22 * b02 + a23 * b01) * det;
+        o[8] = (a10 * b10 - a11 * b08 + a13 * b06) * det;
+        o[9] = (a01 * b08 - a00 * b10 - a03 * b06) * det;
+        o[10] = (a30 * b04 - a31 * b02 + a33 * b00) * det;
+        o[11] = (a21 * b02 - a20 * b04 - a23 * b00) * det;
+        o[12] = (a11 * b07 - a10 * b09 - a12 * b06) * det;
+        o[13] = (a00 * b09 - a01 * b07 + a02 * b06) * det;
+        o[14] = (a31 * b01 - a30 * b03 - a32 * b00) * det;
+        o[15] = (a20 * b03 - a21 * b01 + a22 * b00) * det;
 
-        return inv;
+        return output;
     }
+
 
 }

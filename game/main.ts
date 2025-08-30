@@ -106,9 +106,10 @@ game.enableSystem(EngineSystem.AnimatorSystem);
 game.enableSystem(EngineSystem.InputSystem);
 game.enableSystem(EngineSystem.CameraSystem);
 game.enableSystem(EngineSystem.CharacterControlerSystem);
-game.enableSystem(EngineSystem.TerrainSystem);
+game.enableSystem(EngineSystem.TerrainSystem); 
 game.enableSystem(EngineSystem.CharacterControlerAnimationSystem);
 game.enableSystem(EngineSystem.EditorGizmosSystem);
+game.enableSystem(EngineSystem.ColliderSystem);
 //-------------------
 const scene = new Scene("simple_scene");
 SceneManager.addScene(scene);
@@ -134,4 +135,20 @@ game.display.addToDocument(app);
 game.loadScene("simple_scene");
 game.time.play();
 
-game.display.updateDimensions(); 
+game.display.updateDimensions();
+
+function createHierarchy(scene: Scene, parent: HTMLDivElement) {
+    const container = document.createElement("div");
+    container.className = "hierarchy";
+    for (const entity of scene.entities.getAll()) {
+        const entityElement = document.createElement("div");
+        entityElement.className = "entityElement";
+        entityElement.innerText = entity.name;
+
+        container.appendChild(entityElement);
+    }
+
+    parent.appendChild(container);
+}
+
+createHierarchy(scene, document.querySelector("#app")!);

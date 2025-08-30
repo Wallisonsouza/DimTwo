@@ -1,3 +1,4 @@
+import type { Vec2 } from "@engine/core/math/Vec2";
 import { ComponentGroup } from "../../enums/ComponentGroup";
 import { ComponentType } from "../../enums/ComponentType";
 import { Collider2D, type Collider2DOptions } from "./collider/Collider2D";
@@ -30,12 +31,11 @@ export class BoxCollider2D extends Collider2D {
   }
 
   intersectsBoxBox(a: BoxCollider2D, b: BoxCollider2D): boolean {
+    return a.bounds.intersects(b.bounds);
 
-    return (
-      a.bounds.min.x <= b.bounds.max.x &&
-      a.bounds.max.x >= b.bounds.min.x &&
-      a.bounds.min.y <= b.bounds.max.y &&
-      a.bounds.max.y >= b.bounds.min.y
-    );
+  }
+
+  containsPoints(point: Vec2) {
+    return this.bounds.containsPoint(point);
   }
 }

@@ -98,9 +98,9 @@ const biomeTrees: Record<BiomeName, BiomePrefab[]> = {
   ],
   [BiomeName.DEEP_WATER]: [],
   [BiomeName.SHALLOW_WATER]: [],
-  [BiomeName.SAND]: [],
+  [BiomeName.SAND]: [ { prefab: GRASS_0_PREFAB, chance: 0.7, offset: new Vec3(0, 0, 0) },],
   [BiomeName.GRASSLAND]: [
-    { prefab: GRASS_0_PREFAB, chance: 0.7, offset: new Vec3(0, 0, 0) },
+   
   ],
   [BiomeName.FLOWER_FIELD]: [],
   [BiomeName.SPARSE_FOREST]: [],

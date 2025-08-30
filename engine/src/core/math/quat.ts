@@ -37,6 +37,28 @@ export class Quat {
         q.z = z;
     }
 
+    equals(q: Quat): boolean {
+        return this.x === q.x && this.y === q.y && this.z === q.z && this.w === q.w;
+    }
+    public set(x: number | Quat, y?: number, z?: number, w?: number): this {
+        if (x instanceof Quat) {
+            this.x = x.x;
+            this.y = x.y;
+            this.z = x.z;
+            this.w = x.w;
+        } else {
+            this.x = x;
+            this.y = y ?? this.y;
+            this.z = z ?? this.z;
+            this.w = w ?? this.w;
+        }
+        return this;
+    }
+
+    public static conjugate(q: Quat): Quat {
+        return new Quat(-q.x, -q.y, -q.z, q.w);
+    }
+
     public clone() {
         return new Quat(this.x, this.y, this.z, this.w);
     }

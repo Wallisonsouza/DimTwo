@@ -1,4 +1,5 @@
 
+import { Uniforms } from "@engine/modules/enums/Uniforms";
 import { Mat4 } from "../../../core/math/Mat4";
 import type { Scene } from "../../../core/scene/scene";
 import type { Engine } from "../../../Engine";
@@ -11,25 +12,14 @@ import { ShaderSystem } from "../shader/ShaderSystem";
 export class SimpleShaderSystem extends ShaderSystem {
 
     global(engine: Engine, scene: Scene, shader: Shader) {
-
-        let camera = scene.getActiveCamera();
-
-        let cameraTransform = scene.components.getComponent<Transform>(camera.getEntityID(), ComponentType.Transform);
-
+        const camera = scene.getActiveCamera();
         camera.aspect = engine.display.getAspectRatio();
 
-        if (!cameraTransform) return;
-
-        const viewMatrix = camera.viewMatrix;
-        Mat4.createTR(viewMatrix, cameraTransform.position, cameraTransform.rotation);
-        shader.shader_set_uniform_mat4("uView", viewMatrix.data);
-
-        const projectionMatrix = camera.projection;
-        Mat4.projection(projectionMatrix, camera.fov, camera.aspect, camera.near, camera.far)
-        shader.shader_set_uniform_mat4("uProjection", projectionMatrix.data);
+        shader.setMat4(Uniforms.View, camera.getViewMatrix().data);
+        shader.setMat4(Uniforms.Projection, camera.getProjectionMatrix().data);
     }
 
-    local(engine: Engine, entityID: number, scene: Scene, shader: Shader) {
+    local(_: Engine, entityID: number, scene: Scene, shader: Shader) {
         const transform = scene.components.getComponent<Transform>(entityID, ComponentType.Transform);
         if (!transform) return;
 
@@ -37,12 +27,12 @@ export class SimpleShaderSystem extends ShaderSystem {
         if (!spriteRender) return;
 
 
-        const modelMatrix = transform.modelMatrix;
+        const modelMatrix = transform.getWorldMatrix();
 
         Mat4.compose(modelMatrix, transform.position, transform.rotation, transform.scale);
-        shader.shader_set_uniform_mat4("uModel", modelMatrix.data);
+        shader.setMat4("uModel", modelMatrix.data);
 
-        shader.shader_set_uniform_4f(
+        shader.set4F(
             "uColor",
             spriteRender.color.r,
             spriteRender.color.g,

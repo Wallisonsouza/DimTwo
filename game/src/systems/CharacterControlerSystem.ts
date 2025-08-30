@@ -21,8 +21,7 @@ export class CharacterControlerSystem extends System {
       );
       if (!characterTransform) continue;
 
-      characterTransform.previousPosition.x = characterTransform.position.x;
-      characterTransform.previousPosition.y = characterTransform.position.y;
+  
 
       characterControler.direction.x = 0;
       characterControler.direction.y = 0;

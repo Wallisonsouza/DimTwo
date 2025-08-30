@@ -31,6 +31,22 @@ export class Vec3 {
         return out;
     }
 
+    public set(x: number | Vec3, y?: number, z?: number): this {
+        if (x instanceof Vec3) {
+            this.x = x.x;
+            this.y = x.y;
+            this.z = x.z;
+        } else {
+            this.x = x;
+            this.y = y ?? this.y;
+            this.z = z ?? this.z;
+        }
+        return this;
+    }
+    
+    equals(v: Vec3): boolean {
+        return this.x === v.x && this.y === v.y && this.z === v.z;
+    }
 
     public static mult(out: Vec3, a: Vec3, b: Vec3): Vec3 {
         out.x = a.x * b.x;
@@ -78,12 +94,12 @@ export class Vec3 {
         return a.x * b.x + a.y * b.y + a.z * b.z;
     }
 
-   public static normalizeVec3(v: Vec3): Vec3 {
-    const length = Math.hypot(v.x, v.y, v.z);
-    return length > 0 
-        ? new Vec3(v.x / length, v.y / length, v.z / length) 
-        : new Vec3(0, 0, 0);
-}
+    public static normalizeVec3(v: Vec3): Vec3 {
+        const length = Math.hypot(v.x, v.y, v.z);
+        return length > 0
+            ? new Vec3(v.x / length, v.y / length, v.z / length)
+            : new Vec3(0, 0, 0);
+    }
 
     public static vec3Tof32Arr(vectors: Vec3[], out?: Float32Array): Float32Array {
         if (!out || out.length < vectors.length * 3) {

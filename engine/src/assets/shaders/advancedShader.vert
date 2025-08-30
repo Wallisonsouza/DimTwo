@@ -12,6 +12,6 @@ out vec2 vUV;
 
 void main() {
 
-    gl_Position = uProjection * inverse(uView) * uModel * vec4(aPosition, 1.0);
+    gl_Position = uProjection * uView * uModel * vec4(aPosition, 1.0);
     vUV = aUV;
 }

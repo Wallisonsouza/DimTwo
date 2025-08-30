@@ -17,6 +17,9 @@ export abstract class Component extends Instantiable implements Clonable<Compone
   readonly group: ComponentGroup;
   readonly id: Id;
 
+
+
+
   private _transform: Transform | null = null;
 
   get transform(): Transform {
@@ -60,6 +63,6 @@ export abstract class Component extends Instantiable implements Clonable<Compone
   }
 
   cloneBase() {
-   
+
   }
 }

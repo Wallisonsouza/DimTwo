@@ -10,8 +10,8 @@ export class Input {
 
 export class InputSystem extends System {
     lateUpdate() {
-         Input.keyboard.clear();
+        Input.keyboard.clear();
         Input.mouse.clear();
-       
+
     }
 }

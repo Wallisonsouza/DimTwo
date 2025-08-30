@@ -22,6 +22,10 @@ export class Display {
         this.canvas = document.createElement("canvas");
         this.canvas.className = "engine-canvas";
 
+        const test = document.createElement("div");
+        test.className = "aim";
+        this.container.appendChild(test)
+
         this.container.appendChild(this.canvas);
 
         const gl = this.canvas.getContext("webgl2");

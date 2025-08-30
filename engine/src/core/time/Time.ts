@@ -108,12 +108,12 @@ export default class Time {
     let steps = 0;
 
     if (this.initialized) {
-     /*  while (this.accumulator >= this.fixedDeltaTime && steps < this.maxFrameSkip) {
+      while (this.accumulator >= this.fixedDeltaTime && steps < this.maxFrameSkip) {
         this.events.emit('fixedUpdate');
         this.accumulator -= this.fixedDeltaTime;
         steps++;
       }
- */
+
       this.events.emit('update');
       this.events.emit('lateUpdate');
       this.events.emit('render');

@@ -25,7 +25,7 @@ export class ColliderSystem extends System {
     const colliders = EasyGetter.getAllByGroup<Collider2D>(scene, ComponentGroup.Collider);
 
     this.prepareSpatialHash(colliders);
-   this.runBroadphase(scene);
+    this.runBroadphase(scene);
   }
 
   private prepareSpatialHash(colliders: Collider2D[]) {
@@ -44,40 +44,42 @@ export class ColliderSystem extends System {
     }
   }
 
- private checkBucketPairs(bucket: Collider2D[], scene: Scene) {
-  for (let i = 0; i < bucket.length; i++) {
-    const a = bucket[i];
-    const aId = a.id.getValue();
-    const aEntity = EasyGetter.getEntity(scene, a);
-    if (!aEntity) continue;
+  private checkBucketPairs(bucket: Collider2D[], scene: Scene) {
+    for (let i = 0; i < bucket.length; i++) {
+      const a = bucket[i];
+      const aId = a.id.getValue();
+      const aEntity = EasyGetter.getEntity(scene, a);
+      if (!aEntity) continue;
 
-    this.updateColliderBounds(a, aId, aEntity);
+      this.updateColliderBounds(a, aId, aEntity);
 
-    for (let j = i + 1; j < bucket.length; j++) {
-      const b = bucket[j];
 
-      // 🔹 checa layers logo no início
-      if (!Physics.collisionMatrix.canCollide(a.collisionLayer, b.collisionLayer)) {
-        continue;
-      }
+      for (let j = i + 1; j < bucket.length; j++) {
+        const b = bucket[j];
 
-      const bId = b.id.getValue();
-      const key = makePairKeyInt(aId, bId);
-      if (this.checked.has(key)) continue;
-      this.checked.add(key);
 
-      const bEntity = EasyGetter.getEntity(scene, b);
-      if (!bEntity) continue;
+        // 🔹 checa layers logo no início
+        if (!Physics.collisionMatrix.canCollide(a.collisionLayer, b.collisionLayer)) {
+          continue;
+        }
 
-      this.updateColliderBounds(b, bId, bEntity);
+        const bId = b.id.getValue();
+        const key = makePairKeyInt(aId, bId);
+        if (this.checked.has(key)) continue;
+        this.checked.add(key);
 
-      // 🔹 narrowphase só quando realmente necessário
-      if (a.intersects(b)) {
-        // handle collision
+        const bEntity = EasyGetter.getEntity(scene, b);
+        if (!bEntity) continue;
+
+        this.updateColliderBounds(b, bId, bEntity);
+
+        // 🔹 narrowphase só quando realmente necessário
+        if (a.intersects(b)) {
+          // handle collision
+        }
       }
     }
   }
-}
 
   private updateColliderBounds(collider: Collider2D, id: number, entity: GameEntity) {
     if (entity.static) return;
