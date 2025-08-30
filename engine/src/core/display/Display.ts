@@ -1,9 +1,7 @@
 import type { Camera } from "@engine/modules/components/render/Camera";
 import { Input } from "@game/systems/InputSystem";
-import { Mat4 } from "../math/Mat4";
 import { Vec2 } from "../math/Vec2";
 import { Vec3 } from "../math/Vec3";
-import { Vec4 } from "../math/Vec4";
 
 export class Display {
 
@@ -100,7 +98,7 @@ export class Display {
     }
 
     toWorld(mouse: Vec2, camera: Camera, zDepth: number = -1): Vec3 {
-
+/* 
         const ndc = this.toNDC(mouse);
 
         const clip = new Vec4(ndc.x, ndc.y, zDepth, 1);
@@ -112,7 +110,7 @@ export class Display {
         worldVec4.y /= worldVec4.w;
         worldVec4.z /= worldVec4.w;
 
-        return new Vec3(worldVec4.x, worldVec4.y, worldVec4.z);
+        return new Vec3(worldVec4.x, worldVec4.y, worldVec4.z); */
     }
 
 

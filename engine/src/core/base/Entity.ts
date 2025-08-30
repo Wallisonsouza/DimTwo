@@ -6,6 +6,4 @@ export abstract class Entity {
     constructor() {
         this.id = new Id();
     }
-
 }
-

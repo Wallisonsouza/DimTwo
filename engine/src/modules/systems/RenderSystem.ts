@@ -14,8 +14,6 @@ export class RenderSystem extends System {
     for (const render of renders) {
       if (!render.enabled) continue;
 
-
-      const entityID = render.getEntityID();
       const material = ResourcesManager.MaterialManager.get(render.material) as Material;
       if (!material || !material.shaderName) continue;
 
@@ -33,7 +31,7 @@ export class RenderSystem extends System {
       if (!shaderSystem) continue;
 
       shaderSystem.global?.(engine, scene, shader);
-      shaderSystem.local?.(engine, entityID, scene, shader);
+      shaderSystem.local?.(engine, render.gameEntity, scene, shader);
 
       if (!render.meshName) return;
       const mesh = ResourcesManager.MeshManager.get(render.meshName);

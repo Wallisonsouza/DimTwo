@@ -4,14 +4,12 @@ import { Animator } from "@engine//modules/components/animation/Animator";
 import { BoxCollider2D } from "@engine//modules/components/physics/BoxCollider2D";
 import { RigidBody2D } from "@engine//modules/components/physics/RigidBody2D";
 import { SpriteRender } from "@engine//modules/components/render/SpriteRender";
-import { Transform } from "@engine//modules/components/spatial/Transform";
 import { PLAYER_ANIMATOR_CONTROLLER } from "../animations/player.animator.controller";
 import { PLAYER_SPRITE } from "../sprites/PlayerSprite";
 import { CharacterControler2D } from "../systems/character.controller.types";
 
 
 export function configurePlayer(scene: Scene, entity: GameEntity) {
-  const transform = new Transform();
   const controller = new CharacterControler2D();
 
   const rigidBody = new RigidBody2D({
@@ -31,7 +29,6 @@ export function configurePlayer(scene: Scene, entity: GameEntity) {
 
   const boxCollider = new BoxCollider2D();
 
-  scene.addComponent(entity, transform);
   scene.addComponent(entity, controller);
   scene.addComponent(entity, rigidBody);
   scene.addComponent(entity, spriteRender);

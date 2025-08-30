@@ -1,4 +1,3 @@
-import { Transform } from "@engine/modules/components/spatial/Transform";
 import type { Prefab } from "@game/systems/Prefab";
 import { Camera } from "../../modules/components/render/Camera";
 import { ComponentType } from "../../modules/enums/ComponentType";
@@ -23,7 +22,7 @@ export class Scene {
     }
 
     public addComponent(entity: GameEntity, component: Component) {
-        this.components.addComponent(entity.id.getValue(), component);
+        this.components.addComponent(entity, component);
     }
 
     public instantiate(prefab: Prefab, position: Vec3) {
@@ -36,13 +35,8 @@ export class Scene {
 
         for (const component of prefab.components) {
             const clone = component.clone();
-         
-
-            if(clone instanceof Transform) {
-                clone.position = position;
-            }
-            clone.setEntityID(id)
             this.addComponent(entity, clone);
+            clone.transform.position = position;
         }
 
         return entity;

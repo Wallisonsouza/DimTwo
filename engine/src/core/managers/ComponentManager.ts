@@ -1,24 +1,27 @@
 import type { ComponentGroup } from "../../modules/enums/ComponentGroup";
 import type { ComponentType } from "../../modules/enums/ComponentType";
 import type { Component } from "../base/Component";
+import type { GameEntity } from "../base/GameEntity";
 
 export class ComponentManager {
     private readonly data: Map<ComponentType, Map<number, Component>> = new Map();
     private readonly group: Map<ComponentGroup, Set<Component>> = new Map();
 
-    addComponent(entityID: number, component: Component): boolean {
+    addComponent(gameEntity: GameEntity, component: Component): boolean {
 
         const type = component.type;
         if (!this.data.has(type)) this.data.set(type, new Map());
 
+        const id = gameEntity.id.getValue();
+
         const typeMap = this.data.get(type)!;
-        if (typeMap.has(entityID)) {
-            console.warn(`GameEntity ${entityID} already has a component of type ${type}`);
-            console.log(`GameEntity: ${entityID}`);
+        if (typeMap.has(id)) {
+            console.warn(`GameEntity ${id} already has a component of type ${type}`);
+            console.log(`GameEntity: ${id}`);
             return false;
         }
 
-        typeMap.set(entityID, component);
+        typeMap.set(id, component);
 
         const group = component.group;
         if (group) {
@@ -26,7 +29,7 @@ export class ComponentManager {
             this.group.get(group)!.add(component);
         }
 
-        component.setEntityID(entityID);
+        component.gameEntity = gameEntity;
         return true;
     }
 

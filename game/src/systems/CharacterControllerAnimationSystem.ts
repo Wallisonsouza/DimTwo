@@ -17,7 +17,7 @@ export class CharacterControllerAnimationSystem extends System {
 
         for (const characterControler of characterControlers) {
 
-            const entityID = characterControler.getEntityID();
+            const entityID = characterControler.gameEntity.id.getValue();
 
             const spriteRender = components.getComponent<SpriteRender>(
                 entityID,

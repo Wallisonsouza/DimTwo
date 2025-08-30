@@ -14,7 +14,7 @@ export class AnimatorSystem extends System {
     for (const animator of animators) {
       if (!animator.enabled || !animator.controller) continue;
 
-      const spriteRender = components.getComponent<SpriteRender>(animator.getEntityID(), ComponentType.SpriteRender);
+      const spriteRender = components.getComponent<SpriteRender>(animator.gameEntity.id.getValue(), ComponentType.SpriteRender);
       if (!spriteRender) continue;
 
       const result = animator.getAnimatorState();

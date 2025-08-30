@@ -1,10 +1,10 @@
 
+import type { GameEntity } from "@engine/core/base/GameEntity";
 import { Uniforms } from "@engine/modules/enums/Uniforms";
 import { Mat4 } from "../../../core/math/Mat4";
 import type { Scene } from "../../../core/scene/scene";
 import type { Engine } from "../../../Engine";
 import type { SpriteRender } from "../../components/render/SpriteRender";
-import { Transform } from "../../components/spatial/Transform";
 import { ComponentType } from "../../enums/ComponentType";
 import type { Shader } from "../shader/Shader";
 import { ShaderSystem } from "../shader/ShaderSystem";
@@ -19,14 +19,12 @@ export class SimpleShaderSystem extends ShaderSystem {
         shader.setMat4(Uniforms.Projection, camera.getProjectionMatrix().data);
     }
 
-    local(_: Engine, entityID: number, scene: Scene, shader: Shader) {
-        const transform = scene.components.getComponent<Transform>(entityID, ComponentType.Transform);
-        if (!transform) return;
-
-        const spriteRender = scene.components.getComponent<SpriteRender>(entityID, ComponentType.SpriteRender);
+    local(_: Engine, gameEntity: GameEntity, scene: Scene, shader: Shader) {
+     
+        const spriteRender = scene.components.getComponent<SpriteRender>(gameEntity.id.getValue(), ComponentType.SpriteRender);
         if (!spriteRender) return;
 
-
+        const transform = gameEntity.transform;
         const modelMatrix = transform.getWorldMatrix();
 
         Mat4.compose(modelMatrix, transform.position, transform.rotation, transform.scale);

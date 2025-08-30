@@ -1,3 +1,4 @@
+import { Transform } from "@engine/modules/components/spatial/Transform";
 import type { Clonable } from "./Clonable";
 import { Entity } from "./Entity";
 
@@ -10,11 +11,14 @@ export interface GameEntityOptions {
 }
 
 export class GameEntity extends Entity implements Clonable<GameEntity> {
+    public readonly transform: Transform = new Transform();
+
     tag: string;
     active: boolean;
     name: string;
     parentID: number | null;
     static: boolean;
+
 
     constructor(options: GameEntityOptions = {}) {
         super();

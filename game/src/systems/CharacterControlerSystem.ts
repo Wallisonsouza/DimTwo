@@ -1,7 +1,6 @@
 
 import { System } from "@engine/core/base/System";
 import { Vec2 } from "@engine/core/math/Vec2";
-import type { Transform } from "@engine/modules/components/spatial/Transform";
 import { ComponentType } from "@engine/modules/enums/ComponentType";
 import { WebKeyCode } from "@engine/modules/webInput/WebKeyCode";
 import { CharacterControler2D } from "./character.controller.types";
@@ -15,13 +14,6 @@ export class CharacterControlerSystem extends System {
     );
 
     for (const characterControler of characterControlers) {
-      const characterTransform = components.getComponent<Transform>(
-        characterControler.getEntityID(),
-        ComponentType.Transform
-      );
-      if (!characterTransform) continue;
-
-  
 
       characterControler.direction.x = 0;
       characterControler.direction.y = 0;
@@ -39,8 +31,8 @@ export class CharacterControlerSystem extends System {
       const deltaX = characterControler.direction.x * speed * dt;
       const deltaY = characterControler.direction.y * speed * dt;
 
-      characterTransform.position.x += deltaX;
-      characterTransform.position.y += deltaY;
+      characterControler.transform.position.x += deltaX;
+      characterControler.transform.position.y += deltaY;
     }
   }
 }

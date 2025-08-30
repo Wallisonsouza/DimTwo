@@ -30,7 +30,7 @@ export class EasyGetter {
   }
 
     public static getEntity(scene: Scene, component: Component): GameEntity | null {
-    return scene.entities.getById(component.getEntityID());
+    return scene.entities.getById(component.gameEntity.id.getValue());
   }
 }
 
@@ -47,14 +47,11 @@ export class TerrainSystem extends System {
       return
     }
 
-    const playerTranform = EasyGetter.getTransform(scene, playerEntity);
-    if (!playerTranform) return;
-
     const cells = this.world.generateCells(32, 32, 0, 0);
 
     generateGrounds(scene, cells)
 
-    generateTrees(this.getScene(), cells, new Vec2(0, 0))
+   /*  generateTrees(this.getScene(), cells, new Vec2(0, 0)) */
   }
 }
 function generateGrounds(
@@ -132,9 +129,6 @@ function generateTrees(scene: Scene, terrainCells: TerrainCell[], chunkPos: Vec2
 
         const entity = scene.instantiate(entry.prefab, tempVec3);
         if (!entity) break;
-
-        const transform = EasyGetter.getTransform(scene, entity);
-        if (!transform) break;
 
         const sprite = EasyGetter.getSpriteRender(scene, entity);
         if (!sprite) break;
