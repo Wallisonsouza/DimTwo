@@ -17,7 +17,7 @@ export class GizmosShaderSystem extends ShaderSystem {
     }
 
     local(_: Engine, gameEntity: GameEntity, scene: Scene, shader: Shader) {
-     
+
         const collider = scene.components.getComponent<Collider2D>(gameEntity.id.getValue(), ComponentType.BoxCollider2D);
         if (!collider) return;
 
@@ -27,7 +27,14 @@ export class GizmosShaderSystem extends ShaderSystem {
         Mat4.compose(modelMatrix, transform.position, transform.rotation, transform.scale);
         shader.setMat4("uModel", modelMatrix.data);
 
-        const color = collider.isColliding ? Color.green :  Color.red;
+        const color = collider.isColliding ? Color.green : Color.red;
+
+
+       /*  const camera = scene.getActiveCamera();
+        const ray = camera.screenPointToRay(Input.mouse.getMousePosition());
+        collider.bounds. */
+       
+
 
         shader.set4F(
             "uColor",

@@ -2,7 +2,7 @@ import type { GameEntity } from "@engine/core/base/GameEntity";
 import { Vec2 } from "@engine/core/math/Vec2";
 import type { Scene } from "@engine/core/scene/scene";
 import { EasyGetter } from "@game/systems/TerrainSystem";
-import { SpatialHash } from "../../core/algorithms/spatialHash/SpatialHash";
+import { SpatialHash } from "../../core/algorithms/SpatialHash";
 import { System } from "../../core/base/System";
 import { Collider2D } from "../components/physics/collider/Collider2D";
 import { ComponentGroup } from "../enums/ComponentGroup";

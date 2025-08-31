@@ -22,12 +22,21 @@ export class Bounds2D {
 
   }
 
-  public intersects(other: Bounds2D) {
+  public intersects(other: Bounds2D): boolean {
     return (
       this.min.x <= other.max.x &&
       this.max.x >= other.min.x &&
       this.min.y <= other.max.y &&
       this.max.y >= other.min.y
+    );
+  }
+
+  public containsPoint(point: Vec2): boolean {
+    return (
+      point.x >= this.min.x &&
+      point.x <= this.max.x &&
+      point.y >= this.min.y &&
+      point.y <= this.max.y
     );
   }
 }

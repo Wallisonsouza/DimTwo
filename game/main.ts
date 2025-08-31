@@ -3,25 +3,26 @@ import { Display } from "@engine/core/display/Display";
 import { ImageFileLoader } from "@engine/core/loaders/ImageFileLoader";
 import { EngineResourceManager } from "@engine/core/managers/EngineResourceManager";
 import { EngineSystem, EngineSystemManager } from "@engine/core/managers/EngineSystemManager";
+import { SceneManager } from "@engine/core/managers/SceneManager";
 import { Scene } from "@engine/core/scene/scene";
-import { SceneManager } from "@engine/core/scene/SceneManager";
 import { Engine } from "@engine/Engine";
 import { AdvancedShaderSystem } from "@engine/modules/resources/material/AdvancedShaderSystem";
 import { GizmosShaderSystem } from "@engine/modules/resources/material/GizmosShaderSystem";
 import { SimpleShaderSystem } from "@engine/modules/resources/material/SimpleShaderSystem";
 import { Texture } from "@engine/modules/resources/texture/Texture";
 import { AnimatorSystem, ColliderSystem, PhysicsSystem, RenderSystem } from "@engine/modules/systems";
+import { configureCamera } from "@game/entities/CameraEntity";
+import { configurePlayer } from "@game/entities/PlayerEntity";
+import { configureSlime } from "@game/entities/SlimeEntity";
+import { CameraSystem } from "@game/systems/CameraSystem";
+import { CharacterControlerSystem } from "@game/systems/CharacterControlerSystem";
+import { CharacterControllerAnimationSystem } from "@game/systems/CharacterControllerAnimationSystem";
+import { EditorFreeCamera2DSystem } from "@game/systems/EditorFreeCamera2DSystem";
+import { EditorTransformSystem } from "@game/systems/EditorTransformSystem";
 import { GizmosSystem } from "@game/systems/GizmosSystem";
-import { TransformSystem } from "@game/systems/TransformSystem";
+import { InputSystem } from "@game/systems/InputSystem";
+import { TerrainSystem } from "@game/systems/TerrainSystem";
 import { loadEngine } from "engine/main";
-import { configureCamera } from "./src/entities/CameraEntity";
-import { configurePlayer } from "./src/entities/PlayerEntity";
-import { configureSlime } from "./src/entities/SlimeEntity";
-import { CameraSystem } from "./src/systems/CameraSystem";
-import { CharacterControlerSystem } from "./src/systems/CharacterControlerSystem";
-import { CharacterControllerAnimationSystem } from "./src/systems/CharacterControllerAnimationSystem";
-import { InputSystem } from "./src/systems/InputSystem";
-import { TerrainSystem } from "./src/systems/TerrainSystem";
 
 await loadEngine();
 
@@ -104,18 +105,20 @@ EngineSystemManager.register(EngineSystem.CharacterControlerAnimationSystem, () 
 EngineSystemManager.register(EngineSystem.EditorGizmosSystem, () => new GizmosSystem());
 EngineSystemManager.register(EngineSystem.ColliderSystem, () => new ColliderSystem());
 
-EngineSystemManager.register(EngineSystem.EditorTransformSystem, () => new TransformSystem());
+EngineSystemManager.register(EngineSystem.EditorTransformSystem, () => new EditorTransformSystem());
+EngineSystemManager.register(EngineSystem.EditorFreeCameraSystem, () => new EditorFreeCamera2DSystem());
+
 
 game.enableSystem(EngineSystem.RenderSystem);
 game.enableSystem(EngineSystem.AnimatorSystem);
 game.enableSystem(EngineSystem.InputSystem);
-game.enableSystem(EngineSystem.CameraSystem);
-game.enableSystem(EngineSystem.CharacterControlerSystem);
 game.enableSystem(EngineSystem.TerrainSystem); 
 game.enableSystem(EngineSystem.CharacterControlerAnimationSystem);
-game.enableSystem(EngineSystem.EditorGizmosSystem);
 game.enableSystem(EngineSystem.ColliderSystem);
+
+game.enableSystem(EngineSystem.EditorGizmosSystem);
 game.enableSystem(EngineSystem.EditorTransformSystem);
+game.enableSystem(EngineSystem.EditorFreeCameraSystem);
 //-------------------
 const scene = new Scene("simple_scene");
 SceneManager.addScene(scene);

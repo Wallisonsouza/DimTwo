@@ -4,12 +4,12 @@ import { Vec3 } from "@engine/core/math/Vec3";
 import { Physics2D } from "@engine/modules/components/physics/Physics2D";
 import { Input } from "./InputSystem";
 
-export class TransformSystem extends System {
+export class EditorTransformSystem extends System {
 
     private selectedGameEntity: GameEntity | null = null;
-    private offset = { x: 0, y: 0 }; // distância do clique para o centro do objeto
+    private offset = { x: 0, y: 0 }; 
 
-    update(t: number): void {
+    update(): void {
         const camera = this.getScene().getActiveCamera();
         if (!camera) return;
 

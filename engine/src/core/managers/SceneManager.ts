@@ -1,4 +1,4 @@
-import type { Scene } from "./scene";
+import type { Scene } from "../scene/scene";
 
 export abstract class SceneManager {
     private static scenes: Map<string, Scene> = new Map();

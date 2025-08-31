@@ -1,5 +1,5 @@
-import { Vec2 } from "../../math/Vec2";
-import { Vec3 } from "../../math/Vec3";
+import { Vec2 } from "../math/Vec2";
+import { Vec3 } from "../math/Vec3";
 
 export class SimplexNoise {
 

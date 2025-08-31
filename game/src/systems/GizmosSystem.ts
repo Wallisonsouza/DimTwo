@@ -25,6 +25,8 @@ export class GizmosSystem extends System {
         if (!mesh) return;
 
         for (const collider of colliders) {
+
+
             shaderSystem.local?.(engine, collider.gameEntity, scene, shader);
 
             const vao = engine.meshBuffers.get(mesh.name);

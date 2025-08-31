@@ -1,10 +1,10 @@
 import { Display } from "./core/display/Display";
 import { EngineSystem, EngineSystemManager } from "./core/managers/EngineSystemManager";
+import { SceneManager } from "./core/managers/SceneManager";
 import { SimpleManager } from "./core/managers/SimpleManager";
 import { SystemManager } from "./core/managers/SystemManager";
 import type { Mat4 } from "./core/math/Mat4";
 import type { Scene } from "./core/scene/scene";
-import { SceneManager } from "./core/scene/SceneManager";
 import Time from "./core/time/Time";
 import { ResourcesManager } from "./global/manager/manager";
 import type { MeshBuffer, TextureBuffer } from "./interfaces/IMeshBuffer";

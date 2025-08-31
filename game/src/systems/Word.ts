@@ -1,4 +1,4 @@
-import { SimplexNoise } from "@engine/core/algorithms/noise/SimplexNoise";
+import { SimplexNoise } from "@engine/core/algorithms/SimplexNoise";
 import { Vec3 } from "@engine/core/math/Vec3";
 import type { BiomeName } from "@game/enums/BiomeName";
 import { classifyBiomes } from "./biome";

@@ -1,8 +1,7 @@
-import type { Clonable } from "@engine/core/base/Clonable";
-import { Component, type ComponentOptions } from "../../../core/base/Component";
-import { Vec2 } from "../../../core/math/Vec2";
-import { ComponentGroup } from "../../enums/ComponentGroup";
-import { ComponentType } from "../../enums/ComponentType";
+import { type ComponentOptions, Component } from "@engine/core/base/Component";
+import { Vec2 } from "@engine/core/math/Vec2";
+import { ComponentGroup } from "@engine/modules/enums/ComponentGroup";
+import { ComponentType } from "@engine/modules/enums/ComponentType";
 import type { Transform } from "../spatial/Transform";
 
 export interface RigidBody2DOptions extends ComponentOptions {
@@ -15,7 +14,7 @@ export interface RigidBody2DOptions extends ComponentOptions {
   useGravity?: boolean;
 }
 
-export class RigidBody2D extends Component implements Clonable<RigidBody2D> {
+export class RigidBody2D extends Component  {
   mass: number;
   velocity: Vec2;
   acceleration: Vec2;

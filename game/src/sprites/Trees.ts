@@ -1,7 +1,6 @@
 import { Vec2 } from "@engine/core/math/Vec2";
 import { Sprite } from "@engine/modules/resources/sprite/types";
 
-
 export const OAK_TRE_0 = new Sprite({
     textureID: "tree",
     origin: new Vec2(0, 1),
