@@ -1,15 +1,14 @@
 import { Vec2 } from "@engine/core/math/Vec2";
 import { Vec3 } from "@engine/core/math/Vec3";
-import type { IMouseInput } from "@engine/interfaces/IInput";
 
-export class WebMouseInput implements IMouseInput {
+export class WebMouseInput  {
   private targetElement: HTMLElement | null = null;
 
   private button = new Map<number, boolean>();
   private buttonDown = new Map<number, boolean>();
   private buttonUp = new Map<number, boolean>();
   private position = new Vec3(0, 0, 0);
-  private movement = new Vec2(0, 0);
+  private movement = new Vec3(0, 0, 0);
   private scrollDelta = new Vec2(0, 0);
   private scrollCallback: ((delta: Vec2) => void) | null = null;
 
@@ -51,7 +50,7 @@ export class WebMouseInput implements IMouseInput {
 
     const rect = this.targetElement.getBoundingClientRect();
     this.position = new Vec3(e.clientX - rect.left, e.clientY - rect.top, 0);
-    this.movement = new Vec2(e.movementX, e.movementY);
+    this.movement = new Vec3(e.movementX, e.movementY, 0);
   }
 
   private handleScroll(e: WheelEvent): void {
@@ -62,7 +61,7 @@ export class WebMouseInput implements IMouseInput {
   clear(): void {
     this.buttonDown.clear();
     this.buttonUp.clear();
-    this.movement = new Vec2(0, 0);
+    this.movement = new Vec3(0, 0, 0);
     this.scrollDelta = new Vec2(0, 0);
   }
 
@@ -82,7 +81,7 @@ export class WebMouseInput implements IMouseInput {
     return this.position;
   }
 
-  getMouseMovement(): Vec2 {
+  getMouseMovement(): Vec3 {
     return this.movement;
   }
 

@@ -1,11 +1,12 @@
 import type { Clonable } from "@engine/core/base/Clonable";
+import { type ComponentOptions, Component } from "@engine/core/base/Component";
+import { Mat4 } from "@engine/core/math/Mat4";
+import { Quat } from "@engine/core/math/quat";
+import { Vec3 } from "@engine/core/math/Vec3";
 import { Vec4 } from "@engine/core/math/Vec4";
-import { Component, type ComponentOptions } from "../../../core/base/Component";
-import { Mat4 } from "../../../core/math/Mat4";
-import { Quat } from "../../../core/math/quat";
-import { Vec3 } from "../../../core/math/Vec3";
-import { ComponentGroup } from "../../enums/ComponentGroup";
-import { ComponentType } from "../../enums/ComponentType";
+import { ComponentGroup } from "@engine/modules/enums/ComponentGroup";
+import { ComponentType } from "@engine/modules/enums/ComponentType";
+
 
 export interface TransformOptions extends ComponentOptions {
     position?: Vec3;
@@ -20,8 +21,6 @@ export class Transform extends Component implements Clonable<Transform> {
     private _position: Vec3;
     private _rotation: Quat;
     private _scale: Vec3;
-
-
 
     constructor(options: TransformOptions = {}) {
         super(ComponentType.Transform, ComponentGroup.Transform, options);

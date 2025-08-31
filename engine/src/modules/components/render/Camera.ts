@@ -23,5 +23,6 @@ export abstract class Camera extends Component {
     public abstract getViewProjectionMatrix(): Mat4;
     public abstract screenPointToRay(point: Vec3): Ray;
     public abstract worldPointToScreen(worldPoint: Vec3): Vec3;
+    public abstract screenPointToWorld(worldPoint: Vec3): Vec3;
 
 }

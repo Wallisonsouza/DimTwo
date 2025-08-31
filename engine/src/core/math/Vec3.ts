@@ -15,11 +15,18 @@ export class Vec3 {
         this.z = z;
     }
 
-    public static lerp(out: Vec3, a: Vec3, b: Vec3, t: number): Vec3 {
+    public static lerp(a: Vec3, b: Vec3, t: number, out: Vec3): Vec3 {
         out.x = a.x + (b.x - a.x) * t;
         out.y = a.y + (b.y - a.y) * t;
         out.z = a.z + (b.z - a.z) * t;
         return out;
+    }
+
+    static distanceTo(a: Vec3, b: Vec3): number {
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        const dz = b.z - a.z;
+        return Math.sqrt(dx * dx + dy * dy + dz * dz);
     }
 
     public static sub(a: Vec3, b: Vec3, out: Vec3 = new Vec3()): Vec3 {

@@ -6,99 +6,54 @@ import { ComponentType } from "@engine/modules/enums/ComponentType";
 import { Camera, type CameraOptions } from "./Camera";
 import { Ray } from "./Ray";
 
-export interface PerspesctiveCameraOptions extends CameraOptions {
+export interface PerspectiveCameraOptions extends CameraOptions {
   near?: number;
   far?: number;
   fov?: number;
   aspect?: number;
 }
 
-export class PerspesctiveCamera extends Camera {
-  private readonly _VIEW_MATRIX_CACHE: Mat4;
-  private readonly _PROJECTION_MATRIX_CACHE: Mat4;
-  private readonly _VIEW_PROJECTION_MATRIX_CACHE: Mat4;
-  private readonly _MATRIX_OPERATION_CACHE: Mat4;
-  private readonly _VEC4_OPERATION_CACHE: Vec4;
+export class PerspectiveCamera extends Camera {
+  private readonly _VIEW_MATRIX_CACHE: Mat4 = Mat4.create();
+  private readonly _PROJECTION_MATRIX_CACHE: Mat4 = Mat4.create();
+  private readonly _VIEW_PROJECTION_MATRIX_CACHE: Mat4 = Mat4.create();
+  private readonly _MATRIX_OPERATION_CACHE: Mat4 = Mat4.create();
+  private readonly _VEC4_OPERATION_CACHE: Vec4 = Vec4.create();
 
   near: number;
   far: number;
   fov: number;
   aspect: number;
 
-
-  constructor(options: PerspesctiveCameraOptions = {}) {
-
+  constructor(options: PerspectiveCameraOptions = {}) {
     super(ComponentType.Camera, options);
-
-    this._VIEW_MATRIX_CACHE = Mat4.create();
-    this._PROJECTION_MATRIX_CACHE = Mat4.create();
-    this._VIEW_PROJECTION_MATRIX_CACHE = Mat4.create();
-    this._MATRIX_OPERATION_CACHE = Mat4.create();
-    this._VEC4_OPERATION_CACHE = Vec4.create();
 
     this.near = options.near ?? 0.1;
     this.far = options.far ?? 1000;
     this.fov = options.fov ?? 60;
     this.aspect = options.aspect ?? 16 / 9;
-   
-
   }
 
   public getViewMatrix(): Mat4 {
-
     const worldNoScale = Mat4.create();
+    this.transform.getWorldMatrix
 
-    Mat4.composeTR(
-      worldNoScale,
-      this.transform.position,
-      this.transform.rotation
-    );
+    Mat4.composeTR(worldNoScale, this.transform.position, this.transform.rotation);
 
     if (!Mat4.invert(worldNoScale, this._VIEW_MATRIX_CACHE)) {
       throw Mat4Error.INVERT_ERROR;
     }
 
     return this._VIEW_MATRIX_CACHE;
-
   }
 
   public getProjectionMatrix(): Mat4 {
-    Mat4.projection(
-      this._PROJECTION_MATRIX_CACHE,
-      this.fov,
-      this.aspect,
-      this.near,
-      this.far
-    );
-
-    /*  const aspect = Display.aspect;
- 
-     let left: number, right: number, bottom: number, top: number;
- 
-     if (aspect >= 1) {
-       left = -aspect;
-       right = aspect;
-       bottom = -1;
-       top = 1;
-     } else {
-       left = -1;
-       right = 1;
-       bottom = -1 / aspect;
-       top = 1 / aspect;
-     }
- 
-     Mat4.orthographic(this._PROJECTION_MATRIX_CACHE, left, right, bottom, top, 0.1, 100); */
-
+    Mat4.projection(this._PROJECTION_MATRIX_CACHE, this.fov, this.aspect, this.near, this.far);
     return this._PROJECTION_MATRIX_CACHE;
   }
 
-  public getViewProjectionMatrix() {
-    Mat4.multiply(
-      this.getProjectionMatrix(),
-      this.getViewMatrix(),
-      this._VIEW_PROJECTION_MATRIX_CACHE
-    );
-
+  public getViewProjectionMatrix(): Mat4 {
+    Mat4.multiply(this.getProjectionMatrix(), this.getViewMatrix(), this._VIEW_PROJECTION_MATRIX_CACHE);
     return this._VIEW_PROJECTION_MATRIX_CACHE;
   }
 
@@ -118,10 +73,7 @@ export class PerspesctiveCamera extends Camera {
   public worldPointToScreen(worldPoint: Vec3): Vec3 {
     this._VEC4_OPERATION_CACHE.set(worldPoint.x, worldPoint.y, worldPoint.z, 1);
 
-    const clip = Mat4.multiplyVec4(
-      this.getViewProjectionMatrix(),
-      this._VEC4_OPERATION_CACHE
-    );
+    const clip = Mat4.multiplyVec4(this.getViewProjectionMatrix(), this._VEC4_OPERATION_CACHE);
 
     clip.x /= clip.w;
     clip.y /= clip.w;
@@ -133,48 +85,27 @@ export class PerspesctiveCamera extends Camera {
     return new Vec3(screenX, screenY, clip.z);
   }
 
-  screenPointToRay(point: Vec3): Ray {
-
+  public screenPointToRay(point: Vec3): Ray {
     const ndc = Display.normalize(point);
 
-    const nearPointClip = new Vec4(ndc.x, ndc.y, -1, 1);
-    const farPointClip = new Vec4(ndc.x, ndc.y, 1, 1);
+    const nearClip = new Vec4(ndc.x, ndc.y, -1, 1);
+    const farClip = new Vec4(ndc.x, ndc.y, 1, 1);
 
-    const projection = this.getProjectionMatrix();
-
-
-    if (!Mat4.invert(
-      projection,
-      this._MATRIX_OPERATION_CACHE
-    )) {
+    if (!Mat4.invert(this.getViewProjectionMatrix(), this._MATRIX_OPERATION_CACHE)) {
       throw Mat4Error.INVERT_ERROR;
     }
 
-    const nearPointCamera = Mat4
-      .multiplyVec4(this._MATRIX_OPERATION_CACHE, nearPointClip)
-      .perspectiveDivide();
+    const nearWorld = Mat4.multiplyVec4(this._MATRIX_OPERATION_CACHE, nearClip).perspectiveDivide();
+    const farWorld = Mat4.multiplyVec4(this._MATRIX_OPERATION_CACHE, farClip).perspectiveDivide();
 
-    const farPointCamera = Mat4
-      .multiplyVec4(this._MATRIX_OPERATION_CACHE, farPointClip)
-      .perspectiveDivide();
+    const origin = this.transform.transformPointToWorldSpace(nearWorld);
+    const direction = farWorld.clone().subtractInplace(origin).normalizeInPlace();
 
-    const nearPointWorld: Vec3 = this.transform
-      .transformPointToWorldSpace(nearPointCamera)
-
-
-    const farPointWorld: Vec3 = this.transform
-      .transformPointToWorldSpace(farPointCamera)
-
-    const rayDirection = farPointWorld
-      .clone()
-      .subtractInplace(nearPointWorld)
-      .normalizeInPlace();
-
-    return new Ray(nearPointWorld, rayDirection);
+    return new Ray(origin, direction);
   }
 
-  clone(): PerspesctiveCamera {
-    return new PerspesctiveCamera({
+  public clone(): PerspectiveCamera {
+    return new PerspectiveCamera({
       near: this.near,
       far: this.far,
       fov: this.fov,
@@ -182,5 +113,4 @@ export class PerspesctiveCamera extends Camera {
       clearColor: this.clearColor.clone()
     });
   }
-
 }

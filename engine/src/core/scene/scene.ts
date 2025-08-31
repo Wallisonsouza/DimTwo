@@ -1,5 +1,5 @@
 import type { Camera } from "@engine/modules/components/render/Camera";
-import { PerspesctiveCamera } from "@engine/modules/components/render/PerspesctiveCamera";
+import { PerspectiveCamera } from "@engine/modules/components/render/PerspesctiveCamera";
 import type { Prefab } from "@game/systems/Prefab";
 import { ComponentType } from "../../modules/enums/ComponentType";
 import { Component } from "../base/Component";
@@ -60,7 +60,7 @@ export class Scene {
 
 public getActiveCamera(): Camera {
 
-    if(this.activedCamera instanceof PerspesctiveCamera) {
+    if(this.activedCamera instanceof PerspectiveCamera) {
         this.activedCamera.aspect = Display.aspect;
     }
     

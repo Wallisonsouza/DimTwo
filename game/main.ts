@@ -12,6 +12,7 @@ import { SimpleShaderSystem } from "@engine/modules/resources/material/SimpleSha
 import { Texture } from "@engine/modules/resources/texture/Texture";
 import { AnimatorSystem, ColliderSystem, PhysicsSystem, RenderSystem } from "@engine/modules/systems";
 import { GizmosSystem } from "@game/systems/GizmosSystem";
+import { TransformSystem } from "@game/systems/TransformSystem";
 import { loadEngine } from "engine/main";
 import { configureCamera } from "./src/entities/CameraEntity";
 import { configurePlayer } from "./src/entities/PlayerEntity";
@@ -103,16 +104,18 @@ EngineSystemManager.register(EngineSystem.CharacterControlerAnimationSystem, () 
 EngineSystemManager.register(EngineSystem.EditorGizmosSystem, () => new GizmosSystem());
 EngineSystemManager.register(EngineSystem.ColliderSystem, () => new ColliderSystem());
 
+EngineSystemManager.register(EngineSystem.EditorTransformSystem, () => new TransformSystem());
 
 game.enableSystem(EngineSystem.RenderSystem);
 game.enableSystem(EngineSystem.AnimatorSystem);
 game.enableSystem(EngineSystem.InputSystem);
 game.enableSystem(EngineSystem.CameraSystem);
 game.enableSystem(EngineSystem.CharacterControlerSystem);
-/* game.enableSystem(EngineSystem.TerrainSystem);  */
+game.enableSystem(EngineSystem.TerrainSystem); 
 game.enableSystem(EngineSystem.CharacterControlerAnimationSystem);
 game.enableSystem(EngineSystem.EditorGizmosSystem);
 game.enableSystem(EngineSystem.ColliderSystem);
+game.enableSystem(EngineSystem.EditorTransformSystem);
 //-------------------
 const scene = new Scene("simple_scene");
 SceneManager.addScene(scene);
