@@ -19,7 +19,6 @@ export class GameEntity extends Entity implements Clonable<GameEntity> {
     parentID: number | null;
     static: boolean;
 
-
     constructor(options: GameEntityOptions = {}) {
         super();
         this.name = options.name ?? "";

@@ -1,5 +1,6 @@
 import type { GameEntity } from "@engine/core/base/GameEntity";
 import { System } from "@engine/core/base/System";
+import { Input } from "./InputSystem";
 
 export class CameraSystem extends System {
 
@@ -13,10 +14,16 @@ export class CameraSystem extends System {
     }
 
     update(dt: number) {
-        if (!this.target || !this.camera) return;
-        const target = this.target.transform.position.clone();
-        target.z = this.camera.transform.position.z;
-        this.camera.transform.position = target;
+        if (!this.camera || !this.target) return;
 
+        const camera = this.getScene().getActiveCamera();
+        const mousePos = Input.mouse.getMousePosition();
+        
+        const screenSpace = camera.worldPointToScreen(this.target.transform.position);
+        console.log(screenSpace)
+        
     }
+
+
+
 }

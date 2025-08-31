@@ -4,7 +4,7 @@ export enum CollisionLayer {
     Default,
     Tree,
     Player,
-    ENEMY,
+    Enemy,
     Grass,
     Ground
 

@@ -24,12 +24,37 @@ export class Vec3 {
         return out;
     }
 
-    public static sub(out: Vec3, a: Vec3, b: Vec3): Vec3 {
+    public static sub(a: Vec3, b: Vec3, out: Vec3 = new Vec3()): Vec3 {
         out.x = a.x - b.x;
         out.y = a.y - b.y;
         out.z = a.z - b.z;
         return out;
     }
+
+    public subtractInplace(other: Vec3): this {
+        this.x -= other.x;
+        this.y -= other.y;
+        this.z -= other.z;
+        return this;
+    }
+
+
+    public static subtract(a: Vec3, b: Vec3, out: Vec3 = new Vec3()) {
+        return 
+    }
+    
+
+    public normalizeInPlace(): this {
+        const length = Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
+        if (length === 0) {
+            throw new Error("Não é possível normalizar um vetor de comprimento 0.");
+        }
+        this.x /= length;
+        this.y /= length;
+        this.z /= length;
+        return this;
+    }
+
 
     public set(x: number | Vec3, y?: number, z?: number): this {
         if (x instanceof Vec3) {
@@ -43,7 +68,7 @@ export class Vec3 {
         }
         return this;
     }
-    
+
     equals(v: Vec3): boolean {
         return this.x === v.x && this.y === v.y && this.z === v.z;
     }
@@ -55,7 +80,7 @@ export class Vec3 {
         return out;
     }
 
-    public static scale(out: Vec3, a: Vec3, scalar: number): Vec3 {
+    public static scale(a: Vec3, scalar: number, out: Vec3): Vec3 {
         out.x = a.x * scalar;
         out.y = a.y * scalar;
         out.z = a.z * scalar;
@@ -85,6 +110,9 @@ export class Vec3 {
         return out;
     }
 
+    length(): number {
+        return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
+    }
 
     public clone() {
         return new Vec3(this.x, this.y, this.z);

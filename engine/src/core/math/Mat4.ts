@@ -35,6 +35,44 @@ export class Mat4 {
         return mat4;
     }
 
+    public static multiply(a: Mat4, b: Mat4, out: Mat4): Mat4 {
+        const ae = a.data;
+        const be = b.data;
+        const oe = out.data;
+
+        const a00 = ae[0], a01 = ae[1], a02 = ae[2], a03 = ae[3];
+        const a10 = ae[4], a11 = ae[5], a12 = ae[6], a13 = ae[7];
+        const a20 = ae[8], a21 = ae[9], a22 = ae[10], a23 = ae[11];
+        const a30 = ae[12], a31 = ae[13], a32 = ae[14], a33 = ae[15];
+
+        const b00 = be[0], b01 = be[1], b02 = be[2], b03 = be[3];
+        const b10 = be[4], b11 = be[5], b12 = be[6], b13 = be[7];
+        const b20 = be[8], b21 = be[9], b22 = be[10], b23 = be[11];
+        const b30 = be[12], b31 = be[13], b32 = be[14], b33 = be[15];
+
+        oe[0] = a00 * b00 + a10 * b01 + a20 * b02 + a30 * b03;
+        oe[1] = a01 * b00 + a11 * b01 + a21 * b02 + a31 * b03;
+        oe[2] = a02 * b00 + a12 * b01 + a22 * b02 + a32 * b03;
+        oe[3] = a03 * b00 + a13 * b01 + a23 * b02 + a33 * b03;
+
+        oe[4] = a00 * b10 + a10 * b11 + a20 * b12 + a30 * b13;
+        oe[5] = a01 * b10 + a11 * b11 + a21 * b12 + a31 * b13;
+        oe[6] = a02 * b10 + a12 * b11 + a22 * b12 + a32 * b13;
+        oe[7] = a03 * b10 + a13 * b11 + a23 * b12 + a33 * b13;
+
+        oe[8] = a00 * b20 + a10 * b21 + a20 * b22 + a30 * b23;
+        oe[9] = a01 * b20 + a11 * b21 + a21 * b22 + a31 * b23;
+        oe[10] = a02 * b20 + a12 * b21 + a22 * b22 + a32 * b23;
+        oe[11] = a03 * b20 + a13 * b21 + a23 * b22 + a33 * b23;
+
+        oe[12] = a00 * b30 + a10 * b31 + a20 * b32 + a30 * b33;
+        oe[13] = a01 * b30 + a11 * b31 + a21 * b32 + a31 * b33;
+        oe[14] = a02 * b30 + a12 * b31 + a22 * b32 + a32 * b33;
+        oe[15] = a03 * b30 + a13 * b31 + a23 * b32 + a33 * b33;
+
+        return out;
+    }
+
     public static zero(mat4: Mat4) {
         mat4.data.set(
             [
@@ -221,7 +259,7 @@ export class Mat4 {
         );
     }
 
-    public static invert(input: Mat4, output: Mat4): Mat4 | null {
+    public static invert(input: Mat4, output: Mat4 = new Mat4()): Mat4 | null {
         const a = input.data;
         const o = output.data;
 

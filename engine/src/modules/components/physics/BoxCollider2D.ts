@@ -1,4 +1,3 @@
-import type { Vec2 } from "@engine/core/math/Vec2";
 import { ComponentGroup } from "../../enums/ComponentGroup";
 import { ComponentType } from "../../enums/ComponentType";
 import { Collider2D, type Collider2DOptions } from "./collider/Collider2D";
@@ -35,7 +34,5 @@ export class BoxCollider2D extends Collider2D {
 
   }
 
-  containsPoints(point: Vec2) {
-    return this.bounds.containsPoint(point);
-  }
+
 }

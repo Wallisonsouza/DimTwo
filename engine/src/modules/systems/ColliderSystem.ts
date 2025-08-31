@@ -6,7 +6,6 @@ import { SpatialHash } from "../../core/algorithms/spatialHash/SpatialHash";
 import { System } from "../../core/base/System";
 import { Collider2D } from "../components/physics/collider/Collider2D";
 import { ComponentGroup } from "../enums/ComponentGroup";
-import { Physics } from "./Physics";
 
 function makePairKeyInt(idA: number, idB: number): number {
   const min = idA < idB ? idA : idB;
@@ -45,6 +44,8 @@ export class ColliderSystem extends System {
   }
 
   private checkBucketPairs(bucket: Collider2D[], scene: Scene) {
+
+
     for (let i = 0; i < bucket.length; i++) {
       const a = bucket[i];
       const aId = a.id.getValue();
@@ -53,15 +54,14 @@ export class ColliderSystem extends System {
 
       this.updateColliderBounds(a, aId, aEntity);
 
-
       for (let j = i + 1; j < bucket.length; j++) {
         const b = bucket[j];
 
 
         // 🔹 checa layers logo no início
-        if (!Physics.collisionMatrix.canCollide(a.collisionLayer, b.collisionLayer)) {
+       /*  if (!Physics.collisionMatrix.canCollide(a.collisionLayer, b.collisionLayer)) {
           continue;
-        }
+        } */
 
         const bId = b.id.getValue();
         const key = makePairKeyInt(aId, bId);
@@ -73,10 +73,12 @@ export class ColliderSystem extends System {
 
         this.updateColliderBounds(b, bId, bEntity);
 
-        // 🔹 narrowphase só quando realmente necessário
         if (a.intersects(b)) {
-          // handle collision
+                a.isColliding = true;
+          return;
         }
+
+        a.isColliding = false;
       }
     }
   }

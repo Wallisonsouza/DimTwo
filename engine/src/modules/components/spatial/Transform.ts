@@ -1,4 +1,5 @@
 import type { Clonable } from "@engine/core/base/Clonable";
+import { Vec4 } from "@engine/core/math/Vec4";
 import { Component, type ComponentOptions } from "../../../core/base/Component";
 import { Mat4 } from "../../../core/math/Mat4";
 import { Quat } from "../../../core/math/quat";
@@ -70,6 +71,14 @@ export class Transform extends Component implements Clonable<Transform> {
         this.worldDirty = false;
         return this._WORLD_MATRIX_CACHE;
     }
+
+
+    public transformPointToWorldSpace(point: Vec3): Vec3 {
+        const tempVec4 = new Vec4(point.x, point.y, point.z, 1.0);
+        const worldSpace = Mat4.multiplyVec4(this._WORLD_MATRIX_CACHE, tempVec4);
+        return worldSpace.perspectiveDivide();
+    }
+
 
     public onChange(callback: TransformCallback) {
         this.onChangeCallbacks.push(callback);

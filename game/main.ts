@@ -6,6 +6,7 @@ import { Scene } from "@engine/core/scene/scene";
 import { SceneManager } from "@engine/core/scene/SceneManager";
 import { Engine } from "@engine/Engine";
 import { AdvancedShaderSystem } from "@engine/modules/resources/material/AdvancedShaderSystem";
+import { GizmosShaderSystem } from "@engine/modules/resources/material/GizmosShaderSystem";
 import { SimpleShaderSystem } from "@engine/modules/resources/material/SimpleShaderSystem";
 import { Texture } from "@engine/modules/resources/texture/Texture";
 import { AnimatorSystem, ColliderSystem, PhysicsSystem, RenderSystem } from "@engine/modules/systems";
@@ -61,6 +62,7 @@ const grassTexture = new Texture("grass", "grass_image");
 
 new AdvancedShaderSystem("advancedShaderSystem");
 new SimpleShaderSystem("simpleShaderSystem");
+new GizmosShaderSystem("gizmosShaderSystem");
 
 game.compileShader("advanced",
     EngineResourceManager.get("advancedShaderVertex")!,
@@ -78,7 +80,7 @@ game.compileShader("simple",
 game.compileShader("gizmos",
     EngineResourceManager.get("gizmosShaderVertex")!,
     EngineResourceManager.get("gizmosShaderFragment")!,
-    "simpleShaderSystem"
+    "gizmosShaderSystem"
 );
 
 game.compileTexture(playerTexture);
@@ -106,7 +108,7 @@ game.enableSystem(EngineSystem.AnimatorSystem);
 game.enableSystem(EngineSystem.InputSystem);
 game.enableSystem(EngineSystem.CameraSystem);
 game.enableSystem(EngineSystem.CharacterControlerSystem);
-game.enableSystem(EngineSystem.TerrainSystem); 
+/*  game.enableSystem(EngineSystem.TerrainSystem); */
 game.enableSystem(EngineSystem.CharacterControlerAnimationSystem);
 game.enableSystem(EngineSystem.EditorGizmosSystem);
 game.enableSystem(EngineSystem.ColliderSystem);
@@ -115,18 +117,16 @@ const scene = new Scene("simple_scene");
 SceneManager.addScene(scene);
 
 const playerEntity = new GameEntity({ name: "player", tag: "Player" });
+scene.addEntity(playerEntity);
 configurePlayer(scene, playerEntity);
 
-scene.addEntity(playerEntity);
-
 const slimeEntity = new GameEntity({ name: "slime", tag: "Enemy" });
-configureSlime(scene, slimeEntity);
 scene.addEntity(slimeEntity);
+configureSlime(scene, slimeEntity);
 
 const cameraEntity = new GameEntity({ name: "camera", tag: "MainCamera" });
-configureCamera(scene, cameraEntity);
 scene.addEntity(cameraEntity);
-
+configureCamera(scene, cameraEntity);
 
 const app = document.querySelector("#app") as HTMLDivElement;
 game.display.addToDocument(app);
@@ -135,7 +135,7 @@ game.display.addToDocument(app);
 game.loadScene("simple_scene");
 game.time.play();
 
-game.display.updateDimensions();
+
 
 function createHierarchy(scene: Scene, parent: HTMLDivElement) {
     const container = document.createElement("div");
@@ -152,3 +152,5 @@ function createHierarchy(scene: Scene, parent: HTMLDivElement) {
 }
 
 createHierarchy(scene, document.querySelector("#app")!);
+
+game.display.updateDimensions();

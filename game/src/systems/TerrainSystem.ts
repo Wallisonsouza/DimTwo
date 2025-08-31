@@ -51,7 +51,7 @@ export class TerrainSystem extends System {
 
     generateGrounds(scene, cells)
 
-   /*  generateTrees(this.getScene(), cells, new Vec2(0, 0)) */
+    generateTrees(this.getScene(), cells, new Vec2(0, 0))
   }
 }
 function generateGrounds(

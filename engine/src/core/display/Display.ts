@@ -1,6 +1,5 @@
-import type { Camera } from "@engine/modules/components/render/Camera";
 import { Input } from "@game/systems/InputSystem";
-import { Vec2 } from "../math/Vec2";
+import { Mat4 } from "../math/Mat4";
 import { Vec3 } from "../math/Vec3";
 
 export class Display {
@@ -11,7 +10,8 @@ export class Display {
 
     private static focused: Display | null = null;
 
-   
+    public static width: number = 0;
+    public static height: number = 0;
 
     constructor() {
         this.container = document.createElement("div");
@@ -34,14 +34,16 @@ export class Display {
     }
 
     public getAspectRatio(): number {
-       return this.canvas.width / this.canvas.height;
+        return this.canvas.width / this.canvas.height;
     }
 
     public updateDimensions() {
         const rect = this.canvas.getBoundingClientRect();
         this.canvas.width = rect.width;
         this.canvas.height = rect.height;
-          this.context.viewport(0, 0, this.canvas.width, this.canvas.height);
+        this.context.viewport(0, 0, this.canvas.width, this.canvas.height);
+        Display.width = rect.width;
+        Display.height = rect.height;
     }
 
     public addToDocument(parent: HTMLElement) {
@@ -53,7 +55,7 @@ export class Display {
 
         window.addEventListener("resize", () => {
             this.updateDimensions();
-          
+
         });
     }
 
@@ -86,7 +88,7 @@ export class Display {
         Input.keyboard.enable(display.container);
     }
 
-    public toNDC(p: Vec2): Vec2 {
+    public toNDC(p: Vec3): Vec3 {
         const rect = this.container.getBoundingClientRect();
         const xInContainer = p.x - rect.left;
         const yInContainer = p.y - rect.top;
@@ -94,24 +96,16 @@ export class Display {
         const ndcX = (2 * xInContainer) / rect.width - 1;
         const ndcY = 1 - (2 * yInContainer) / rect.height;
 
-        return new Vec2(ndcX, ndcY);
+        return new Vec3(ndcX, ndcY, 0);
     }
 
-    toWorld(mouse: Vec2, camera: Camera, zDepth: number = -1): Vec3 {
-/* 
-        const ndc = this.toNDC(mouse);
-
-        const clip = new Vec4(ndc.x, ndc.y, zDepth, 1);
-
-        const projInverse = camera.projection;
-        const worldVec4 = Mat4.multiplyVec4(projInverse, clip);
-
-        worldVec4.x /= worldVec4.w;
-        worldVec4.y /= worldVec4.w;
-        worldVec4.z /= worldVec4.w;
-
-        return new Vec3(worldVec4.x, worldVec4.y, worldVec4.z); */
+    public static normalizePoint(p: Vec3): Vec3 {
+        const ndcX = (2 * p.x) / Display.width - 1;
+        const ndcY = 1 - (2 * p.y) / Display.height;
+        return new Vec3(ndcX, ndcY, 0);
     }
 
+
+    cacheMatrix: Mat4 = new Mat4();
 
 }

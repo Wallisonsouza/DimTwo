@@ -1,4 +1,5 @@
 import { Vec2 } from "@engine/core/math/Vec2";
+import { Vec3 } from "@engine/core/math/Vec3";
 import type { IMouseInput } from "@engine/interfaces/IInput";
 
 export class WebMouseInput implements IMouseInput {
@@ -7,7 +8,7 @@ export class WebMouseInput implements IMouseInput {
   private button = new Map<number, boolean>();
   private buttonDown = new Map<number, boolean>();
   private buttonUp = new Map<number, boolean>();
-  private position = new Vec2(0, 0);
+  private position = new Vec3(0, 0, 0);
   private movement = new Vec2(0, 0);
   private scrollDelta = new Vec2(0, 0);
   private scrollCallback: ((delta: Vec2) => void) | null = null;
@@ -49,7 +50,7 @@ export class WebMouseInput implements IMouseInput {
     if (!this.targetElement) return;
 
     const rect = this.targetElement.getBoundingClientRect();
-    this.position = new Vec2(e.clientX - rect.left, e.clientY - rect.top);
+    this.position = new Vec3(e.clientX - rect.left, e.clientY - rect.top,0);
     this.movement = new Vec2(e.movementX, e.movementY);
   }
 
@@ -77,7 +78,7 @@ export class WebMouseInput implements IMouseInput {
     return this.buttonUp.get(button) ?? false;
   }
 
-  getMousePosition(): Vec2 {
+  getMousePosition(): Vec3 {
     return this.position;
   }
 

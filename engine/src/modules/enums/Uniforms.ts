@@ -3,5 +3,6 @@ export enum Uniforms {
     Model = "uModel",
     Projection = "uProjection",
     Texture = "uTexture",
-    Color = "uColor"
+    Color = "uColor",
+    ViewProjection = "U_VIEW_PROJECTION_MATRIX"
 }

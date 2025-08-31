@@ -5,7 +5,8 @@ import { Component } from "../base/Component";
 import { GameEntity } from "../base/GameEntity";
 import { ComponentManager } from "../managers/ComponentManager";
 import { EntityManager } from "../managers/EntityManager";
-import type { Vec3 } from "../math/Vec3";
+import { Vec3 } from "../math/Vec3";
+import { Quat } from "../math/quat";
 
 export class Scene {
     public name: string;
@@ -27,8 +28,13 @@ export class Scene {
 
     public instantiate(prefab: Prefab, position: Vec3) {
         const entity = new GameEntity(prefab);
-        const id = entity.id.getValue();
 
+        if (prefab.transform) {
+            entity.transform.position = prefab.transform.position ?? position;
+            entity.transform.rotation = prefab.transform.rotation ?? new Quat(0, 0, 0, 1);
+            entity.transform.scale = prefab.transform.scale ?? new Vec3(1, 1, 1);
+        }
+        const id = entity.id.getValue();
         entity.name = `${entity.name}_${id}`;
 
         if (!prefab.components) return;
@@ -36,7 +42,10 @@ export class Scene {
         for (const component of prefab.components) {
             const clone = component.clone();
             this.addComponent(entity, clone);
+
             clone.transform.position = position;
+
+
         }
 
         return entity;
