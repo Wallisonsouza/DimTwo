@@ -13,10 +13,7 @@ export class SimpleShaderSystem extends ShaderSystem {
 
     global(engine: Engine, scene: Scene, shader: Shader) {
         const camera = scene.getActiveCamera();
-        camera.aspect = engine.display.getAspectRatio();
-
-        shader.setMat4(Uniforms.View, camera.getViewMatrix().data);
-        shader.setMat4(Uniforms.Projection, camera.getProjectionMatrix().data);
+        shader.setMat4(Uniforms.ViewProjection, camera.getViewProjectionMatrix().data);
     }
 
     local(_: Engine, gameEntity: GameEntity, scene: Scene, shader: Shader) {

@@ -1,9 +1,9 @@
 import type { GameEntity } from "@engine//core/base/GameEntity";
 import type { Scene } from "@engine//core/scene/scene";
-import { Camera } from "@engine//modules/components/render/Camera";
+import { PerspesctiveCamera } from "@engine/modules/components/render/PerspesctiveCamera";
 
 export function configureCamera(scene: Scene, entity: GameEntity) {
-  const camera: Camera = new Camera();
+  const camera = new PerspesctiveCamera();
   scene.addComponent(entity, camera);
-  camera.transform.position.z = 10;
+  camera.transform.position.z = 5;
 }

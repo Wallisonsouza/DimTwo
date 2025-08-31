@@ -30,21 +30,4 @@ export class Bounds2D {
       this.max.y >= other.min.y
     );
   }
-  public rayIntersects(origin: Vec2, direction: Vec2): number | null {
-    const invDirX = 1 / direction.x;
-    const invDirY = 1 / direction.y;
-
-    const t1 = (this.min.x - origin.x) * invDirX;
-    const t2 = (this.max.x - origin.x) * invDirX;
-    const t3 = (this.min.y - origin.y) * invDirY;
-    const t4 = (this.max.y - origin.y) * invDirY;
-
-    const tmin = Math.max(Math.min(t1, t2), Math.min(t3, t4));
-    const tmax = Math.min(Math.max(t1, t2), Math.max(t3, t4));
-
-    if (tmax < 0 || tmin > tmax) return null;
-
-    return tmin >= 0 ? tmin : tmax;
-  }
-
 }

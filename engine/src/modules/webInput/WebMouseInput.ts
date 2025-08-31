@@ -50,7 +50,7 @@ export class WebMouseInput implements IMouseInput {
     if (!this.targetElement) return;
 
     const rect = this.targetElement.getBoundingClientRect();
-    this.position = new Vec3(e.clientX - rect.left, e.clientY - rect.top,0);
+    this.position = new Vec3(e.clientX - rect.left, e.clientY - rect.top, 0);
     this.movement = new Vec2(e.movementX, e.movementY);
   }
 

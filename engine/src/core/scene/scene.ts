@@ -1,8 +1,10 @@
+import type { Camera } from "@engine/modules/components/render/Camera";
+import { PerspesctiveCamera } from "@engine/modules/components/render/PerspesctiveCamera";
 import type { Prefab } from "@game/systems/Prefab";
-import { Camera } from "../../modules/components/render/Camera";
 import { ComponentType } from "../../modules/enums/ComponentType";
 import { Component } from "../base/Component";
 import { GameEntity } from "../base/GameEntity";
+import { Display } from "../display/Display";
 import { ComponentManager } from "../managers/ComponentManager";
 import { EntityManager } from "../managers/EntityManager";
 import { Vec3 } from "../math/Vec3";
@@ -13,7 +15,6 @@ export class Scene {
     public components: ComponentManager = new ComponentManager();
     public entities: EntityManager = new EntityManager();
 
-    private camera: Camera | null = null;
     constructor(name: string) {
         this.name = name;
     }
@@ -51,28 +52,32 @@ export class Scene {
         return entity;
     }
 
-    private injectedCamera: Camera | null = null;
+    private activedCamera: Camera | null = null;
 
     public injectCamera(camera: Camera | null) {
-        this.injectedCamera = camera;
+        this.activedCamera = camera;
     }
 
-    public getActiveCamera(): Camera {
+public getActiveCamera(): Camera {
 
-        if (this.injectedCamera) return this.injectedCamera;
-
-        if (this.camera && this.camera.enabled) return this.camera;
-
-        const cameras = this.components.getAllOfType<Camera>(ComponentType.Camera);
-        const activeCamera = cameras.find(c => c.enabled);
-
-        if (!activeCamera) {
-            throw new Error("No active camera found in the scene");
-        }
-
-        this.camera = activeCamera;
-        return this.camera;
+    if(this.activedCamera instanceof PerspesctiveCamera) {
+        this.activedCamera.aspect = Display.aspect;
     }
+    
+    if (this.activedCamera?.enabled) return this.activedCamera;
+
+    const cam = this.components
+        .getAllOfType<Camera>(ComponentType.Camera)
+        .find(c => c.enabled);
+
+    if (!cam) {
+        throw new Error("No active camera found in the scene");
+    }
+
+    this.activedCamera = cam;
+    return cam;
+}
+
 
     public clone(): Scene {
         const sceneClone = new Scene(this.name + "_clone");
@@ -130,51 +135,3 @@ function serializeComponentMap(map: Map<string, Map<number, any>>): any {
 
     return result;
 }
-
-/*     serialize(): string {
-        return JSON.stringify(
-            {
-                name: this.name,
-                entities: this.entities.getAll().map(e => serializeValue(e)),
-                components: serializeComponentMap(this.components.getData())
-            },
-            undefined,
-            4
-        );
-    }
-
-
-function serializeValue(value: any): any {
-    if (value instanceof Map) {
-        return serializeComponentMap(value);
-    } else if (value instanceof Array) {
-        return value.map(v => serializeValue(v));
-    } else if (value?.x !== undefined && value?.y !== undefined) {
-        // Vec2 ou Vec3
-        const arr = [value.x, value.y];
-        if (value.z !== undefined) arr.push(value.z);
-        if (value.w !== undefined) arr.push(value.w);
-        return arr;
-    } else if (value?.data !== undefined && typeof value.data === 'object') {
-        // Matriz (ex: Mat4)
-        // Assumindo que `data` é um objeto com índices numéricos
-        return Object.values(value.data);
-    } else if (typeof value === 'object' && value !== null) {
-        const obj: any = {};
-        for (const k in value) {
-            obj[k] = serializeValue(value[k]);
-        }
-        return obj;
-    } else {
-        return value;
-    }
-}
-
-function serializeComponentMap(map: Map<string, Map<number, any>>): any {
-    const result: any = {};
-    for (const [componentType, componentMap] of map) {
-        const componentsArray = Array.from(componentMap.values()).map(c => serializeValue(c));
-        result[componentType] = componentsArray;
-    }
-    return result;
-} */

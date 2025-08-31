@@ -88,12 +88,13 @@ export class ColliderSystem extends System {
 
     let lastPos = this.positionCache.get(id);
     const position = collider.transform.position;
+    const scale = collider.transform.scale;
     if (!lastPos) {
       lastPos = new Vec2(position.x, position.y);
       this.positionCache.set(id, lastPos);
-      collider.updateBounds(position);
-    } else if (!Vec2.eq(position, lastPos)) {
-      collider.updateBounds(position);
+      collider.updateBounds(position.toVec2(), scale.toVec2());
+    } else if (!Vec2.eq(position.toVec2(), lastPos)) {
+      collider.updateBounds(position.toVec2(), scale.toVec2());
       lastPos.x = position.x;
       lastPos.y = position.y;
     }

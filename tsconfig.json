@@ -36,5 +36,5 @@
     "editor",
     "game",
     "engine"
-  ]
+, "trash/text_shader_system.ts", "trash/follow.system.ts", "trash/TextRender.ts"  ]
 }

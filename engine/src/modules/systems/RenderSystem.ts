@@ -1,3 +1,4 @@
+import { Display } from "@engine/core/display/Display";
 import type { Render } from "../../core/base/Render";
 import { System } from "../../core/base/System";
 import type { Scene } from "../../core/scene/scene";
@@ -9,15 +10,24 @@ import type { Material } from "../resources/material/Material";
 export class RenderSystem extends System {
 
   private transparentsCache: Render[] = [];
+  private drawCallCount: number = 0;
 
-  private renderObjects(context: WebGL2RenderingContext, engine: Engine, scene: Scene, renders: Render[], opaque: boolean) {
+  private renderObjects(
+    context: WebGL2RenderingContext,
+    engine: Engine,
+    scene: Scene,
+    renders: Render[],
+    opaque: boolean
+  ): number { // retorna draw calls
+    let drawCalls = 0;
+
     for (const render of renders) {
       if (!render.enabled) continue;
 
       const material = ResourcesManager.MaterialManager.get(render.material) as Material;
       if (!material || !material.shaderName) continue;
 
-      if (opaque && (render.color.a < 1 || material.transparent == true)) {
+      if (opaque && (render.color.a < 1 || material.transparent)) {
         this.transparentsCache.push(render);
         continue;
       }
@@ -33,7 +43,7 @@ export class RenderSystem extends System {
       shaderSystem.global?.(engine, scene, shader);
       shaderSystem.local?.(engine, render.gameEntity, scene, shader);
 
-      if (!render.meshName) return;
+      if (!render.meshName) continue;
       const mesh = ResourcesManager.MeshManager.get(render.meshName);
       if (!mesh) continue;
 
@@ -43,7 +53,11 @@ export class RenderSystem extends System {
       context.bindVertexArray(vao.vao);
       context.drawElements(context.TRIANGLES, vao.indexCount, context.UNSIGNED_SHORT, 0);
       context.bindVertexArray(null);
+
+      drawCalls++;
     }
+
+    return drawCalls;
   }
 
   render() {
@@ -57,20 +71,41 @@ export class RenderSystem extends System {
     context.enable(context.DEPTH_TEST);
     context.disable(context.BLEND);
 
-    this.renderObjects(context, engine, scene, renders, true);
+    const startOpaque = performance.now();
+    const opaqueDrawCalls = this.renderObjects(context, engine, scene, renders, true);
+    const endOpaque = performance.now();
+
+    const display = Display.getFocused();
+    if (display) {
+      display.console.log( "---------------- Render ----------------", "");
+      display.console.log("RenderStats0", `Total: ${renders.length}`);
+      display.console.log("RenderStats1", `Opaques: ${renders.length - this.transparentsCache.length}`);
+      display.console.log("RenderStats2", `Transparents: ${this.transparentsCache.length}`);
+      display.console.log("RenderStats3", `Opaque DrawCalls: ${opaqueDrawCalls}`);
+      display.console.log("RenderStats4", `Opaque Render Time: ${(endOpaque - startOpaque).toFixed(2)}ms`);
+    }
 
     if (this.transparentsCache.length > 0) {
-      this.transparentsCache.sort((a, b) => { return a.layer - b.layer });
+      this.transparentsCache.sort((a, b) => a.layer - b.layer);
 
       context.enable(context.BLEND);
       context.blendFunc(context.SRC_ALPHA, context.ONE_MINUS_SRC_ALPHA);
       context.depthMask(false);
       context.disable(context.DEPTH_TEST);
 
-      this.renderObjects(context, engine, scene, this.transparentsCache, false);
+      const startTransparent = performance.now();
+      const transparentDrawCalls = this.renderObjects(context, engine, scene, this.transparentsCache, false);
+      const endTransparent = performance.now();
 
       context.depthMask(true);
       this.transparentsCache.length = 0;
+
+      if (display) {
+        display.console.log("RenderStats", `Transparent DrawCalls: ${transparentDrawCalls}`);
+        display.console.log("RenderStats", `Transparent Render Time: ${(endTransparent - startTransparent).toFixed(2)}ms`);
+      }
     }
+
+    
   }
 }

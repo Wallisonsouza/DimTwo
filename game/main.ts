@@ -109,7 +109,7 @@ game.enableSystem(EngineSystem.AnimatorSystem);
 game.enableSystem(EngineSystem.InputSystem);
 game.enableSystem(EngineSystem.CameraSystem);
 game.enableSystem(EngineSystem.CharacterControlerSystem);
-/*  game.enableSystem(EngineSystem.TerrainSystem); */
+/* game.enableSystem(EngineSystem.TerrainSystem);  */
 game.enableSystem(EngineSystem.CharacterControlerAnimationSystem);
 game.enableSystem(EngineSystem.EditorGizmosSystem);
 game.enableSystem(EngineSystem.ColliderSystem);

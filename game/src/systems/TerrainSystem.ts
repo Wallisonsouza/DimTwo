@@ -7,7 +7,6 @@ import { Vec2 } from "@engine/core/math/Vec2";
 import { Vec3 } from "@engine/core/math/Vec3";
 import type { Scene } from "@engine/core/scene/scene";
 import { SpriteRender } from "@engine/modules/components/render/SpriteRender";
-import { Transform } from "@engine/modules/components/spatial/Transform";
 import type { ComponentGroup } from "@engine/modules/enums/ComponentGroup";
 import { ComponentType } from "@engine/modules/enums/ComponentType";
 import { BiomeName } from "@game/enums/BiomeName";
@@ -21,15 +20,11 @@ export class EasyGetter {
 
   }
 
-  public static getAllByGroup<T extends Component>(scene: Scene, group: ComponentGroup): T[]  {
+  public static getAllByGroup<T extends Component>(scene: Scene, group: ComponentGroup): T[] {
     return scene.components.getAllByGroup<T>(group);
   }
 
-  public static getTransform(scene: Scene, entity: GameEntity): Transform | null {
-    return scene.components.getComponent<Transform>(entity.id.getValue(), ComponentType.Transform);
-  }
-
-    public static getEntity(scene: Scene, component: Component): GameEntity | null {
+  public static getEntity(scene: Scene, component: Component): GameEntity | null {
     return scene.entities.getById(component.gameEntity.id.getValue());
   }
 }
@@ -62,6 +57,8 @@ function generateGrounds(
     const entity = scene.instantiate(GROUND_PREFAB, cell.position);
     if (!entity) return;
 
+    entity.transform.position = cell.position;
+
     const spriteRender = EasyGetter.getSpriteRender(scene, entity);
     if (spriteRender === null) return;
     spriteRender.color = getBiomeColor(cell.biome ?? BiomeName.DEEP_WATER);
@@ -84,20 +81,20 @@ interface BiomePrefab {
 const biomeTrees: Record<BiomeName, BiomePrefab[]> = {
   [BiomeName.FOREST]: [
     { prefab: OAK_TREE_PREFAB, chance: 0.2, offset: new Vec3(0.25, 1.25, 0) },
-  /*   { prefab: BUSHE_0_PREFAB, chance: 0.3, offset: new Vec3(0, 0, 0) },
-    { prefab: BUSHE_1_PREFAB, chance: 0.1, offset: new Vec3(0, 0, 0) },
-    { prefab: BUSHE_2_PREFAB, chance: 0.4, offset: new Vec3(0, 0, 0) },
-    { prefab: BUSHE_3_PREFAB, chance: 0.2, offset: new Vec3(0, 0, 0) },
-    { prefab: BUSHE_4_PREFAB, chance: 0.2, offset: new Vec3(0, 0, 0) },
-    { prefab: BUSHE_5_PREFAB, chance: 0.2, offset: new Vec3(0, 0, 0) },
-    { prefab: BUSHE_6_PREFAB, chance: 0.2, offset: new Vec3(0, 0, 0) } */
+    /*   { prefab: BUSHE_0_PREFAB, chance: 0.3, offset: new Vec3(0, 0, 0) },
+      { prefab: BUSHE_1_PREFAB, chance: 0.1, offset: new Vec3(0, 0, 0) },
+      { prefab: BUSHE_2_PREFAB, chance: 0.4, offset: new Vec3(0, 0, 0) },
+      { prefab: BUSHE_3_PREFAB, chance: 0.2, offset: new Vec3(0, 0, 0) },
+      { prefab: BUSHE_4_PREFAB, chance: 0.2, offset: new Vec3(0, 0, 0) },
+      { prefab: BUSHE_5_PREFAB, chance: 0.2, offset: new Vec3(0, 0, 0) },
+      { prefab: BUSHE_6_PREFAB, chance: 0.2, offset: new Vec3(0, 0, 0) } */
 
   ],
   [BiomeName.DEEP_WATER]: [],
   [BiomeName.SHALLOW_WATER]: [],
-  [BiomeName.SAND]: [ { prefab: GRASS_0_PREFAB, chance: 0.7, offset: new Vec3(0, 0, 0) },],
+  [BiomeName.SAND]: [{ prefab: GRASS_0_PREFAB, chance: 0.7, offset: new Vec3(0, 0, 0) },],
   [BiomeName.GRASSLAND]: [
-   
+
   ],
   [BiomeName.FLOWER_FIELD]: [],
   [BiomeName.SPARSE_FOREST]: [],
@@ -125,7 +122,7 @@ function generateTrees(scene: Scene, terrainCells: TerrainCell[], chunkPos: Vec2
       if (rng.nextFloat() < entry.chance) {
 
         const tempVec3 = new Vec3();
-        Vec3.add(tempVec3, entry.offset, cell.position);
+        Vec3.add(entry.offset, cell.position, tempVec3);
 
         const entity = scene.instantiate(entry.prefab, tempVec3);
         if (!entity) break;

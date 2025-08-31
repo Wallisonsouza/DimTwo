@@ -20,7 +20,7 @@ export class PhysicsSystem extends System {
             if (rigid.isStatic) continue;
 
             const transform = components.getComponent<Transform>(
-                rigid.getEntityID(),
+                rigid.gameEntity.id.getValue(),
                 ComponentType.Transform
             );
 

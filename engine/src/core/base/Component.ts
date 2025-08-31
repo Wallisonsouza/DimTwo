@@ -2,19 +2,15 @@ import { NullReferenceException } from "@engine/errors/NullReferenceException";
 import type { Transform } from "@engine/modules/components/spatial/Transform";
 import type { ComponentGroup } from "../../modules/enums/ComponentGroup";
 import type { ComponentType } from "../../modules/enums/ComponentType";
-import type { Clonable } from "./Clonable";
 import type { GameEntity } from "./GameEntity";
 import { Id } from "./Id";
-import { Instantiable } from "./Instantiable";
-
-
 
 export interface ComponentOptions {
   entity?: GameEntity;
   enabled?: boolean;
 }
 
-export abstract class Component extends Instantiable implements Clonable<Component> {
+export abstract class Component  {
   private _entity: GameEntity | null = null;
   enabled: boolean;
   readonly type: ComponentType;
@@ -38,7 +34,6 @@ export abstract class Component extends Instantiable implements Clonable<Compone
     group: ComponentGroup,
     options: ComponentOptions
   ) {
-    super();
     this.type = type;
     this.group = group;
     this._entity = options.entity ?? null;
@@ -50,7 +45,5 @@ export abstract class Component extends Instantiable implements Clonable<Compone
   enable(): void { this.enabled = true; }
   disable(): void { this.enabled = false; }
 
-  clone(): Component {
-    throw new Error(`Subclasse ${this.type} deve implementar clone() retornando uma nova instância`);
-  }
+  abstract clone(): Component;
 }

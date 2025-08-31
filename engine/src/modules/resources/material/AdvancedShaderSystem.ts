@@ -14,8 +14,6 @@ export class AdvancedShaderSystem extends ShaderSystem {
 
     global(engine: Engine, scene: Scene, shader: Shader) {
         const camera = scene.getActiveCamera();
-        camera.aspect = engine.display.getAspectRatio();
-
         shader.setMat4(Uniforms.ViewProjection, camera.getViewProjectionMatrix().data);
     }
 

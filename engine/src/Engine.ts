@@ -11,7 +11,7 @@ import type { MeshBuffer, TextureBuffer } from "./interfaces/IMeshBuffer";
 import { Shader } from "./modules/resources/shader/Shader";
 import { Texture } from "./modules/resources/texture/Texture";
 
-const debug = document.querySelector("#debug") as HTMLDivElement;
+
 
 export class Engine {
     public display: Display;
@@ -49,7 +49,16 @@ export class Engine {
         });
 
         this.time.on("fixedUpdate", () => {
-            debug.innerText = `${this.time.fps}`
+            const display = Display.getFocused();
+            if (display !== null) {
+                display.console.log("----------------Time-------------- ", "");
+                display.console.log("FPS: ", this.time.fps.toString());
+                display.console.log("Delta time: ", this.time.deltaTime.toString());
+                display.console.log("Fixed delta time: ", this.time.fixedDeltaTime.toString());
+                display.console.log("Real time: ", this.time.realtimeSinceStartup.toFixed(2));
+                display.console.log("Accumulator: ", this.time.accumulator.toString());
+            }
+
             this.systems.callFixedUpdate(this.time.fixedDeltaTime);
         });
 

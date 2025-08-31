@@ -16,7 +16,7 @@ export class Color {
     public static readonly magenta = new Color(255, 0, 255);
     public static readonly white = new Color(255, 255, 255);
     public static readonly black = new Color(0, 0, 0);
-    public static readonly gray = new Color(128, 128, 128);
+    public static readonly Gray = new Color(128, 128, 128);
     public static readonly light_gray = new Color(211, 211, 211);
     public static readonly dark_gray = new Color(105, 105, 105);
     public static readonly orange = new Color(255, 165, 0);

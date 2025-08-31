@@ -7,7 +7,7 @@ export class Vec2 {
     this.y = y;
   }
 
-  public static normalize(v: Vec2, out: Vec2): Vec2 {
+  public static normalize(v: Vec2, out: Vec2 = new Vec2()): Vec2 {
     const len = Math.sqrt(v.x * v.x + v.y * v.y);
     if (len === 0) {
       out.x = 0;
@@ -19,7 +19,7 @@ export class Vec2 {
     return out;
   }
 
-  public static subtract(a: Vec2, b: Vec2, out: Vec2): Vec2 {
+  public static subtract(a: Vec2, b: Vec2, out: Vec2 = new Vec2()): Vec2 {
     out.x = a.x - b.x;
     out.y = a.y - b.y;
     return out;
@@ -29,6 +29,14 @@ export class Vec2 {
     out.x = a.x + b.x;
     out.y = a.y + b.y;
     return out;
+  }
+
+  public add(v: Vec2): Vec2 {
+    return new Vec2(this.x + v.x, this.y + v.y);
+  }
+
+  public scale(scalar: number): Vec2 {
+    return new Vec2(this.x * scalar, this.y * scalar);
   }
 
   public static perpendicular(v: Vec2, out: Vec2): Vec2 {

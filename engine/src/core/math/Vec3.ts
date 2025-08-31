@@ -1,8 +1,13 @@
+import { Vec2 } from "./Vec2";
 
 export class Vec3 {
     public x: number;
     public y: number;
     public z: number;
+
+    public toString() {
+        return `Vec3(${this.x.toFixed(2)}, ${this.y.toFixed(2)}, ${this.z.toFixed(2)})`
+    }
 
     constructor(x: number = 0, y: number = 0, z: number = 0) {
         this.x = x;
@@ -14,13 +19,6 @@ export class Vec3 {
         out.x = a.x + (b.x - a.x) * t;
         out.y = a.y + (b.y - a.y) * t;
         out.z = a.z + (b.z - a.z) * t;
-        return out;
-    }
-
-    public static add(out: Vec3, a: Vec3, b: Vec3): Vec3 {
-        out.x = a.x + b.x;
-        out.y = a.y + b.y;
-        out.z = a.z + b.z;
         return out;
     }
 
@@ -74,7 +72,7 @@ export class Vec3 {
         return out;
     }
 
-    public static scale(a: Vec3, scalar: number, out: Vec3): Vec3 {
+    public static scale(a: Vec3, scalar: number, out: Vec3 = new Vec3()): Vec3 {
         out.x = a.x * scalar;
         out.y = a.y * scalar;
         out.z = a.z * scalar;
@@ -88,7 +86,15 @@ export class Vec3 {
         return out;
     }
 
-    public static normalize(v: Vec3, out: Vec3) {
+    public static add(a: Vec3, b: Vec3, out: Vec3 = new Vec3()): Vec3 {
+        out.x = a.x + b.x;
+        out.y = a.y + b.y;
+        out.z = a.z + b.z;
+        return out;
+    }
+
+
+    public static normalize(v: Vec3, out: Vec3 = new Vec3()) {
         const length = Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
 
         if (length > 0) {
@@ -110,6 +116,10 @@ export class Vec3 {
 
     public clone() {
         return new Vec3(this.x, this.y, this.z);
+    }
+
+    public scale(scalar: number) {
+        return new Vec3(this.x * scalar, this.y * scalar, this.z * scalar);
     }
 
     public static dot(a: Vec3, b: Vec3): number {
@@ -134,5 +144,9 @@ export class Vec3 {
             out[i * 3 + 2] = v.z;
         }
         return out;
+    }
+
+    public toVec2() {
+        return new Vec2(this.x, this.y);
     }
 }

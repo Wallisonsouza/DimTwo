@@ -228,11 +228,6 @@ export class Mat4 {
     }
 
 
-
-
-
-
-
     public static projection(m: Mat4, fovY: number, aspect: number, near: number, far: number) {
         const fovRadians = (fovY * Math.PI) / 180;
         const f = 1.0 / Math.tan(fovRadians / 2);
@@ -247,6 +242,43 @@ export class Mat4 {
         e[15] = 0;
     }
 
+    public static orthographic(
+    m: Mat4,
+    left: number,
+    right: number,
+    bottom: number,
+    top: number,
+    near: number,
+    far: number
+) {
+    const e = m.data;
+
+    const lr = 1 / (right - left);
+    const bt = 1 / (top - bottom);
+    const nf = 1 / (far - near);
+
+    e[0] = 2 * lr;
+    e[1] = 0;
+    e[2] = 0;
+    e[3] = 0;
+
+    e[4] = 0;
+    e[5] = 2 * bt;
+    e[6] = 0;
+    e[7] = 0;
+
+    e[8] = 0;
+    e[9] = 0;
+    e[10] = -2 * nf;
+    e[11] = 0;
+
+    e[12] = -(right + left) * lr;
+    e[13] = -(top + bottom) * bt;
+    e[14] = -(far + near) * nf;
+    e[15] = 1;
+}
+
+
     public static multiplyVec4(m: Mat4, v: Vec4): Vec4 {
         const e = m.data;
         const x = v.x, y = v.y, z = v.z, w = v.w;
@@ -259,7 +291,7 @@ export class Mat4 {
         );
     }
 
-    public static invert(input: Mat4, output: Mat4 = new Mat4()): Mat4 | null {
+    public static invert(input: Mat4, output: Mat4): Mat4 | null {
         const a = input.data;
         const o = output.data;
 
