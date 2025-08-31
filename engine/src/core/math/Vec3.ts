@@ -38,12 +38,6 @@ export class Vec3 {
         return this;
     }
 
-
-    public static subtract(a: Vec3, b: Vec3, out: Vec3 = new Vec3()) {
-        return 
-    }
-    
-
     public normalizeInPlace(): this {
         const length = Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
         if (length === 0) {

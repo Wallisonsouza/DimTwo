@@ -8,10 +8,18 @@ export class Display {
     private readonly canvas: HTMLCanvasElement;
     protected readonly container: HTMLDivElement;
 
+    public width: number = 0;
+    public height: number = 0;
+
     private static focused: Display | null = null;
 
-    public static width: number = 0;
-    public static height: number = 0;
+    public static get width() {
+        return Display.focused?.width ?? 0;
+    };
+
+    public static get height() {
+        return Display.focused?.height ?? 0;
+    }
 
     constructor() {
         this.container = document.createElement("div");
@@ -42,8 +50,8 @@ export class Display {
         this.canvas.width = rect.width;
         this.canvas.height = rect.height;
         this.context.viewport(0, 0, this.canvas.width, this.canvas.height);
-        Display.width = rect.width;
-        Display.height = rect.height;
+        this.width = rect.width;
+        this.height = rect.height;
     }
 
     public addToDocument(parent: HTMLElement) {
@@ -51,7 +59,7 @@ export class Display {
     }
 
     private handleEvents() {
-        this.container.addEventListener("click", () => this.setFocused(this));
+        this.container.addEventListener("click", () => Display.setFocused(this));
 
         window.addEventListener("resize", () => {
             this.updateDimensions();
@@ -75,7 +83,7 @@ export class Display {
         return this.focused;
     }
 
-    public setFocused(display: Display) {
+    public static setFocused(display: Display) {
         if (Display.focused) {
             Input.mouse.disable(display.container);
             Input.keyboard.disable(display.container);
@@ -88,23 +96,11 @@ export class Display {
         Input.keyboard.enable(display.container);
     }
 
-    public toNDC(p: Vec3): Vec3 {
-        const rect = this.container.getBoundingClientRect();
-        const xInContainer = p.x - rect.left;
-        const yInContainer = p.y - rect.top;
-
-        const ndcX = (2 * xInContainer) / rect.width - 1;
-        const ndcY = 1 - (2 * yInContainer) / rect.height;
-
-        return new Vec3(ndcX, ndcY, 0);
-    }
-
-    public static normalizePoint(p: Vec3): Vec3 {
+    public static normalize(p: Vec3): Vec3 {
         const ndcX = (2 * p.x) / Display.width - 1;
         const ndcY = 1 - (2 * p.y) / Display.height;
         return new Vec3(ndcX, ndcY, 0);
     }
-
 
     cacheMatrix: Mat4 = new Mat4();
 

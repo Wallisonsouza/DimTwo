@@ -1,4 +1,5 @@
 import { GameEntity } from "@engine/core/base/GameEntity";
+import { Display } from "@engine/core/display/Display";
 import { ImageFileLoader } from "@engine/core/loaders/ImageFileLoader";
 import { EngineResourceManager } from "@engine/core/managers/EngineResourceManager";
 import { EngineSystem, EngineSystemManager } from "@engine/core/managers/EngineSystemManager";
@@ -154,3 +155,4 @@ function createHierarchy(scene: Scene, parent: HTMLDivElement) {
 createHierarchy(scene, document.querySelector("#app")!);
 
 game.display.updateDimensions();
+Display.setFocused(game.display)
