@@ -1,6 +1,7 @@
+import type { TextureBuffer } from "@engine/core/webgl/TextureBuffer";
 import { EngineResourceManager } from "../core/managers/EngineResourceManager";
 import { Mathf } from "../core/math/Mathf";
-import type { TextureBuffer } from "../interfaces/IMeshBuffer";
+
 
 export class Texture {
     public name: string;
@@ -42,38 +43,38 @@ export class Texture {
         this.wrapT = wrapT;
     }
 
-/*     setFilters(gl: WebGL2RenderingContext, minFilter: GLenum, magFilter: GLenum) {
-        this.minFilter = minFilter;
-        this.magFilter = magFilter;
-        if (!this.gpuData) return;
-        gl.bindTexture(gl.TEXTURE_2D, this.gpuData);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, minFilter);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, magFilter);
-        gl.bindTexture(gl.TEXTURE_2D, null);
-    }
-
-    setWrap(gl: WebGL2RenderingContext, wrapS: GLenum, wrapT: GLenum) {
-        this.wrapS = wrapS;
-        this.wrapT = wrapT;
-        if (!this.gpuData) return;
-        gl.bindTexture(gl.TEXTURE_2D, this.gpuData);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, wrapS);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, wrapT);
-        gl.bindTexture(gl.TEXTURE_2D, null);
-    }
-
-    destroy(gl: WebGL2RenderingContext) {
-        if (this.gpuData) {
-            gl.deleteTexture(this.gpuData);
-            this.gpuData = null;
+    /*     setFilters(gl: WebGL2RenderingContext, minFilter: GLenum, magFilter: GLenum) {
+            this.minFilter = minFilter;
+            this.magFilter = magFilter;
+            if (!this.gpuData) return;
+            gl.bindTexture(gl.TEXTURE_2D, this.gpuData);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, minFilter);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, magFilter);
+            gl.bindTexture(gl.TEXTURE_2D, null);
         }
-    }
- */
+    
+        setWrap(gl: WebGL2RenderingContext, wrapS: GLenum, wrapT: GLenum) {
+            this.wrapS = wrapS;
+            this.wrapT = wrapT;
+            if (!this.gpuData) return;
+            gl.bindTexture(gl.TEXTURE_2D, this.gpuData);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, wrapS);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, wrapT);
+            gl.bindTexture(gl.TEXTURE_2D, null);
+        }
+    
+        destroy(gl: WebGL2RenderingContext) {
+            if (this.gpuData) {
+                gl.deleteTexture(this.gpuData);
+                this.gpuData = null;
+            }
+        }
+     */
     public compile(gl: WebGL2RenderingContext) {
 
         const image = EngineResourceManager.get<HTMLImageElement>(this.imageName);
-        if(!image) return;
-        
+        if (!image) return;
+
         const texture = gl.createTexture();
         if (!texture) throw new Error("Failed to create WebGLTexture");
         this.width = image.width;

@@ -1,5 +1,4 @@
 import { GameEntity } from "@engine/core/base/GameEntity";
-import { Display } from "@engine/core/display/Display";
 import { ImageFileLoader } from "@engine/core/loaders/ImageFileLoader";
 import { EngineResourceManager } from "@engine/core/managers/EngineResourceManager";
 import { EngineSystem, EngineSystemManager } from "@engine/core/managers/EngineSystemManager";
@@ -139,29 +138,9 @@ scene.addEntity(cameraEntity);
 configureCamera(scene, cameraEntity);
 
 const app = document.querySelector("#app") as HTMLDivElement;
-game.display.addToDocument(app);
-
+app.appendChild(game.display.canvas);
 
 game.loadScene("simple_scene");
 game.time.play();
 
-
-
-function createHierarchy(scene: Scene, parent: HTMLDivElement) {
-  const container = document.createElement("div");
-  container.className = "hierarchy";
-  for (const entity of scene.entities.getAll()) {
-    const entityElement = document.createElement("div");
-    entityElement.className = "entityElement";
-    entityElement.innerText = entity.name;
-
-    container.appendChild(entityElement);
-  }
-
-  parent.appendChild(container);
-}
-
-createHierarchy(scene, document.querySelector("#app")!);
-
 game.display.updateDimensions();
-Display.setFocused(game.display)
