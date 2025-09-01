@@ -1,5 +1,5 @@
-import type { Camera } from "@engine/modules/components/render/Camera";
-import { PerspectiveCamera } from "@engine/modules/components/render/PerspesctiveCamera";
+import { PerspectiveCamera } from "@engine/modules/3D/PerspesctiveCamera";
+import type { Camera } from "@engine/modules/shared/camera/Camera";
 import type { Prefab } from "@game/systems/Prefab";
 import { ComponentType } from "../../modules/enums/ComponentType";
 import { Component } from "../base/Component";

@@ -1,6 +1,6 @@
 import { System } from "@engine/core/base/System";
 import { Vec3 } from "@engine/core/math/Vec3";
-import type { Camera } from "@engine/modules/components/render/Camera";
+import type { Camera } from "@engine/modules/shared/camera/Camera";
 import { Input } from "./InputSystem";
 
 export class EditorFreeCamera2DSystem extends System {

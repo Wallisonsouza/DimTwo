@@ -4,7 +4,7 @@ import type { Mat4 } from "@engine/core/math/Mat4";
 import type { Vec3 } from "@engine/core/math/Vec3";
 import { ComponentGroup } from "@engine/modules/enums/ComponentGroup";
 import type { ComponentType } from "@engine/modules/enums/ComponentType";
-import type { Ray } from "./Ray";
+import type { Ray } from "../physics/Ray";
 
 export interface CameraOptions extends ComponentOptions {
     clearColor?: Color;

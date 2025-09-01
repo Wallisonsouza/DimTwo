@@ -1,6 +1,5 @@
 import type { Engine } from "../../Engine";
 import type { Scene } from "../scene/scene";
-import type { CollisionEvent, TriggerEvent } from "../types/collision-event";
 
 export class System {
   private scene: Scene | null = null;
@@ -36,12 +35,12 @@ export class System {
   onDrawGizmos?(): void;
 
 
-  onCollisionEnter?(collisionEvent: CollisionEvent): void;
+  /* onCollisionEnter?(collisionEvent: CollisionEvent): void;
   onCollisionStay?(collisionEvent: CollisionEvent): void;
   onCollisionExit?(collisionEvent: CollisionEvent): void;
 
 
   onTriggerEnter?(triggerEvent: TriggerEvent): void;
   onTriggerStay?(triggerEvent: TriggerEvent): void;
-  onTriggerExit?(triggerEvent: TriggerEvent): void;
+  onTriggerExit?(triggerEvent: TriggerEvent): void; */
 }
