@@ -1,4 +1,5 @@
 import { GameEntity } from "@engine/core/base/GameEntity";
+import { Display, EngineWindow } from "@engine/core/display/Display";
 import { ImageFileLoader } from "@engine/core/loaders/ImageFileLoader";
 import { EngineResourceManager } from "@engine/core/managers/EngineResourceManager";
 import { EngineSystem, EngineSystemManager } from "@engine/core/managers/EngineSystemManager";
@@ -28,7 +29,12 @@ import { loadEngine } from "engine/main";
 
 await loadEngine();
 
-const game = new Engine();
+const engineWindow = new EngineWindow();
+const app = document.querySelector("#app") as HTMLDivElement;
+app.appendChild(engineWindow.canvas);
+engineWindow.resize();
+
+const game = new Engine(engineWindow);
 
 EngineResourceManager.register(
   "player_image",
@@ -137,10 +143,8 @@ const cameraEntity = new GameEntity({ name: "camera", tag: "MainCamera" });
 scene.addEntity(cameraEntity);
 configureCamera(scene, cameraEntity);
 
-const app = document.querySelector("#app") as HTMLDivElement;
-app.appendChild(game.display.canvas);
-
 game.loadScene("simple_scene");
 game.time.play();
 
-game.display.updateDimensions();
+Display.setActive(0);
+

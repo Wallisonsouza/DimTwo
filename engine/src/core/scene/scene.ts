@@ -58,25 +58,25 @@ export class Scene {
         this.activedCamera = camera;
     }
 
-public getActiveCamera(): Camera {
+    public getActiveCamera(): Camera {
 
-    if(this.activedCamera instanceof PerspectiveCamera) {
-        this.activedCamera.aspect = Display.aspect;
+        if (this.activedCamera instanceof PerspectiveCamera) {
+            this.activedCamera.aspect = Display.aspectRatio;
+        }
+
+        if (this.activedCamera?.enabled) return this.activedCamera;
+
+        const cam = this.components
+            .getAllOfType<Camera>(ComponentType.Camera)
+            .find(c => c.enabled);
+
+        if (!cam) {
+            throw new Error("No active camera found in the scene");
+        }
+
+        this.activedCamera = cam;
+        return cam;
     }
-    
-    if (this.activedCamera?.enabled) return this.activedCamera;
-
-    const cam = this.components
-        .getAllOfType<Camera>(ComponentType.Camera)
-        .find(c => c.enabled);
-
-    if (!cam) {
-        throw new Error("No active camera found in the scene");
-    }
-
-    this.activedCamera = cam;
-    return cam;
-}
 
 
     public clone(): Scene {

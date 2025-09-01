@@ -1,4 +1,4 @@
-import { Display } from "./core/display/Display";
+import { EngineWindow } from "./core/display/Display";
 import { EngineSystem, EngineSystemManager } from "./core/managers/EngineSystemManager";
 import { SceneManager } from "./core/managers/SceneManager";
 import { SimpleManager } from "./core/managers/SimpleManager";
@@ -13,16 +13,7 @@ import { Shader } from "./Rendering/Shader";
 import { Texture } from "./Rendering/Texture";
 
 export class Engine {
-    public display: Display;
-
-    public getElement() {
-        return this.display.getCanvas();
-    }
-
-    public getContext() {
-        return this.display.getContext();
-    }
-
+    public targetWindow: EngineWindow;
     public readonly time: Time;
     protected scene: Scene | null = null;
 
@@ -37,10 +28,11 @@ export class Engine {
         this.usedSystems.push(systemType);
     }
 
-    constructor() {
+    constructor(engineWindow: EngineWindow) {
 
-        this.display = new Display();
-        const context = this.display.getContext();
+        this.targetWindow = engineWindow;
+        const context = engineWindow.context;
+
         this.time = new Time();
 
         this.time.on("start", () => {
@@ -91,7 +83,7 @@ export class Engine {
             const camera = this.scene.getActiveCamera();
             const clearColor = camera.clearColor;
 
-            const context = this.display.getContext();
+            const context = this.targetWindow.context;
             context.clearColor(clearColor.r, clearColor.g, clearColor.b, 1.0);
             context.clear(context.COLOR_BUFFER_BIT | context.DEPTH_BUFFER_BIT);
 
@@ -133,13 +125,13 @@ export class Engine {
     }
 
     public compileShader(name: string, vertSource: string, fragSource: string, system: string) {
-        const shader = new Shader(this.getContext(), name, vertSource, fragSource);
+        const shader = new Shader(this.targetWindow.context, name, vertSource, fragSource);
         shader.systemName = system;
         this.shaders.add(name, shader);
     }
 
     public compileTexture(texture: Texture) {
-        const textureBuffer = texture.compile(this.getContext());
+        const textureBuffer = texture.compile(this.targetWindow.context);
         if (!textureBuffer) return;
         this.textureBuffers.add(texture.name, textureBuffer);
     }
@@ -150,7 +142,7 @@ export class Engine {
             return;
         }
 
-        const meshBuffer = mesh.compile(this.getContext());
+        const meshBuffer = mesh.compile(this.targetWindow.context);
         this.meshBuffers.add(mesh.name, meshBuffer);
     }
 

@@ -9,7 +9,7 @@ export class GizmosSystem extends System {
     onDrawGizmos(): void {
         const scene = this.getScene();
         const engine = this.getEngine();
-        const gl = engine.getContext();
+        const gl = engine.targetWindow.context;
 
         const shader = engine.shaders.get("gizmos");
         if (!shader || !shader.systemName) return;
