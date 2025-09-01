@@ -1,6 +1,6 @@
-import { ComponentGroup } from "../../enums/ComponentGroup";
-import { ComponentType } from "../../enums/ComponentType";
-import { Collider2D, type Collider2DOptions } from "./collider/Collider2D";
+import { ComponentGroup } from "../enums/ComponentGroup";
+import { ComponentType } from "../enums/ComponentType";
+import { Collider2D, type Collider2DOptions } from "./Collider2D";
 
 export interface BoxCollider2DOptions extends Collider2DOptions { }
 

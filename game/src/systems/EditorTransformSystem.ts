@@ -1,7 +1,7 @@
 import type { GameEntity } from "@engine/core/base/GameEntity";
 import { System } from "@engine/core/base/System";
 import { Vec3 } from "@engine/core/math/Vec3";
-import { Physics2D } from "@engine/modules/components/physics/Physics2D";
+import { Physics2D } from "@engine/modules/2D/Physics2D";
 import { Input } from "./InputSystem";
 
 export class EditorTransformSystem extends System {

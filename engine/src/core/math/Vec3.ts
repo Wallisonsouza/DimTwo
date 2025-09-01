@@ -1,4 +1,3 @@
-import { Vec2 } from "./Vec2";
 
 export class Vec3 {
     public x: number;
@@ -151,9 +150,5 @@ export class Vec3 {
             out[i * 3 + 2] = v.z;
         }
         return out;
-    }
-
-    public toVec2() {
-        return new Vec2(this.x, this.y);
     }
 }

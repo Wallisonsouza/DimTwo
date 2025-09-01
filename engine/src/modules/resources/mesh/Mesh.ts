@@ -1,7 +1,7 @@
-import { Vec2 } from "../../../core/math/Vec2";
 import { Vec3 } from "../../../core/math/Vec3";
 import { ResourcesManager } from "../../../global/manager/manager";
 import type { MeshBuffer } from "../../../interfaces/IMeshBuffer";
+import { Vec2 } from "../../2D/Vec2";
 
 export class Mesh {
     name: string;

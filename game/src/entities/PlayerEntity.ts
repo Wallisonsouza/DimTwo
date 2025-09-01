@@ -1,9 +1,9 @@
 import type { GameEntity } from "@engine//core/base/GameEntity";
 import type { Scene } from "@engine//core/scene/scene";
 import { Animator } from "@engine//modules/components/animation/Animator";
-import { BoxCollider2D } from "@engine//modules/components/physics/BoxCollider2D";
-import { RigidBody2D } from "@engine//modules/components/physics/RigidBody2D";
-import { SpriteRender } from "@engine//modules/components/render/SpriteRender";
+import { BoxCollider2D } from "@engine/modules/2D/BoxCollider2D";
+import { RigidBody2D } from "@engine/modules/2D/RigidBody2D";
+import { SpriteRender } from "@engine/modules/2D/SpriteRender";
 import { CollisionLayer } from "@engine/modules/physics/collision/CollisionLayer";
 import { PLAYER_ANIMATOR_CONTROLLER } from "../animations/player.animator.controller";
 import { PLAYER_SPRITE } from "../sprites/PlayerSprite";

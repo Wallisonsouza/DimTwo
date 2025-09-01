@@ -4,7 +4,7 @@ import { Mat4 } from "../../../core/math/Mat4";
 import { Vec3 } from "../../../core/math/Vec3";
 import type { Scene } from "../../../core/scene/scene";
 import type { Engine } from "../../../Engine";
-import type { SpriteRender } from "../../components/render/SpriteRender";
+import type { SpriteRender } from "../../2D/SpriteRender";
 import { ComponentType } from "../../enums/ComponentType";
 import type { Shader } from "../shader/Shader";
 import { ShaderSystem } from "../shader/ShaderSystem";

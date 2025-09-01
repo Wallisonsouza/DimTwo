@@ -1,5 +1,5 @@
-import { Vec2 } from "@engine/core/math/Vec2";
 import { Vec3 } from "@engine/core/math/Vec3";
+import { Vec2 } from "@engine/modules/2D/Vec2";
 
 export class WebMouseInput  {
   private targetElement: HTMLElement | null = null;

@@ -1,9 +1,9 @@
-import { Vec2 } from "@engine/core/math/Vec2";
 import type { Scene } from "@engine/core/scene/scene";
+import { Vec2 } from "@engine/modules/2D/Vec2";
 import { EasyGetter } from "@game/systems/TerrainSystem";
 import { SpatialHash } from "../../core/algorithms/SpatialHash";
 import { System } from "../../core/base/System";
-import { Collider2D } from "../components/physics/collider/Collider2D";
+import { Collider2D } from "../2D/Collider2D";
 import { ComponentGroup } from "../enums/ComponentGroup";
 import { Physics } from "./Physics";
 

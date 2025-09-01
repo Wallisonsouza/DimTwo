@@ -3,7 +3,7 @@ import { Color } from "@engine/core/math/Color";
 import { Mat4 } from "@engine/core/math/Mat4";
 import type { Scene } from "@engine/core/scene/scene";
 import type { Engine } from "@engine/Engine";
-import type { Collider2D } from "@engine/modules/components/physics/collider/Collider2D";
+import type { Collider2D } from "@engine/modules/2D/Collider2D";
 import { ComponentType } from "@engine/modules/enums/ComponentType";
 import { Uniforms } from "@engine/modules/enums/Uniforms";
 import type { Shader } from "../shader/Shader";

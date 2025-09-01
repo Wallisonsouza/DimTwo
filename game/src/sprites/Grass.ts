@@ -1,4 +1,4 @@
-import { Vec2 } from "@engine/core/math/Vec2";
+import { Vec2 } from "@engine/modules/2D/Vec2";
 import { Sprite } from "@engine/modules/resources/sprite/types";
 
 export const GRASS_0_SPRITE = new Sprite ( {

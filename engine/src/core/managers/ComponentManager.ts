@@ -1,5 +1,5 @@
-import { Collider2D } from "@engine/modules/components/physics/collider/Collider2D";
-import { Physics2D } from "@engine/modules/components/physics/Physics2D";
+import { Collider2D } from "@engine/modules/2D/Collider2D";
+import { Physics2D } from "@engine/modules/2D/Physics2D";
 import type { ComponentGroup } from "../../modules/enums/ComponentGroup";
 import type { ComponentType } from "../../modules/enums/ComponentType";
 import type { Component } from "../base/Component";

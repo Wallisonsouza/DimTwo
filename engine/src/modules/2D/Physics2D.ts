@@ -1,8 +1,8 @@
-import { Vec2 } from "@engine/core/math/Vec2";
 import { Vec3 } from "@engine/core/math/Vec3";
+import { Vec2 } from "@engine/modules/2D/Vec2";
+import type { Collider2D } from "./Collider2D";
 import { Hit2D } from "./Hit2D";
 import { Plane } from "./Plane";
-import type { Collider2D } from "./collider/Collider2D";
 
 export class Physics2D {
     public static colliders: Collider2D[] = [];
@@ -20,7 +20,7 @@ export class Physics2D {
 
             if (t === null || t > maxDistance) continue;
 
-            const point2D = hitPoint.toVec2();
+            const point2D = Vec2.fromVec3(hitPoint);
 
             if (b.containsPoint(point2D)) {
                 const distance = rayDir.clone().scale(t).length();

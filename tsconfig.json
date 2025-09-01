@@ -35,5 +35,5 @@
   "include": [
     "game",
     "engine"
-, "trash/primitives.ts" ]
+, "trash/primitives.ts", "trash/CollisionTester.ts" ]
 }

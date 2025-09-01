@@ -1,6 +1,6 @@
 
 import { System } from "@engine/core/base/System";
-import { Vec2 } from "@engine/core/math/Vec2";
+import { Vec2 } from "@engine/modules/2D/Vec2";
 import { ComponentType } from "@engine/modules/enums/ComponentType";
 import { WebKeyCode } from "@engine/modules/webInput/WebKeyCode";
 import { CharacterControler2D } from "./character.controller.types";

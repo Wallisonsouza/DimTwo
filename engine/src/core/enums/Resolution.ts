@@ -1,4 +1,4 @@
-export enum Resolution {
+/* export enum Resolution {
     R3840x2160, 
     R2560x1440, 
     R1920x1080,
@@ -13,3 +13,4 @@ export enum Resolution {
     R800x600,
     R640x480
 }
+ */

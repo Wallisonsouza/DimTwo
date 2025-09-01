@@ -1,7 +1,7 @@
 import type { GameEntity } from "@engine/core/base/GameEntity";
 import { Vec3 } from "@engine/core/math/Vec3";
 import type { Scene } from "@engine/core/scene/scene";
-import { SpriteRender } from "@engine/modules/components/render/SpriteRender";
+import { SpriteRender } from "@engine/modules/2D/SpriteRender";
 import { Transform } from "@engine/modules/components/spatial/Transform";
 import type { Sprite } from "@engine/modules/resources/sprite/types";
 

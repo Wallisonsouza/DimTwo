@@ -1,5 +1,5 @@
 import { Component } from "@engine/core/base/Component";
-import { Vec2 } from "@engine/core/math/Vec2";
+import { Vec2 } from "@engine/modules/2D/Vec2";
 import { ComponentGroup } from "@engine/modules/enums/ComponentGroup";
 import { ComponentType } from "@engine/modules/enums/ComponentType";
 

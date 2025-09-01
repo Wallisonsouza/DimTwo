@@ -1,6 +1,6 @@
 import { System } from "@engine/core/base/System";
 import { ResourcesManager } from "@engine/global/manager/manager";
-import type { Collider2D } from "@engine/modules/components/physics/collider/Collider2D";
+import type { Collider2D } from "@engine/modules/2D/Collider2D";
 import { ComponentGroup } from "@engine/modules/enums/ComponentGroup";
 import type { Mesh } from "@engine/modules/resources/mesh/Mesh";
 

@@ -1,7 +1,7 @@
-import { Render, type RenderOptions } from "../../../core/base/Render.ts";
-import { ComponentGroup } from "../../enums/ComponentGroup.ts";
-import { ComponentType } from "../../enums/ComponentType.ts";
-import type { Sprite } from "../../resources/sprite/types.ts";
+import { Render, type RenderOptions } from "../../core/base/Render.ts";
+import { ComponentGroup } from "../enums/ComponentGroup.ts";
+import { ComponentType } from "../enums/ComponentType.ts";
+import type { Sprite } from "../resources/sprite/types.ts";
 
 export interface SpriteRenderOptions extends RenderOptions {
   sprite?: Sprite | null;

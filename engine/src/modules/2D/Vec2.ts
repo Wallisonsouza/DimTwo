@@ -1,3 +1,5 @@
+import type { Vec3 } from "@engine/core/math/Vec3";
+
 export class Vec2 {
   x: number;
   y: number;
@@ -5,6 +7,10 @@ export class Vec2 {
   constructor(x: number = 0, y: number = 0) {
     this.x = x;
     this.y = y;
+  }
+
+  public static fromVec3(v: Vec3) {
+    return new Vec2(v.x, v.y);
   }
 
   public static normalize(v: Vec2, out: Vec2 = new Vec2()): Vec2 {

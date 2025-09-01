@@ -1,6 +1,6 @@
 import { System } from "@engine/core/base/System";
+import type { SpriteRender } from "@engine/modules/2D/SpriteRender";
 import type { Animator } from "@engine/modules/components/animation/Animator";
-import type { SpriteRender } from "@engine/modules/components/render/SpriteRender";
 import { ComponentType } from "@engine/modules/enums/ComponentType";
 import { WebKeyCode } from "@engine/modules/webInput/WebKeyCode";
 import { CharacterControler2D } from "./character.controller.types";

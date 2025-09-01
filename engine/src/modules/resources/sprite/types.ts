@@ -1,5 +1,5 @@
 import type { Engine } from "@engine/Engine";
-import { Vec2 } from "../../../core/math/Vec2";
+import { Vec2 } from "../../2D/Vec2";
 
 export interface SrpiteOptions {
   textureID?: string | null;

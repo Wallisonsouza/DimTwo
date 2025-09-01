@@ -1,7 +1,7 @@
-import { Vec2 } from "@engine/core/math/Vec2";
-import { Component } from "../../../../core/base/Component";
-import type { ComponentGroup } from "../../../enums/ComponentGroup";
-import { ComponentType } from "../../../enums/ComponentType";
+import { Vec2 } from "@engine/modules/2D/Vec2";
+import { Component } from "../../core/base/Component";
+import type { ComponentGroup } from "../enums/ComponentGroup";
+import { ComponentType } from "../enums/ComponentType";
 
 import { CollisionLayer } from "@engine/modules/physics/collision/CollisionLayer";
 import { Bounds2D } from "./Bounds2D";

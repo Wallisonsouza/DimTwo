@@ -1,4 +1,4 @@
-import type { Vec2 } from "../core/math/Vec2";
+import type { Vec2 } from "../modules/2D/Vec2";
 
 export interface IInputDevice {
  enable(target: HTMLElement): void;

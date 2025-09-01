@@ -1,5 +1,5 @@
-import { Vec2 } from "../../core/math/Vec2";
 import { Vec3 } from "../../core/math/Vec3";
+import { Vec2 } from "../../modules/2D/Vec2";
 import { Mesh } from "../../modules/resources/mesh/Mesh";
 
 
