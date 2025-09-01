@@ -1,5 +1,5 @@
 import { Vec3 } from "../core/math/Vec3";
-import { ResourcesManager } from "../global/manager/manager";
+import { ResourcesManager } from "../global/ResourcesManager";
 import type { MeshBuffer } from "../interfaces/IMeshBuffer";
 import { Vec2 } from "../modules/2D/Vec2";
 

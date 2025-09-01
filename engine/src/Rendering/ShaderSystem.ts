@@ -1,7 +1,7 @@
 import type { GameEntity } from "@engine/core/base/GameEntity";
 import type { Scene } from "../core/scene/scene";
 import type { Engine } from "../Engine";
-import { ResourcesManager } from "../global/manager/manager";
+import { ResourcesManager } from "../global/ResourcesManager";
 import type { Shader } from "./Shader";
 
 export class ShaderSystem {

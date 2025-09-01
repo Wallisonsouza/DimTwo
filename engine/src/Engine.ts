@@ -6,7 +6,7 @@ import { SystemManager } from "./core/managers/SystemManager";
 import type { Mat4 } from "./core/math/Mat4";
 import type { Scene } from "./core/scene/scene";
 import Time from "./core/time/Time";
-import { ResourcesManager } from "./global/manager/manager";
+import { ResourcesManager } from "./global/ResourcesManager";
 import type { MeshBuffer, TextureBuffer } from "./interfaces/IMeshBuffer";
 import { Shader } from "./Rendering/Shader";
 import { Texture } from "./Rendering/Texture";

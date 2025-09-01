@@ -2,7 +2,7 @@ import type { Render } from "../../../core/base/Render";
 import { System } from "../../../core/base/System";
 import type { Scene } from "../../../core/scene/scene";
 import type { Engine } from "../../../Engine";
-import { ResourcesManager } from "../../../global/manager/manager";
+import { ResourcesManager } from "../../../global/ResourcesManager";
 import type { Material } from "../../../Rendering/Material";
 import { ComponentGroup } from "../../enums/ComponentGroup";
 

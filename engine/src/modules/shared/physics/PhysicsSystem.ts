@@ -1,5 +1,5 @@
 import { System } from "../../../core/base/System";
-import { EngineConfig } from "../../../global/config/EngineConfig";
+import { EngineConfig } from "../../../global/EngineConfig";
 import type { RigidBody2D } from "../../2D/RigidBody2D";
 import type { Transform } from "../../3D/Transform";
 import { ComponentGroup } from "../../enums/ComponentGroup";

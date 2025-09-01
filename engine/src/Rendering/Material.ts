@@ -1,4 +1,4 @@
-import { ResourcesManager } from "../global/manager/manager";
+import { ResourcesManager } from "../global/ResourcesManager";
 
 export interface MaterialOptions {
     name: string;

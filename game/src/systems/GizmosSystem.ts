@@ -1,5 +1,5 @@
 import { System } from "@engine/core/base/System";
-import { ResourcesManager } from "@engine/global/manager/manager";
+import { ResourcesManager } from "@engine/global/ResourcesManager";
 import type { Collider2D } from "@engine/modules/2D/Collider2D";
 import { ComponentGroup } from "@engine/modules/enums/ComponentGroup";
 import type { Mesh } from "@engine/Rendering/Mesh";
@@ -25,7 +25,7 @@ export class GizmosSystem extends System {
         if (!mesh) return;
 
         for (const collider of colliders) {
-            
+
             shaderSystem.local?.(engine, collider.gameEntity, scene, shader);
 
             const vao = engine.meshBuffers.get(mesh.name);
