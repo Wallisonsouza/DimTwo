@@ -32,28 +32,28 @@ await loadEngine();
 const game = new Engine();
 
 EngineResourceManager.register(
-    "player_image",
-    new ImageFileLoader("../game/src/assets/images/Player.png")
+  "player_image",
+  new ImageFileLoader("../game/src/assets/images/Player.png")
 );
 
 EngineResourceManager.register(
-    "slime_image",
-    new ImageFileLoader("../game/src/assets/images/Slime.png")
+  "slime_image",
+  new ImageFileLoader("../game/src/assets/images/Slime.png")
 );
 
 EngineResourceManager.register(
-    "tree_image",
-    new ImageFileLoader("../game/src/assets/images/Tree.png")
+  "tree_image",
+  new ImageFileLoader("../game/src/assets/images/Tree.png")
 );
 
 EngineResourceManager.register(
-    "bushe_image",
-    new ImageFileLoader("../game/src/assets/images/Bushes.png")
+  "bushe_image",
+  new ImageFileLoader("../game/src/assets/images/Bushes.png")
 );
 
 EngineResourceManager.register(
-    "grass_image",
-    new ImageFileLoader("../game/src/assets/images/Grass.png")
+  "grass_image",
+  new ImageFileLoader("../game/src/assets/images/Grass.png")
 );
 
 
@@ -71,22 +71,22 @@ new SimpleShaderSystem("simpleShaderSystem");
 new GizmosShaderSystem("gizmosShaderSystem");
 
 game.compileShader("advanced",
-    EngineResourceManager.get("advancedShaderVertex")!,
-    EngineResourceManager.get("advancedShaderFragment")!,
-    "advancedShaderSystem"
+  EngineResourceManager.get("advancedShaderVertex")!,
+  EngineResourceManager.get("advancedShaderFragment")!,
+  "advancedShaderSystem"
 
 );
 
 game.compileShader("simple",
-    EngineResourceManager.get("simpleShaderVertex")!,
-    EngineResourceManager.get("simpleShaderFragment")!,
-    "simpleShaderSystem"
+  EngineResourceManager.get("simpleShaderVertex")!,
+  EngineResourceManager.get("simpleShaderFragment")!,
+  "simpleShaderSystem"
 );
 
 game.compileShader("gizmos",
-    EngineResourceManager.get("gizmosShaderVertex")!,
-    EngineResourceManager.get("gizmosShaderFragment")!,
-    "gizmosShaderSystem"
+  EngineResourceManager.get("gizmosShaderVertex")!,
+  EngineResourceManager.get("gizmosShaderFragment")!,
+  "gizmosShaderSystem"
 );
 
 game.compileTexture(playerTexture);
@@ -115,7 +115,7 @@ EngineSystemManager.register(EngineSystem.EditorFreeCameraSystem, () => new Edit
 game.enableSystem(EngineSystem.RenderSystem);
 game.enableSystem(EngineSystem.AnimatorSystem);
 game.enableSystem(EngineSystem.InputSystem);
-/* game.enableSystem(EngineSystem.TerrainSystem);  */
+game.enableSystem(EngineSystem.TerrainSystem);
 game.enableSystem(EngineSystem.CharacterControlerAnimationSystem);
 game.enableSystem(EngineSystem.ColliderSystem);
 
@@ -148,17 +148,17 @@ game.time.play();
 
 
 function createHierarchy(scene: Scene, parent: HTMLDivElement) {
-    const container = document.createElement("div");
-    container.className = "hierarchy";
-    for (const entity of scene.entities.getAll()) {
-        const entityElement = document.createElement("div");
-        entityElement.className = "entityElement";
-        entityElement.innerText = entity.name;
+  const container = document.createElement("div");
+  container.className = "hierarchy";
+  for (const entity of scene.entities.getAll()) {
+    const entityElement = document.createElement("div");
+    entityElement.className = "entityElement";
+    entityElement.innerText = entity.name;
 
-        container.appendChild(entityElement);
-    }
+    container.appendChild(entityElement);
+  }
 
-    parent.appendChild(container);
+  parent.appendChild(container);
 }
 
 createHierarchy(scene, document.querySelector("#app")!);

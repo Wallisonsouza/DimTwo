@@ -19,7 +19,6 @@ export class Bounds2D {
 
     this.max.x = center.x + this._halfSizeCache.x;
     this.max.y = center.y + this._halfSizeCache.y;
-
   }
 
   public intersects(other: Bounds2D): boolean {

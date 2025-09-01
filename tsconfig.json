@@ -23,6 +23,7 @@
     "baseUrl": ".",
     "resolveJsonModule": true,
     "esModuleInterop": true,
+ 
     "paths": {
       "@engine/*": [
         "./engine/src/*"
@@ -35,5 +36,5 @@
   "include": [
     "game",
     "engine"
-, "trash/primitives.ts", "trash/CollisionTester.ts" ]
+, ]
 }

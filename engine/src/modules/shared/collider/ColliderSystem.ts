@@ -56,7 +56,6 @@ export class ColliderSystem extends System {
         const b = bucket[j];
 
         if (!Physics.collisionMatrix.canCollide(a.collisionLayer, b.collisionLayer)) {
-          console.log("nao pode colidir", a.collisionLayer, b.collisionLayer)
           continue;
         }
 
@@ -68,10 +67,10 @@ export class ColliderSystem extends System {
         const bEntity = EasyGetter.getEntity(scene, b);
         if (!bEntity) continue;
 
-        if (a.intersects(b)) {
-          a.isColliding = true;
-          return;
-        }
+            if (a.intersects(b)) {
+              a.isColliding = true;
+              return;
+            }
 
         a.isColliding = false;
       }

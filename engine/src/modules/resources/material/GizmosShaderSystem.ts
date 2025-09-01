@@ -29,13 +29,6 @@ export class GizmosShaderSystem extends ShaderSystem {
 
         const color = collider.isColliding ? Color.green : Color.red;
 
-
-       /*  const camera = scene.getActiveCamera();
-        const ray = camera.screenPointToRay(Input.mouse.getMousePosition());
-        collider.bounds. */
-       
-
-
         shader.set4F(
             "uColor",
             color.r,
