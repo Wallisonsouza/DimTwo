@@ -1,4 +1,3 @@
-import type { GameEntity } from "@engine/core/base/GameEntity";
 import { Vec2 } from "@engine/core/math/Vec2";
 import type { Scene } from "@engine/core/scene/scene";
 import { EasyGetter } from "@game/systems/TerrainSystem";
@@ -6,6 +5,7 @@ import { SpatialHash } from "../../core/algorithms/SpatialHash";
 import { System } from "../../core/base/System";
 import { Collider2D } from "../components/physics/collider/Collider2D";
 import { ComponentGroup } from "../enums/ComponentGroup";
+import { Physics } from "./Physics";
 
 function makePairKeyInt(idA: number, idB: number): number {
   const min = idA < idB ? idA : idB;
@@ -52,16 +52,13 @@ export class ColliderSystem extends System {
       const aEntity = EasyGetter.getEntity(scene, a);
       if (!aEntity) continue;
 
-      this.updateColliderBounds(a, aId, aEntity);
-
       for (let j = i + 1; j < bucket.length; j++) {
         const b = bucket[j];
 
-
-        // 🔹 checa layers logo no início
-       /*  if (!Physics.collisionMatrix.canCollide(a.collisionLayer, b.collisionLayer)) {
+        if (!Physics.collisionMatrix.canCollide(a.collisionLayer, b.collisionLayer)) {
+          console.log("nao pode colidir", a.collisionLayer, b.collisionLayer)
           continue;
-        } */
+        }
 
         const bId = b.id.getValue();
         const key = makePairKeyInt(aId, bId);
@@ -71,32 +68,13 @@ export class ColliderSystem extends System {
         const bEntity = EasyGetter.getEntity(scene, b);
         if (!bEntity) continue;
 
-        this.updateColliderBounds(b, bId, bEntity);
-
         if (a.intersects(b)) {
-                a.isColliding = true;
+          a.isColliding = true;
           return;
         }
 
         a.isColliding = false;
       }
-    }
-  }
-
-  private updateColliderBounds(collider: Collider2D, id: number, entity: GameEntity) {
-    if (entity.static) return;
-
-    let lastPos = this.positionCache.get(id);
-    const position = collider.transform.position;
-    const scale = collider.transform.scale;
-    if (!lastPos) {
-      lastPos = new Vec2(position.x, position.y);
-      this.positionCache.set(id, lastPos);
-      collider.updateBounds(position.toVec2(), scale.toVec2());
-    } else if (!Vec2.eq(position.toVec2(), lastPos)) {
-      collider.updateBounds(position.toVec2(), scale.toVec2());
-      lastPos.x = position.x;
-      lastPos.y = position.y;
     }
   }
 }

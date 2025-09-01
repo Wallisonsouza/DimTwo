@@ -11,28 +11,16 @@ export class BoxCollider2D extends Collider2D {
   }
 
   clone(): BoxCollider2D {
+    const clone = new BoxCollider2D();
 
-    const clone = new BoxCollider2D({
-      size: this.size.clone(),
-      center: this.center.clone(),
-      isTrigger: this.isTrigger,
-      collisionLayer: this.collisionLayer,
-      ignoreSelfCollisions: this.ignoreSelfCollisions
-    });
+    this.copyBase(clone);
     return clone;
   }
 
   intersects(other: Collider2D): boolean {
     if (other instanceof BoxCollider2D) {
-      return this.intersectsBoxBox(this, other);
+      return this.bounds.intersects(other.bounds);
     }
     return false;
   }
-
-  intersectsBoxBox(a: BoxCollider2D, b: BoxCollider2D): boolean {
-    return a.bounds.intersects(b.bounds);
-
-  }
-
-
 }

@@ -5,6 +5,7 @@ import { RigidBody2D } from "@engine//modules/components/physics/RigidBody2D";
 import { SpriteRender } from "@engine//modules/components/render/SpriteRender";
 import { Transform } from "@engine//modules/components/spatial/Transform";
 import { BoxCollider2D } from "@engine/modules/components/physics/BoxCollider2D";
+import { CollisionLayer } from "@engine/modules/physics/collision/CollisionLayer";
 import { SLIME_ANIMATOR_CONTROLLER } from "../animations/slime.animator.controller";
 import { SLIME_SPRITE } from "../sprites/slime.sprite";
 
@@ -21,7 +22,10 @@ export function configureSlime(scene: Scene, entity: GameEntity) {
   const animator: Animator = new Animator({ controller: SLIME_ANIMATOR_CONTROLLER });
 
   const rigidBody: RigidBody2D = new RigidBody2D({ useGravity: false });
-  const boxCollider = new BoxCollider2D();
+  const boxCollider = new BoxCollider2D({
+    ignoreSelfCollisions: true,
+    collisionLayer: CollisionLayer.Enemy
+  });
 
   scene.addComponent(entity, transform);
   scene.addComponent(entity, spriteReder);

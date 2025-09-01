@@ -193,8 +193,4 @@ export const GRASS_0_PREFAB: Prefab = {
 };
 
 
-Physics.collisionMatrix.setCollision(CollisionLayer.Tree, CollisionLayer.Player, true);
-Physics.collisionMatrix.setCollision(CollisionLayer.Grass, CollisionLayer.Player, true);
-
-
 Physics.collisionMatrix.setCollision(CollisionLayer.Player, CollisionLayer.Enemy, true);

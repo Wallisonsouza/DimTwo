@@ -21,7 +21,23 @@ export abstract class Collider2D extends Component {
   isTrigger: boolean;
   collisionLayer: number;
   ignoreSelfCollisions: boolean;
-  bounds: Bounds2D;
+  private _bounds: Bounds2D;
+
+  public get bounds() {
+    const worldCenter = new Vec2(
+      this.center.x + this.transform.position.x,
+      this.center.y + this.transform.position.y
+    );
+
+    const scaledSize = new Vec2(
+      this.size.x * this.transform.scale.x,
+      this.size.y * this.transform.scale.y
+    );
+
+    this._bounds.setFromCenterAndSize(worldCenter, scaledSize);
+
+    return this._bounds;
+  }
 
   constructor(type: ComponentType, group: ComponentGroup, options?: Collider2DOptions) {
     super(type, group, {});
@@ -31,22 +47,18 @@ export abstract class Collider2D extends Component {
     this.isTrigger = options?.isTrigger ?? false;
     this.collisionLayer = options?.collisionLayer ?? CollisionLayer.Default;
     this.ignoreSelfCollisions = options?.ignoreSelfCollisions ?? true;
-    this.bounds = new Bounds2D();
+    this._bounds = new Bounds2D();
   }
 
-  public updateBounds(worldPosition: Vec2, scale: Vec2) {
-    const worldCenter = new Vec2(
-      this.center.x + worldPosition.x,
-      this.center.y + worldPosition.y
-    );
-
-    const scaledSize = new Vec2(
-      this.size.x * scale.x,
-      this.size.y * scale.y
-    );
-
-    this.bounds.setFromCenterAndSize(worldCenter, scaledSize);
+  public copyBase(target: Collider2D) {
+    target.isColliding = this.isColliding;
+    target.center = this.center.clone();
+    target.size = this.size.clone();
+    target.isTrigger = this.isTrigger;
+    target.collisionLayer = this.collisionLayer;
+    target.ignoreSelfCollisions = this.ignoreSelfCollisions;
   }
+
 
   public abstract intersects(other: Collider2D): boolean;
 }

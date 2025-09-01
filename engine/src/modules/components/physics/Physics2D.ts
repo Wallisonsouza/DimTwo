@@ -1,39 +1,8 @@
 import { Vec2 } from "@engine/core/math/Vec2";
 import { Vec3 } from "@engine/core/math/Vec3";
-import type { Collider2D } from "./collider/Collider2D";
 import { Hit2D } from "./Hit2D";
-
-export class Plane {
-    public normal: Vec3;
-    public point: Vec3;
-
-    constructor(normal: Vec3, point: Vec3) {
-        this.normal = Vec3.normalize(normal);
-        this.point = point.clone();
-    }
-
-    public intersectRay(rayOrigin: Vec3, rayDir: Vec3, outPoint?: Vec3): number | null {
-        const denom = Vec3.dot(this.normal, rayDir);
-        if (Math.abs(denom) < 1e-6) {
-            return null;
-        }
-
-        const diff = Vec3.sub(this.point, rayOrigin);
-        const t = Vec3.dot(diff, this.normal) / denom;
-
-        if (t < 0) return null;
-
-        if (outPoint) {
-            outPoint.set(
-                rayOrigin.x + rayDir.x * t,
-                rayOrigin.y + rayDir.y * t,
-                rayOrigin.z + rayDir.z * t
-            );
-        }
-
-        return t;
-    }
-}
+import { Plane } from "./Plane";
+import type { Collider2D } from "./collider/Collider2D";
 
 export class Physics2D {
     public static colliders: Collider2D[] = [];
@@ -42,7 +11,6 @@ export class Physics2D {
         let closestHit: Hit2D | null = null;
 
         for (const col of this.colliders) {
-            col.updateBounds(col.transform.position.toVec2(), col.transform.scale.toVec2());
             const b = col.bounds;
 
             const plane = new Plane(new Vec3(0, 0, 1), new Vec3(0, 0, col.transform.position.z));

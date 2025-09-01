@@ -112,7 +112,7 @@ EngineSystemManager.register(EngineSystem.EditorFreeCameraSystem, () => new Edit
 game.enableSystem(EngineSystem.RenderSystem);
 game.enableSystem(EngineSystem.AnimatorSystem);
 game.enableSystem(EngineSystem.InputSystem);
-game.enableSystem(EngineSystem.TerrainSystem); 
+/* game.enableSystem(EngineSystem.TerrainSystem);  */
 game.enableSystem(EngineSystem.CharacterControlerAnimationSystem);
 game.enableSystem(EngineSystem.ColliderSystem);
 

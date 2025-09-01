@@ -15,12 +15,12 @@ export class CameraSystem extends System {
     update(dt: number) {
         if (!this.camera || !this.target) return;
 
-       /*  const zCache = this.camera.transform.position.z;
-        this.camera.transform.position = this.target.transform.position;
-        this.camera.transform.position.z = zCache;
- */
+        /*  const zCache = this.camera.transform.position.z;
+         this.camera.transform.position = this.target.transform.position;
+         this.camera.transform.position.z = zCache;
+  */
 
-        
+
 
 
 

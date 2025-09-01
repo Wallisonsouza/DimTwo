@@ -4,6 +4,7 @@ import { Animator } from "@engine//modules/components/animation/Animator";
 import { BoxCollider2D } from "@engine//modules/components/physics/BoxCollider2D";
 import { RigidBody2D } from "@engine//modules/components/physics/RigidBody2D";
 import { SpriteRender } from "@engine//modules/components/render/SpriteRender";
+import { CollisionLayer } from "@engine/modules/physics/collision/CollisionLayer";
 import { PLAYER_ANIMATOR_CONTROLLER } from "../animations/player.animator.controller";
 import { PLAYER_SPRITE } from "../sprites/PlayerSprite";
 import { CharacterControler2D } from "../systems/character.controller.types";
@@ -27,7 +28,10 @@ export function configurePlayer(scene: Scene, entity: GameEntity) {
     controller: PLAYER_ANIMATOR_CONTROLLER
   });
 
-  const boxCollider = new BoxCollider2D();
+  const boxCollider = new BoxCollider2D({
+    ignoreSelfCollisions: true,
+    collisionLayer: CollisionLayer.Player
+  });
 
   scene.addComponent(entity, controller);
   scene.addComponent(entity, rigidBody);
