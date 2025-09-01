@@ -7,10 +7,10 @@ import { Input } from "./InputSystem";
 export class EditorTransformSystem extends System {
 
     private selectedGameEntity: GameEntity | null = null;
-    private offset = { x: 0, y: 0 }; 
+    private offset = { x: 0, y: 0 };
 
     update(): void {
-        const camera = this.getScene().getActiveCamera();
+        const camera = this.engine.getActivedCamera();
         if (!camera) return;
 
         const mousePos = Input.mouse.getMousePosition();
@@ -36,7 +36,7 @@ export class EditorTransformSystem extends System {
             const distance = Vec3.distanceTo(
                 this.selectedGameEntity.transform.position,
                 camera.transform.position
-            ); 
+            );
             const targetPos = {
                 x: ray.origin.x + ray.direction.x * distance + this.offset.x,
                 y: ray.origin.y + ray.direction.y * distance + this.offset.y

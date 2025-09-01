@@ -3,7 +3,7 @@ import type { Scene } from "../scene/scene";
 
 export class System {
   private scene: Scene | null = null;
-  private engine: Engine | null = null;
+  public engine!: Engine;
 
   public setScene(scene: Scene) {
     this.scene = scene;

@@ -12,7 +12,7 @@ import { ShaderSystem } from "../../../Rendering/ShaderSystem";
 export class GizmosShaderSystem extends ShaderSystem {
 
     global(engine: Engine, scene: Scene, shader: Shader) {
-        const camera = scene.getActiveCamera();
+        const camera = engine.getActivedCamera();
         shader.setMat4(Uniforms.ViewProjection, camera.getViewProjectionMatrix().data);
     }
 

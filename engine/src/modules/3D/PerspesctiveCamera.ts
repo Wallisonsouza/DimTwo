@@ -48,7 +48,13 @@ export class PerspectiveCamera extends Camera {
   }
 
   public getProjectionMatrix(): Mat4 {
-    Mat4.projection(this._PROJECTION_MATRIX_CACHE, this.fov, this.aspect, this.near, this.far);
+    Mat4.projection(
+      this._PROJECTION_MATRIX_CACHE,
+      this.fov,
+      this.aspect,
+      this.near,
+      this.far
+    );
     return this._PROJECTION_MATRIX_CACHE;
   }
 
@@ -58,7 +64,7 @@ export class PerspectiveCamera extends Camera {
   }
 
   public screenPointToWorld(point: Vec3, out: Vec3 = new Vec3()): Vec3 {
-    const ndc = Display.normalize(point);
+    const ndc = Display.toNDC(point);
     const clip = new Vec4(ndc.x, ndc.y, ndc.z, 1.0);
 
     if (!Mat4.invert(this.getViewProjectionMatrix(), this._MATRIX_OPERATION_CACHE)) {
@@ -86,7 +92,7 @@ export class PerspectiveCamera extends Camera {
   }
 
   public screenPointToRay(point: Vec3): Ray {
-    const ndc = Display.normalize(point);
+    const ndc = Display.toNDC(point);
 
     const nearClip = new Vec4(ndc.x, ndc.y, -1, 1);
     const farClip = new Vec4(ndc.x, ndc.y, 1, 1);

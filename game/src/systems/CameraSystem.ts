@@ -3,28 +3,22 @@ import { System } from "@engine/core/base/System";
 
 export class CameraSystem extends System {
 
-    private target: GameEntity | null = null;
-    private camera: GameEntity | null = null;
+    player: GameEntity | null = null;
+    camera: GameEntity | null = null;
+    cameraZ: number = 0;
 
-    start() {
+    start(): void {
         const scene = this.getScene();
+
+        this.player = scene.entities.getByTag("Player");
         this.camera = scene.entities.getByTag("MainCamera");
-        this.target = scene.entities.getByTag("Player");
+        this.cameraZ = this.camera?.transform.position.z || 0;
     }
-
     update(dt: number) {
-        if (!this.camera || !this.target) return;
 
-        /*  const zCache = this.camera.transform.position.z;
-         this.camera.transform.position = this.target.transform.position;
-         this.camera.transform.position.z = zCache;
-  */
+        if (!this.camera || !this.player) return;
 
-
-
-
-
+        this.camera.transform.position = this.player.transform.position;
+        this.camera.transform.position.z = this.cameraZ;
     }
-
 }
-

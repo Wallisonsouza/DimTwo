@@ -23,7 +23,6 @@
     "baseUrl": ".",
     "resolveJsonModule": true,
     "esModuleInterop": true,
- 
     "paths": {
       "@engine/*": [
         "./engine/src/*"
@@ -36,5 +35,5 @@
   "include": [
     "game",
     "engine"
-, ]
+  ]
 }

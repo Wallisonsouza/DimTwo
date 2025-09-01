@@ -1,5 +1,4 @@
 import type { Scene } from "@engine/core/scene/scene";
-import { Vec2 } from "@engine/modules/2D/Vec2";
 import { EasyGetter } from "@game/systems/TerrainSystem";
 import { SpatialHash } from "../../../core/algorithms/SpatialHash";
 import { System } from "../../../core/base/System";
@@ -17,7 +16,6 @@ function makePairKeyInt(idA: number, idB: number): number {
 export class ColliderSystem extends System {
   spatialHash = new SpatialHash<Collider2D>(64);
   checked: Set<number> = new Set();
-  private positionCache: Map<number, Vec2> = new Map();
 
   fixedUpdate() {
     const scene = this.getScene();
@@ -67,10 +65,10 @@ export class ColliderSystem extends System {
         const bEntity = EasyGetter.getEntity(scene, b);
         if (!bEntity) continue;
 
-            if (a.intersects(b)) {
-              a.isColliding = true;
-              return;
-            }
+        if (a.intersects(b)) {
+          a.isColliding = true;
+          return;
+        }
 
         a.isColliding = false;
       }

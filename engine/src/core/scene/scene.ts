@@ -1,10 +1,8 @@
-import { PerspectiveCamera } from "@engine/modules/3D/PerspesctiveCamera";
 import type { Camera } from "@engine/modules/shared/camera/Camera";
 import type { Prefab } from "@game/systems/Prefab";
 import { ComponentType } from "../../modules/enums/ComponentType";
 import { Component } from "../base/Component";
 import { GameEntity } from "../base/GameEntity";
-import { Display } from "../display/Display";
 import { ComponentManager } from "../managers/ComponentManager";
 import { EntityManager } from "../managers/EntityManager";
 import { Vec3 } from "../math/Vec3";
@@ -14,6 +12,7 @@ export class Scene {
     public name: string;
     public components: ComponentManager = new ComponentManager();
     public entities: EntityManager = new EntityManager();
+    private activedCamera: Camera | null = null;
 
     constructor(name: string) {
         this.name = name;
@@ -45,25 +44,12 @@ export class Scene {
             this.addComponent(entity, clone);
 
             clone.transform.position = position;
-
-
         }
 
         return entity;
     }
 
-    private activedCamera: Camera | null = null;
-
-    public injectCamera(camera: Camera | null) {
-        this.activedCamera = camera;
-    }
-
-    public getActiveCamera(): Camera {
-
-        if (this.activedCamera instanceof PerspectiveCamera) {
-            this.activedCamera.aspect = Display.aspectRatio;
-        }
-
+    public getCamera(): Camera {
         if (this.activedCamera?.enabled) return this.activedCamera;
 
         const cam = this.components
@@ -77,7 +63,6 @@ export class Scene {
         this.activedCamera = cam;
         return cam;
     }
-
 
     public clone(): Scene {
         const sceneClone = new Scene(this.name + "_clone");
@@ -116,7 +101,6 @@ function serializeEntitiesMap(entities: Map<number, GameEntity>): any[] {
     }
     return result;
 }
-
 
 function serializeComponentMap(map: Map<string, Map<number, any>>): any {
     const result: any = {};

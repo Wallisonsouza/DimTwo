@@ -12,12 +12,12 @@ import { ComponentType } from "../../enums/ComponentType";
 export class SimpleShaderSystem extends ShaderSystem {
 
     global(engine: Engine, scene: Scene, shader: Shader) {
-        const camera = scene.getActiveCamera();
+        const camera = engine.getActivedCamera();
         shader.setMat4(Uniforms.ViewProjection, camera.getViewProjectionMatrix().data);
     }
 
     local(_: Engine, gameEntity: GameEntity, scene: Scene, shader: Shader) {
-     
+
         const spriteRender = scene.components.getComponent<SpriteRender2D>(gameEntity.id.getValue(), ComponentType.SpriteRender);
         if (!spriteRender) return;
 

@@ -35,12 +35,12 @@ export class AnimatorSystem extends System {
 }
 
 function updateSprite(animator: Animator, state: AnimatorState, spriteRender: SpriteRender2D) {
-    const animationClip = state.clip;
-    if (!animationClip) return;
+  const animationClip = state.clip;
+  if (!animationClip) return;
 
-    const frameIndex = animator.currentFrameIndex;
-    if (frameIndex < 0 || frameIndex >= animationClip.frames.length) return;
+  const frameIndex = animator.currentFrameIndex;
+  if (frameIndex < 0 || frameIndex >= animationClip.frames.length) return;
 
-    const frame = animationClip.frames[frameIndex];
-    spriteRender.sprite = frame.sprite;
-  }
+  const frame = animationClip.frames[frameIndex];
+  spriteRender.sprite = frame.sprite;
+}

@@ -1,4 +1,4 @@
-import { Color } from "../../../../engine/src/core/math/Color";
+/* import { Color } from "../../../../engine/src/core/math/Color";
 import { Mat4 } from "../../../../engine/src/core/math/Mat4";
 import { Scene } from "../../../../engine/src/core/scene/scene";
 import { Engine } from "../../../../engine/src/Engine";
@@ -50,4 +50,4 @@ export class GizmosShaderSystem extends ShaderSystem {
             Color.green.a,
         );
     }
-}
+} */

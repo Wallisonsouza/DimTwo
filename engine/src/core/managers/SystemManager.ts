@@ -1,5 +1,4 @@
 import type { System } from "../base/System";
-import type { CollisionEvent, TriggerEvent } from "../types/collision-event";
 import { EngineSystem } from "./EngineSystemManager";
 
 export class SystemManager {
@@ -42,7 +41,7 @@ export class SystemManager {
     }
 
 
-    public callCollisionEnterEvents(event: CollisionEvent): void {
+    /* public callCollisionEnterEvents(event: CollisionEvent): void {
         for (const system of this.data.values()) system.onCollisionEnter?.(event);
     }
     public callCollisionStayEvents(event: CollisionEvent): void {
@@ -61,7 +60,7 @@ export class SystemManager {
     }
     public callTriggerExitEvents(event: TriggerEvent): void {
         for (const system of this.data.values()) system.onTriggerExit?.(event);
-    }
+    } */
 
     public clear() {
         this.data.clear();

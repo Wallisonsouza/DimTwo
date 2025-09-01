@@ -6,6 +6,7 @@ import { EngineSystem, EngineSystemManager } from "@engine/core/managers/EngineS
 import { SceneManager } from "@engine/core/managers/SceneManager";
 import { Scene } from "@engine/core/scene/scene";
 import { Engine } from "@engine/Engine";
+import { PerspectiveCamera } from "@engine/modules/3D/PerspesctiveCamera";
 import { AdvancedShaderSystem } from "@engine/modules/resources/material/AdvancedShaderSystem";
 import { GizmosShaderSystem } from "@engine/modules/resources/material/GizmosShaderSystem";
 import { SimpleShaderSystem } from "@engine/modules/resources/material/SimpleShaderSystem";
@@ -29,12 +30,17 @@ import { loadEngine } from "engine/main";
 
 await loadEngine();
 
-const engineWindow = new EngineWindow();
 const app = document.querySelector("#app") as HTMLDivElement;
-app.appendChild(engineWindow.canvas);
-engineWindow.resize();
 
-const game = new Engine(engineWindow);
+
+
+
+
+Display.setActive(0);
+
+
+
+
 
 EngineResourceManager.register(
   "player_image",
@@ -61,9 +67,7 @@ EngineResourceManager.register(
   new ImageFileLoader("../game/src/assets/images/Grass.png")
 );
 
-
 await EngineResourceManager.load();
-
 
 const playerTexture = new Texture("player", "player_image");
 const slimeTexture = new Texture("slime", "slime_image");
@@ -74,6 +78,60 @@ const grassTexture = new Texture("grass", "grass_image");
 new AdvancedShaderSystem("advancedShaderSystem");
 new SimpleShaderSystem("simpleShaderSystem");
 new GizmosShaderSystem("gizmosShaderSystem");
+
+EngineSystemManager.register(EngineSystem.RenderSystem, () => new RenderSystem());
+EngineSystemManager.register(EngineSystem.TerrainSystem, () => new TerrainSystem());
+EngineSystemManager.register(EngineSystem.AnimatorSystem, () => new AnimatorSystem());
+EngineSystemManager.register(EngineSystem.InputSystem, () => new InputSystem());
+EngineSystemManager.register(EngineSystem.PhysicsSystem, () => new PhysicsSystem());
+EngineSystemManager.register(EngineSystem.CharacterControlerSystem, () => new CharacterControlerSystem());
+EngineSystemManager.register(EngineSystem.CharacterControlerAnimationSystem, () => new CharacterControllerAnimationSystem());
+EngineSystemManager.register(EngineSystem.ColliderSystem, () => new ColliderSystem());
+EngineSystemManager.register(EngineSystem.CameraSystem, () => new CameraSystem());
+
+
+EngineSystemManager.register(EngineSystem.EditorGizmosSystem, () => new GizmosSystem());
+EngineSystemManager.register(EngineSystem.EditorTransformSystem, () => new EditorTransformSystem());
+EngineSystemManager.register(EngineSystem.EditorFreeCameraSystem, () => new EditorFreeCamera2DSystem());
+
+//-------------------
+const scene = new Scene("simple_scene");
+SceneManager.addScene(scene);
+
+const playerEntity = new GameEntity({ name: "player", tag: "Player" });
+scene.addEntity(playerEntity);
+configurePlayer(scene, playerEntity);
+
+const slimeEntity = new GameEntity({ name: "slime", tag: "Enemy" });
+scene.addEntity(slimeEntity);
+configureSlime(scene, slimeEntity);
+
+const cameraEntity = new GameEntity({ name: "camera", tag: "MainCamera" });
+scene.addEntity(cameraEntity);
+configureCamera(scene, cameraEntity);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const gameWindow = new EngineWindow();
+Display.addEngineWindow(gameWindow);
+app.appendChild(gameWindow.container);
+
+const game = new Engine(gameWindow);
+
 
 game.compileShader("advanced",
   EngineResourceManager.get("advancedShaderVertex")!,
@@ -102,49 +160,78 @@ game.compileTexture(grassTexture);
 game.compileMesh("fillQuad");
 game.compileMesh("wireQuad");
 
-EngineSystemManager.register(EngineSystem.RenderSystem, () => new RenderSystem());
-EngineSystemManager.register(EngineSystem.TerrainSystem, () => new TerrainSystem());
-EngineSystemManager.register(EngineSystem.AnimatorSystem, () => new AnimatorSystem());
-EngineSystemManager.register(EngineSystem.InputSystem, () => new InputSystem());
-EngineSystemManager.register(EngineSystem.PhysicsSystem, () => new PhysicsSystem());
-EngineSystemManager.register(EngineSystem.CameraSystem, () => new CameraSystem());
-EngineSystemManager.register(EngineSystem.CharacterControlerSystem, () => new CharacterControlerSystem());
-EngineSystemManager.register(EngineSystem.CharacterControlerAnimationSystem, () => new CharacterControllerAnimationSystem());
-EngineSystemManager.register(EngineSystem.EditorGizmosSystem, () => new GizmosSystem());
-EngineSystemManager.register(EngineSystem.ColliderSystem, () => new ColliderSystem());
-
-EngineSystemManager.register(EngineSystem.EditorTransformSystem, () => new EditorTransformSystem());
-EngineSystemManager.register(EngineSystem.EditorFreeCameraSystem, () => new EditorFreeCamera2DSystem());
-
 
 game.enableSystem(EngineSystem.RenderSystem);
 game.enableSystem(EngineSystem.AnimatorSystem);
 game.enableSystem(EngineSystem.InputSystem);
 game.enableSystem(EngineSystem.TerrainSystem);
 game.enableSystem(EngineSystem.CharacterControlerAnimationSystem);
+game.enableSystem(EngineSystem.CharacterControlerSystem);
 game.enableSystem(EngineSystem.ColliderSystem);
-
-game.enableSystem(EngineSystem.EditorGizmosSystem);
-game.enableSystem(EngineSystem.EditorTransformSystem);
-game.enableSystem(EngineSystem.EditorFreeCameraSystem);
-//-------------------
-const scene = new Scene("simple_scene");
-SceneManager.addScene(scene);
-
-const playerEntity = new GameEntity({ name: "player", tag: "Player" });
-scene.addEntity(playerEntity);
-configurePlayer(scene, playerEntity);
-
-const slimeEntity = new GameEntity({ name: "slime", tag: "Enemy" });
-scene.addEntity(slimeEntity);
-configureSlime(scene, slimeEntity);
-
-const cameraEntity = new GameEntity({ name: "camera", tag: "MainCamera" });
-scene.addEntity(cameraEntity);
-configureCamera(scene, cameraEntity);
+game.enableSystem(EngineSystem.CameraSystem);
 
 game.loadScene("simple_scene");
 game.time.play();
 
-Display.setActive(0);
+//-------------------------__EDITOR-------------------------------
 
+
+const editorWindow = new EngineWindow();
+Display.addEngineWindow(editorWindow);
+app.appendChild(editorWindow.container);
+
+const editor = new Engine(editorWindow);
+
+const editorCamera = new GameEntity({
+  name: "editor_camera",
+  tag: "EditorCamera",
+});
+
+editorCamera.transform.position.z = 10;
+const cameraComponent = new PerspectiveCamera({
+  entity: editorCamera
+
+});
+
+
+editor.forcedCamera = cameraComponent;
+
+editor.compileShader("advanced",
+  EngineResourceManager.get("advancedShaderVertex")!,
+  EngineResourceManager.get("advancedShaderFragment")!,
+  "advancedShaderSystem"
+
+);
+
+editor.compileShader("simple",
+  EngineResourceManager.get("simpleShaderVertex")!,
+  EngineResourceManager.get("simpleShaderFragment")!,
+  "simpleShaderSystem"
+);
+
+editor.compileShader("gizmos",
+  EngineResourceManager.get("gizmosShaderVertex")!,
+  EngineResourceManager.get("gizmosShaderFragment")!,
+  "gizmosShaderSystem"
+);
+
+editor.compileTexture(playerTexture);
+editor.compileTexture(slimeTexture);
+editor.compileTexture(treeTexture);
+editor.compileTexture(busheTexture);
+editor.compileTexture(grassTexture);
+editor.compileMesh("fillQuad");
+editor.compileMesh("wireQuad");
+
+editor.enableSystem(EngineSystem.RenderSystem);
+editor.enableSystem(EngineSystem.InputSystem);
+editor.enableSystem(EngineSystem.EditorGizmosSystem);
+editor.enableSystem(EngineSystem.EditorTransformSystem);
+editor.enableSystem(EngineSystem.EditorFreeCameraSystem);
+
+editor.loadScene("simple_scene");
+editor.time.play();
+
+
+editorWindow.resize();
+gameWindow.resize();

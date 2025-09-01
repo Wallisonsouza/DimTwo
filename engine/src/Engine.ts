@@ -8,7 +8,10 @@ import type { Scene } from "./core/scene/scene";
 import Time from "./core/time/Time";
 import type { MeshBuffer } from "./core/webgl/MeshBuffer";
 import type { TextureBuffer } from "./core/webgl/TextureBuffer";
+import { NullReferenceException } from "./errors/NullReferenceException";
 import { ResourcesManager } from "./global/ResourcesManager";
+import { PerspectiveCamera } from "./modules/3D/PerspesctiveCamera";
+import type { Camera } from "./modules/shared/camera/Camera";
 import { Shader } from "./Rendering/Shader";
 import { Texture } from "./Rendering/Texture";
 
@@ -16,6 +19,22 @@ export class Engine {
     public targetWindow: EngineWindow;
     public readonly time: Time;
     protected scene: Scene | null = null;
+
+
+    public forcedCamera: Camera | null = null;
+
+    public getActivedCamera() {
+
+        if (this.forcedCamera !== null) return this.forcedCamera;
+
+        const scene = this.getScene();
+        if (!scene) throw new NullReferenceException();
+
+        const camera = scene.getCamera();
+        if (!camera) throw new NullReferenceException();
+
+        return camera;
+    }
 
     public shaders: SimpleManager<Shader> = new SimpleManager("Shader Manager");
     public matrices: SimpleManager<Mat4> = new SimpleManager("Matrix Manager");
@@ -50,9 +69,12 @@ export class Engine {
 
 
         this.time.on("render", () => {
+
             if (!this.scene) return;
-            const camera = this.scene.getActiveCamera();
-            if (!camera) return;
+
+            const camera = this.getActivedCamera();
+            if (camera instanceof PerspectiveCamera) camera.aspect = this.targetWindow.aspectRatio;
+
             const color = camera.clearColor;
 
             context.clearColor(color.r, color.g, color.b, color.a);
@@ -80,7 +102,7 @@ export class Engine {
 
     public unloadScene() {
         if (this.scene) {
-            const camera = this.scene.getActiveCamera();
+            const camera = this.scene.getCamera();
             const clearColor = camera.clearColor;
 
             const context = this.targetWindow.context;
@@ -121,6 +143,7 @@ export class Engine {
     }
 
     getScene() {
+        if (!this.scene) throw new NullReferenceException();
         return this.scene;
     }
 

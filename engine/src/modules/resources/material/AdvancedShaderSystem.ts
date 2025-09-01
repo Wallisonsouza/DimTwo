@@ -13,16 +13,20 @@ export class AdvancedShaderSystem extends ShaderSystem {
     private flip: Vec3 = new Vec3(0, 0, 0);
 
     global(engine: Engine, scene: Scene, shader: Shader) {
-        const camera = scene.getActiveCamera();
+        const camera = engine.getActivedCamera();
         shader.setMat4(Uniforms.ViewProjection, camera.getViewProjectionMatrix().data);
     }
 
     local(engine: Engine, gameEntity: GameEntity, scene: Scene, shader: Shader) {
 
-        const spriteRender = scene.components.getComponent<SpriteRender2D>(gameEntity.id.getValue(), ComponentType.SpriteRender);
+        const spriteRender = scene.components.getComponent<SpriteRender2D>(
+            gameEntity.id.getValue(),
+            ComponentType.SpriteRender
+        );
+
         if (!spriteRender) return;
 
-        if (!spriteRender.sprite) return;
+
 
         const transform = gameEntity.transform;
         const modelMatrix = transform.getWorldMatrix();
@@ -42,7 +46,12 @@ export class AdvancedShaderSystem extends ShaderSystem {
         shader.setMat4(Uniforms.Model, modelMatrix.data);
         shader.set4F(Uniforms.Color, spriteRender.color.r, spriteRender.color.g, spriteRender.color.b, spriteRender.color.a);
 
-        const texture = engine.textureBuffers.get(spriteRender.sprite.textureID ?? "")!;
+
+        if (!spriteRender.sprite || !spriteRender.sprite.textureID) return;
+        const texture = engine.textureBuffers.get(spriteRender.sprite.textureID);
+
+        if (!texture) return;
+
         shader.setTexture(Uniforms.Texture, texture, 0);
 
         const uvScaleX = spriteRender.sprite.size.x / texture.width;

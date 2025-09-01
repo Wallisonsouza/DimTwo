@@ -1,8 +1,10 @@
+import { Input } from "@game/systems/InputSystem";
 import { Vec3 } from "../math/Vec3";
 
 export class EngineWindow {
   readonly context: WebGL2RenderingContext;
   readonly canvas: HTMLCanvasElement;
+  readonly container: HTMLDivElement;
 
   public width: number = 0;
   public height: number = 0;
@@ -13,8 +15,14 @@ export class EngineWindow {
   }
 
   constructor() {
+
+    this.container = document.createElement("div");
+    this.container.className = "engine-window";
+
     this.canvas = document.createElement("canvas");
     this.canvas.className = "engine-canvas";
+
+    this.container.appendChild(this.canvas);
 
     const gl = this.canvas.getContext("webgl2");
     if (!gl) throw new Error("WebGL2 not supported");
@@ -34,9 +42,8 @@ export class EngineWindow {
       this.height = height;
     }
 
-    const dpr = window.devicePixelRatio || 1;
-    this.canvas.width = Math.floor(this.width * dpr);
-    this.canvas.height = Math.floor(this.height * dpr);
+    this.canvas.width = this.width;
+    this.canvas.height = this.height;
 
     this.context.viewport(0, 0, this.canvas.width, this.canvas.height);
   }
@@ -49,9 +56,7 @@ export class EngineWindow {
 
   private handleEvents() {
     window.addEventListener("resize", () => {
-      if (this.auto) {
-        this.resize();
-      }
+      this.resize();
     });
   }
 }
@@ -60,28 +65,44 @@ export class Display {
   private static windows: EngineWindow[] = [];
   private static windowIndex: number = 0;
 
-  public static addEngineWindow(window: EngineWindow) {
-    this.windows.push(window);
-  }
   public static get current(): EngineWindow | null {
     return this.windows[this.windowIndex] ?? null;
   }
 
+  public static addEngineWindow(window: EngineWindow) {
+    this.windows.push(window);
+
+    window.container.addEventListener("click", () => {
+      if (this.current) {
+        Input.keyboard.disable(this.current.container);
+        Input.mouse.disable(this.current.container);
+      }
+    });
+  }
+
   public static get width() {
-    return this.current?.width ?? 0;
+    return this.current?.width || 0;
   }
 
   public static get height() {
-    return this.current?.height ?? 0;
+    return this.current?.height || 0;
   }
 
   public static get aspectRatio() {
-    return this.current?.aspectRatio ?? 1;
+    return this.current?.aspectRatio || 1;
+  }
+
+  public static toNDC(point: Vec3) {
+    return this.current?.toNDC(point) || new Vec3(0, 0, 0);
   }
 
   public static setActive(index: number) {
     if (index >= 0 && index < this.windows.length) {
       this.windowIndex = index;
+      Input.mouse.enable(this.windows[this.windowIndex].container);
+      Input.keyboard.enable(this.windows[this.windowIndex].container);
+
     }
   }
 }
+
