@@ -47,16 +47,6 @@ export class Engine {
         });
 
         this.time.on("fixedUpdate", () => {
-            const display = Display.getFocused();
-            if (display !== null) {
-                display.console.log("----------------Time-------------- ", "");
-                display.console.log("FPS: ", this.time.fps.toString());
-                display.console.log("Delta time: ", this.time.deltaTime.toString());
-                display.console.log("Fixed delta time: ", this.time.fixedDeltaTime.toString());
-                display.console.log("Real time: ", this.time.realtimeSinceStartup.toFixed(2));
-                display.console.log("Accumulator: ", this.time.accumulator.toString());
-            }
-
             this.systems.callFixedUpdate(this.time.fixedDeltaTime);
         });
 

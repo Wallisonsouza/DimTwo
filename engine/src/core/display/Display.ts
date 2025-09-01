@@ -2,7 +2,7 @@ import { Input } from "@game/systems/InputSystem";
 import { Mat4 } from "../math/Mat4";
 import { Vec3 } from "../math/Vec3";
 
-type ConsoleLineGroup = {
+/* type ConsoleLineGroup = {
     container: HTMLDivElement;
     title: HTMLDivElement;
     text: HTMLDivElement;
@@ -64,14 +64,13 @@ export class DebugConsole {
         this.container.innerHTML = "";
         this.groups.clear();
     }
-}
+} */
 
 
 export class Display {
     private readonly context: WebGL2RenderingContext;
     private readonly canvas: HTMLCanvasElement;
     protected readonly container: HTMLDivElement;
-    public readonly console: DebugConsole;
 
     public width: number = 0;
     public height: number = 0;
@@ -92,21 +91,12 @@ export class Display {
         return this.width / this.height;
     }
 
-
-
-
-
-
-
-
     constructor() {
         this.container = document.createElement("div");
         this.container.className = "window-container";
 
         this.canvas = document.createElement("canvas");
         this.canvas.className = "engine-canvas";
-
-        this.console = new DebugConsole(this.container, 1);
 
         const test = document.createElement("div");
         test.className = "aim";
