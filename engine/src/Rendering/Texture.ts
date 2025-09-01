@@ -1,6 +1,6 @@
-import { EngineResourceManager } from "../../../core/managers/EngineResourceManager";
-import { Mathf } from "../../../core/math/Mathf";
-import type { TextureBuffer } from "../../../interfaces/IMeshBuffer";
+import { EngineResourceManager } from "../core/managers/EngineResourceManager";
+import { Mathf } from "../core/math/Mathf";
+import type { TextureBuffer } from "../interfaces/IMeshBuffer";
 
 export class Texture {
     public name: string;

@@ -5,7 +5,7 @@ import { GameEntity } from "@engine/core/base/GameEntity";
 import { System } from "@engine/core/base/System";
 import { Vec3 } from "@engine/core/math/Vec3";
 import type { Scene } from "@engine/core/scene/scene";
-import { SpriteRender } from "@engine/modules/2D/SpriteRender";
+import { SpriteRender2D } from "@engine/modules/2D/SpriteRender2D";
 import { Vec2 } from "@engine/modules/2D/Vec2";
 import type { ComponentGroup } from "@engine/modules/enums/ComponentGroup";
 import { ComponentType } from "@engine/modules/enums/ComponentType";
@@ -15,8 +15,8 @@ import { GRASS_0_PREFAB, GROUND_PREFAB, OAK_TREE_PREFAB, type Prefab } from "./P
 import { World, type TerrainCell } from "./Word";
 
 export class EasyGetter {
-  public static getSpriteRender(scene: Scene, entity: GameEntity): SpriteRender | null {
-    return scene.components.getComponent<SpriteRender>(entity.id.getValue(), ComponentType.SpriteRender);
+  public static getSpriteRender(scene: Scene, entity: GameEntity): SpriteRender2D | null {
+    return scene.components.getComponent<SpriteRender2D>(entity.id.getValue(), ComponentType.SpriteRender);
 
   }
 

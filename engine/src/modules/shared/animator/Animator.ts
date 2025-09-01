@@ -1,6 +1,5 @@
 import { Component, type ComponentOptions } from "../../../core/base/Component";
 import { Result } from "../../../core/managers/result";
-import type { SpriteRender } from "../../2D/SpriteRender";
 import { ComponentGroup } from "../../enums/ComponentGroup";
 import { ComponentType } from "../../enums/ComponentType";
 import type { AnimationClip } from "../../resources/animation";
@@ -105,16 +104,7 @@ export class Animator extends Component  {
     }
   }
 
-  public updateSprite(state: AnimatorState, spriteRender: SpriteRender) {
-    const animationClip = state.clip;
-    if (!animationClip) return;
-
-    const frameIndex = this.currentFrameIndex;
-    if (frameIndex < 0 || frameIndex >= animationClip.frames.length) return;
-
-    const frame = animationClip.frames[frameIndex];
-    spriteRender.sprite = frame.sprite;
-  }
+  
 
   public getAnimatorState(): Result<AnimatorState> {
     const controller = this.controller;

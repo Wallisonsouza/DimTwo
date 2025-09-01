@@ -1,22 +1,22 @@
 import { Render, type RenderOptions } from "../../core/base/Render.ts";
 import { ComponentGroup } from "../enums/ComponentGroup.ts";
 import { ComponentType } from "../enums/ComponentType.ts";
-import type { Sprite } from "../resources/sprite/types.ts";
+import type { Sprite2D } from "./Sprite2D.ts";
 
-export interface SpriteRenderOptions extends RenderOptions {
-  sprite?: Sprite | null;
+export interface SpriteRender2DOptions extends RenderOptions {
+  sprite?: Sprite2D | null;
   material?: string;
   layer?: number;
   flipHorizontal?: boolean;
   flipVertical?: boolean;
 }
 
-export class SpriteRender extends Render {
-  sprite: Sprite | null;
+export class SpriteRender2D extends Render {
+  sprite: Sprite2D | null;
   flipHorizontal: boolean;
   flipVertical: boolean;
 
-  constructor(options: SpriteRenderOptions = {}) {
+  constructor(options: SpriteRender2DOptions = {}) {
     super(ComponentType.SpriteRender, ComponentGroup.Render, options);
     this.sprite = options.sprite ?? null;
     this.layer = options.layer ?? 0;
@@ -24,8 +24,8 @@ export class SpriteRender extends Render {
     this.flipVertical = options.flipVertical ?? false;
   }
 
-  clone(): SpriteRender {
-    return new SpriteRender({
+  clone(): SpriteRender2D {
+    return new SpriteRender2D({
       sprite: this.sprite,
       material: this.material,
       layer: this.layer,

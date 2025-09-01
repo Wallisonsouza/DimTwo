@@ -1,7 +1,7 @@
+import { Sprite2D } from "@engine/modules/2D/Sprite2D";
 import { Vec2 } from "@engine/modules/2D/Vec2";
-import { Sprite } from "@engine/modules/resources/sprite/types";
 
-const BUSHE_0 = new Sprite({
+const BUSHE_0 = new Sprite2D({
     meshID: null,
     textureID: "bushe",
     origin: new Vec2(0.5, 0.5),
@@ -9,7 +9,7 @@ const BUSHE_0 = new Sprite({
     size: new Vec2(16 + 8, 16 + 8),
 });
 
-const BUSHE_1 = new Sprite({
+const BUSHE_1 = new Sprite2D({
     meshID: null,
     textureID: "bushe",
     origin: new Vec2(0.5, 0.5),
@@ -17,7 +17,7 @@ const BUSHE_1 = new Sprite({
     size: new Vec2(16 + 8, 16 + 8),
 });
 
-const BUSHE_2 = new Sprite({
+const BUSHE_2 = new Sprite2D({
     meshID: null,
     textureID: "bushe",
     origin: new Vec2(0.5, 0.5),
@@ -25,7 +25,7 @@ const BUSHE_2 = new Sprite({
     size: new Vec2(32 + 8, 16 + 8),
 });
 
-const BUSHE_3 = new Sprite({
+const BUSHE_3 = new Sprite2D({
     meshID: null,
     textureID: "bushe",
     origin: new Vec2(0.5, 0.5),
@@ -33,7 +33,7 @@ const BUSHE_3 = new Sprite({
     size: new Vec2(48 + 8, 16 + 8),
 });
 
-const BUSHE_4 = new Sprite({
+const BUSHE_4 = new Sprite2D({
     meshID: null,
     textureID: "bushe",
     origin: new Vec2(0.5, 0.5),
@@ -41,7 +41,7 @@ const BUSHE_4 = new Sprite({
     size: new Vec2(48 + 8, 48 + 8),
 });
 
-const BUSHE_5 = new Sprite({
+const BUSHE_5 = new Sprite2D({
     meshID: null,
     textureID: "bushe",
     origin: new Vec2(0.5, 0.5),
@@ -49,7 +49,7 @@ const BUSHE_5 = new Sprite({
     size: new Vec2(48 + 8, 48 + 8),
 });
 
-const BUSHE_6 = new Sprite({
+const BUSHE_6 = new Sprite2D({
     meshID: null,
     textureID: "bushe",
     origin: new Vec2(0.5, 0.5),

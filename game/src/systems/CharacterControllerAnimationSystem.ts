@@ -1,5 +1,5 @@
 import { System } from "@engine/core/base/System";
-import type { SpriteRender } from "@engine/modules/2D/SpriteRender";
+import type { SpriteRender2D } from "@engine/modules/2D/SpriteRender2D";
 import { ComponentType } from "@engine/modules/enums/ComponentType";
 import type { Animator } from "@engine/modules/shared/animator/Animator";
 import { WebKeyCode } from "@engine/modules/webInput/WebKeyCode";
@@ -19,7 +19,7 @@ export class CharacterControllerAnimationSystem extends System {
 
             const entityID = characterControler.gameEntity.id.getValue();
 
-            const spriteRender = components.getComponent<SpriteRender>(
+            const spriteRender = components.getComponent<SpriteRender2D>(
                 entityID,
                 ComponentType.SpriteRender
             );

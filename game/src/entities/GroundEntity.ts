@@ -2,7 +2,7 @@ import { GameEntity } from "@engine/core/base/GameEntity";
 import type { Color } from "@engine/core/math/Color";
 import type { Vec3 } from "@engine/core/math/Vec3";
 import type { Scene } from "@engine/core/scene/scene";
-import { SpriteRender } from "@engine/modules/2D/SpriteRender";
+import { SpriteRender2D } from "@engine/modules/2D/SpriteRender2D";
 import { Transform } from "@engine/modules/3D/Transform";
 
 
@@ -13,7 +13,7 @@ export function configureGroundEntity(
     position: Vec3
 ) {
     const transform = new Transform({ position: position });
-    const spriteRener = new SpriteRender({
+    const spriteRener = new SpriteRender2D({
         layer: 1,
         color: color,
         material: "simpleMaterial",

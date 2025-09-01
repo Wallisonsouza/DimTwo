@@ -4,10 +4,10 @@ import { Mat4 } from "../../../core/math/Mat4";
 import { Vec3 } from "../../../core/math/Vec3";
 import type { Scene } from "../../../core/scene/scene";
 import type { Engine } from "../../../Engine";
-import type { SpriteRender } from "../../2D/SpriteRender";
+import type { Shader } from "../../../Rendering/Shader";
+import { ShaderSystem } from "../../../Rendering/ShaderSystem";
+import type { SpriteRender2D } from "../../2D/SpriteRender2D";
 import { ComponentType } from "../../enums/ComponentType";
-import type { Shader } from "../shader/Shader";
-import { ShaderSystem } from "../shader/ShaderSystem";
 
 export class AdvancedShaderSystem extends ShaderSystem {
     private flip: Vec3 = new Vec3(0, 0, 0);
@@ -19,7 +19,7 @@ export class AdvancedShaderSystem extends ShaderSystem {
 
     local(engine: Engine, gameEntity: GameEntity, scene: Scene, shader: Shader) {
 
-        const spriteRender = scene.components.getComponent<SpriteRender>(gameEntity.id.getValue(), ComponentType.SpriteRender);
+        const spriteRender = scene.components.getComponent<SpriteRender2D>(gameEntity.id.getValue(), ComponentType.SpriteRender);
         if (!spriteRender) return;
 
         if (!spriteRender.sprite) return;

@@ -3,7 +3,7 @@ import { type GameEntityOptions } from "@engine/core/base/GameEntity";
 import { Quat } from "@engine/core/math/quat";
 import { Vec3 } from "@engine/core/math/Vec3";
 import { BoxCollider2D } from "@engine/modules/2D/BoxCollider2D";
-import { SpriteRender } from "@engine/modules/2D/SpriteRender";
+import { SpriteRender2D } from "@engine/modules/2D/SpriteRender2D";
 import { type TransformOptions } from "@engine/modules/3D/Transform";
 import { CollisionLayer } from "@engine/modules/shared/physics/CollisionLayer";
 import { Physics } from "@engine/modules/shared/physics/Physics";
@@ -32,7 +32,7 @@ export const OAK_TREE_PREFAB: Prefab = {
     },
 
     components: [
-        new SpriteRender({
+        new SpriteRender2D({
             material: "advancedMaterial",
             layer: 2,
             sprite: OAK_TRE_0
@@ -53,7 +53,7 @@ export const GROUND_PREFAB: Prefab = {
     },
 
     components: [
-        new SpriteRender({
+        new SpriteRender2D({
             material: "simpleMaterial",
             layer: 2,
             sprite: OAK_TRE_0
@@ -70,7 +70,7 @@ export const BUSHE_0_PREFAB: Prefab = {
     },
 
     components: [
-        new SpriteRender({
+        new SpriteRender2D({
             material: "advancedMaterial",
             sprite: BUSHES[0]
         }),
@@ -86,7 +86,7 @@ export const BUSHE_1_PREFAB: Prefab = {
     },
 
     components: [
-        new SpriteRender({
+        new SpriteRender2D({
             material: "advancedMaterial",
             sprite: BUSHES[1]
         }),
@@ -102,7 +102,7 @@ export const BUSHE_2_PREFAB: Prefab = {
     },
 
     components: [
-        new SpriteRender({
+        new SpriteRender2D({
             material: "advancedMaterial",
             sprite: BUSHES[2]
         }),
@@ -118,7 +118,7 @@ export const BUSHE_3_PREFAB: Prefab = {
     },
 
     components: [
-        new SpriteRender({
+        new SpriteRender2D({
             material: "advancedMaterial",
             sprite: BUSHES[3]
         }),
@@ -134,7 +134,7 @@ export const BUSHE_4_PREFAB: Prefab = {
     },
 
     components: [
-        new SpriteRender({
+        new SpriteRender2D({
             material: "advancedMaterial",
             sprite: BUSHES[4]
         }),
@@ -150,7 +150,7 @@ export const BUSHE_5_PREFAB: Prefab = {
     },
 
     components: [
-        new SpriteRender({
+        new SpriteRender2D({
             material: "advancedMaterial",
             sprite: BUSHES[5]
         }),
@@ -166,7 +166,7 @@ export const BUSHE_6_PREFAB: Prefab = {
     },
 
     components: [
-        new SpriteRender({
+        new SpriteRender2D({
             material: "advancedMaterial",
             sprite: BUSHES[6]
         }),
@@ -182,7 +182,7 @@ export const GRASS_0_PREFAB: Prefab = {
     },
 
     components: [
-        new SpriteRender({
+        new SpriteRender2D({
             material: "advancedMaterial",
             sprite: GRASS_0_SPRITE
         }),

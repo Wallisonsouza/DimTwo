@@ -1,5 +1,5 @@
-import { WebGL } from "../../../core/webgl/WebGL";
-import type { TextureBuffer } from "../../../interfaces/IMeshBuffer";
+import { WebGL } from "../core/webgl/WebGL";
+import type { TextureBuffer } from "../interfaces/IMeshBuffer";
 
 export class Shader {
     private gl: WebGL2RenderingContext;

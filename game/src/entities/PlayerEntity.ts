@@ -2,7 +2,7 @@ import type { GameEntity } from "@engine//core/base/GameEntity";
 import type { Scene } from "@engine//core/scene/scene";
 import { BoxCollider2D } from "@engine/modules/2D/BoxCollider2D";
 import { RigidBody2D } from "@engine/modules/2D/RigidBody2D";
-import { SpriteRender } from "@engine/modules/2D/SpriteRender";
+import { SpriteRender2D } from "@engine/modules/2D/SpriteRender2D";
 import { Animator } from "@engine/modules/shared/animator/Animator";
 import { CollisionLayer } from "@engine/modules/shared/physics/CollisionLayer";
 import { PLAYER_ANIMATOR_CONTROLLER } from "../animations/player.animator.controller";
@@ -18,7 +18,7 @@ export function configurePlayer(scene: Scene, entity: GameEntity) {
     mass: 70
   })
 
-  const spriteRender = new SpriteRender({
+  const spriteRender = new SpriteRender2D({
     layer: 0,
     sprite: PLAYER_SPRITE,
     material: "advancedMaterial"

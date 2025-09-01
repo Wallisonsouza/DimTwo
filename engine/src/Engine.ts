@@ -8,8 +8,8 @@ import type { Scene } from "./core/scene/scene";
 import Time from "./core/time/Time";
 import { ResourcesManager } from "./global/manager/manager";
 import type { MeshBuffer, TextureBuffer } from "./interfaces/IMeshBuffer";
-import { Shader } from "./modules/resources/shader/Shader";
-import { Texture } from "./modules/resources/texture/Texture";
+import { Shader } from "./Rendering/Shader";
+import { Texture } from "./Rendering/Texture";
 
 export class Engine {
     public display: Display;

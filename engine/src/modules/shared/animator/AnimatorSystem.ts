@@ -1,7 +1,8 @@
 import { System } from "../../../core/base/System";
-import type { SpriteRender } from "../../2D/SpriteRender";
+import type { SpriteRender2D } from "../../2D/SpriteRender2D";
 import { ComponentType } from "../../enums/ComponentType";
 import { Animator } from "./Animator";
+import type { AnimatorState } from "./AnimatorState";
 
 export class AnimatorSystem extends System {
 
@@ -14,7 +15,7 @@ export class AnimatorSystem extends System {
     for (const animator of animators) {
       if (!animator.enabled || !animator.controller) continue;
 
-      const spriteRender = components.getComponent<SpriteRender>(animator.gameEntity.id.getValue(), ComponentType.SpriteRender);
+      const spriteRender = components.getComponent<SpriteRender2D>(animator.gameEntity.id.getValue(), ComponentType.SpriteRender);
       if (!spriteRender) continue;
 
       const result = animator.getAnimatorState();
@@ -27,8 +28,19 @@ export class AnimatorSystem extends System {
       const state = result.value;
 
       animator.advanceFrame(state, dt);
-      animator.updateSprite(state, spriteRender);
+      updateSprite(animator, state, spriteRender);
 
     }
   }
 }
+
+function updateSprite(animator: Animator, state: AnimatorState, spriteRender: SpriteRender2D) {
+    const animationClip = state.clip;
+    if (!animationClip) return;
+
+    const frameIndex = animator.currentFrameIndex;
+    if (frameIndex < 0 || frameIndex >= animationClip.frames.length) return;
+
+    const frame = animationClip.frames[frameIndex];
+    spriteRender.sprite = frame.sprite;
+  }

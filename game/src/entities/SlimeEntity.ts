@@ -2,7 +2,7 @@ import type { GameEntity } from "@engine//core/base/GameEntity";
 import type { Scene } from "@engine//core/scene/scene";
 import { BoxCollider2D } from "@engine/modules/2D/BoxCollider2D";
 import { RigidBody2D } from "@engine/modules/2D/RigidBody2D";
-import { SpriteRender } from "@engine/modules/2D/SpriteRender";
+import { SpriteRender2D } from "@engine/modules/2D/SpriteRender2D";
 import { Transform } from "@engine/modules/3D/Transform";
 import { Animator } from "@engine/modules/shared/animator/Animator";
 import { CollisionLayer } from "@engine/modules/shared/physics/CollisionLayer";
@@ -13,7 +13,7 @@ export function configureSlime(scene: Scene, entity: GameEntity) {
   const transform: Transform = new Transform();
   transform.position.z = 0
 
-  const spriteReder: SpriteRender = new SpriteRender({
+  const spriteReder: SpriteRender2D = new SpriteRender2D({
     sprite: SLIME_SPRITE,
     layer: 0,
     material: "advancedMaterial"

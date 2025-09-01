@@ -2,7 +2,7 @@ import { System } from "@engine/core/base/System";
 import { ResourcesManager } from "@engine/global/manager/manager";
 import type { Collider2D } from "@engine/modules/2D/Collider2D";
 import { ComponentGroup } from "@engine/modules/enums/ComponentGroup";
-import type { Mesh } from "@engine/modules/resources/mesh/Mesh";
+import type { Mesh } from "@engine/Rendering/Mesh";
 
 
 export class GizmosSystem extends System {

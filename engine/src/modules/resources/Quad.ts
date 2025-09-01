@@ -1,6 +1,6 @@
 import { Vec3 } from "../../core/math/Vec3";
+import { Mesh } from "../../Rendering/Mesh";
 import { Vec2 } from "../2D/Vec2";
-import { Mesh } from "./mesh/Mesh";
 
 export class Quad {
     public static createFillQuadMesh(name: string, size: Vec3): Mesh {

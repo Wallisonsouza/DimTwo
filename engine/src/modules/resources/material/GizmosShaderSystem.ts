@@ -6,8 +6,8 @@ import type { Engine } from "@engine/Engine";
 import type { Collider2D } from "@engine/modules/2D/Collider2D";
 import { ComponentType } from "@engine/modules/enums/ComponentType";
 import { Uniforms } from "@engine/modules/enums/Uniforms";
-import type { Shader } from "../shader/Shader";
-import { ShaderSystem } from "../shader/ShaderSystem";
+import type { Shader } from "../../../Rendering/Shader";
+import { ShaderSystem } from "../../../Rendering/ShaderSystem";
 
 export class GizmosShaderSystem extends ShaderSystem {
 
