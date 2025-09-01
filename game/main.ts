@@ -10,7 +10,10 @@ import { AdvancedShaderSystem } from "@engine/modules/resources/material/Advance
 import { GizmosShaderSystem } from "@engine/modules/resources/material/GizmosShaderSystem";
 import { SimpleShaderSystem } from "@engine/modules/resources/material/SimpleShaderSystem";
 import { Texture } from "@engine/modules/resources/texture/Texture";
-import { AnimatorSystem, ColliderSystem, PhysicsSystem, RenderSystem } from "@engine/modules/systems";
+import { AnimatorSystem } from "@engine/modules/shared/animator/AnimatorSystem";
+import { ColliderSystem } from "@engine/modules/shared/collider/ColliderSystem";
+import { PhysicsSystem } from "@engine/modules/shared/physics/PhysicsSystem";
+import { RenderSystem } from "@engine/modules/shared/render/RenderSystem";
 import { configureCamera } from "@game/entities/CameraEntity";
 import { configurePlayer } from "@game/entities/PlayerEntity";
 import { configureSlime } from "@game/entities/SlimeEntity";

@@ -7,6 +7,7 @@ import type { AnimationClip } from "../../resources/animation";
 import type { AnimatorController } from "./AnimatorController";
 import type { AnimatorState } from "./AnimatorState";
 
+
 export interface AnimatorOptions extends ComponentOptions {
   controller?: AnimatorController | null;
   currentClip?: AnimationClip | null;

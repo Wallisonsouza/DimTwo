@@ -2,7 +2,7 @@ import { type ComponentOptions, Component } from "@engine/core/base/Component";
 import { Vec2 } from "@engine/modules/2D/Vec2";
 import { ComponentGroup } from "@engine/modules/enums/ComponentGroup";
 import { ComponentType } from "@engine/modules/enums/ComponentType";
-import type { Transform } from "../components/spatial/Transform";
+import type { Transform } from "../3D/Transform";
 
 export interface RigidBody2DOptions extends ComponentOptions {
   mass?: number;

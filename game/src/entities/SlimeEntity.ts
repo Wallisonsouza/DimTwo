@@ -1,11 +1,11 @@
 import type { GameEntity } from "@engine//core/base/GameEntity";
 import type { Scene } from "@engine//core/scene/scene";
-import { Animator } from "@engine//modules/components/animation/Animator";
-import { Transform } from "@engine//modules/components/spatial/Transform";
 import { BoxCollider2D } from "@engine/modules/2D/BoxCollider2D";
 import { RigidBody2D } from "@engine/modules/2D/RigidBody2D";
 import { SpriteRender } from "@engine/modules/2D/SpriteRender";
-import { CollisionLayer } from "@engine/modules/physics/collision/CollisionLayer";
+import { Transform } from "@engine/modules/3D/Transform";
+import { Animator } from "@engine/modules/shared/animator/Animator";
+import { CollisionLayer } from "@engine/modules/shared/physics/CollisionLayer";
 import { SLIME_ANIMATOR_CONTROLLER } from "../animations/slime.animator.controller";
 import { SLIME_SPRITE } from "../sprites/slime.sprite";
 

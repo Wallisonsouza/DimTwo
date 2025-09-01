@@ -1,4 +1,4 @@
-import { Transform } from "@engine/modules/components/spatial/Transform";
+import { Transform } from "@engine/modules/3D/Transform";
 import { Entity } from "./Entity";
 
 export interface GameEntityOptions {

@@ -1,5 +1,5 @@
 
-import { Mulberry32 } from "@engine/core/algorithms/mulberry32";
+import { Mulberry32 } from "@engine/core/algorithms/Mulberry32";
 import type { Component } from "@engine/core/base/Component";
 import { GameEntity } from "@engine/core/base/GameEntity";
 import { System } from "@engine/core/base/System";

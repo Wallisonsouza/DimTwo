@@ -1,6 +1,6 @@
 import { Vec3 } from "@engine/core/math/Vec3";
 import { Material } from "@engine/modules/resources/material/Material";
-import { Quad } from "@engine/resources/geometries/Quad";
+import { Quad } from "@engine/modules/resources/Quad";
 import { TextFileLoader } from "./src/core/loaders/TextFileLoader";
 import { EngineResourceManager } from "./src/core/managers/EngineResourceManager";
 

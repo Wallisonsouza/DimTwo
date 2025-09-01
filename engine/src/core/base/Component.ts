@@ -1,5 +1,5 @@
 import { NullReferenceException } from "@engine/errors/NullReferenceException";
-import type { Transform } from "@engine/modules/components/spatial/Transform";
+import type { Transform } from "@engine/modules/3D/Transform";
 import type { ComponentGroup } from "../../modules/enums/ComponentGroup";
 import type { ComponentType } from "../../modules/enums/ComponentType";
 import type { GameEntity } from "./GameEntity";

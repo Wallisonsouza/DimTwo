@@ -1,4 +1,3 @@
-import type { Clonable } from "@engine/core/base/Clonable";
 import { type ComponentOptions, Component } from "@engine/core/base/Component";
 import { Mat4 } from "@engine/core/math/Mat4";
 import { Quat } from "@engine/core/math/quat";
@@ -14,7 +13,7 @@ export interface TransformOptions extends ComponentOptions {
     scale?: Vec3;
 }
 
-export class Transform extends Component implements Clonable<Transform> {
+export class Transform extends Component {
     private readonly _WORLD_MATRIX_CACHE: Mat4 = Mat4.create();
     public worldDirty = true;
 

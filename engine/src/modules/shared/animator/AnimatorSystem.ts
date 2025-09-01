@@ -1,7 +1,7 @@
-import { System } from "../../core/base/System";
-import type { SpriteRender } from "../2D/SpriteRender";
-import { Animator } from "../components/animation/Animator";
-import { ComponentType } from "../enums/ComponentType";
+import { System } from "../../../core/base/System";
+import type { SpriteRender } from "../../2D/SpriteRender";
+import { ComponentType } from "../../enums/ComponentType";
+import { Animator } from "./Animator";
 
 export class AnimatorSystem extends System {
 

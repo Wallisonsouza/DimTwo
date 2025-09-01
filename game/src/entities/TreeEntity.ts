@@ -2,7 +2,7 @@ import type { GameEntity } from "@engine/core/base/GameEntity";
 import { Vec3 } from "@engine/core/math/Vec3";
 import type { Scene } from "@engine/core/scene/scene";
 import { SpriteRender } from "@engine/modules/2D/SpriteRender";
-import { Transform } from "@engine/modules/components/spatial/Transform";
+import { Transform } from "@engine/modules/3D/Transform";
 import type { Sprite } from "@engine/modules/resources/sprite/types";
 
 const positionOffset: Vec3 = new Vec3(0,3, 0);

@@ -11,8 +11,6 @@ import type { MeshBuffer, TextureBuffer } from "./interfaces/IMeshBuffer";
 import { Shader } from "./modules/resources/shader/Shader";
 import { Texture } from "./modules/resources/texture/Texture";
 
-
-
 export class Engine {
     public display: Display;
 

@@ -3,7 +3,7 @@ import { Component } from "../../core/base/Component";
 import type { ComponentGroup } from "../enums/ComponentGroup";
 import { ComponentType } from "../enums/ComponentType";
 
-import { CollisionLayer } from "@engine/modules/physics/collision/CollisionLayer";
+import { CollisionLayer } from "@engine/modules/shared/physics/CollisionLayer";
 import { Bounds2D } from "./Bounds2D";
 
 export interface Collider2DOptions {

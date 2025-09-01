@@ -1,4 +1,4 @@
-import type { AnimatorController } from "../../../engine/src/modules/components/animation/AnimatorController";
+import type { AnimatorController } from "../../../engine/src/modules/shared/animator/AnimatorController";
 import { SLIME_ANIMATIONS } from "./slime.animations";
 
 export const SLIME_ANIMATOR_CONTROLLER: AnimatorController = {

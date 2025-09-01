@@ -1,10 +1,9 @@
-import { System } from "../../core/base/System";
-import { EngineConfig } from "../../global/config/EngineConfig";
-import type { RigidBody2D } from "../2D/RigidBody2D";
-import type { Transform } from "../components/spatial/Transform";
-import { ComponentGroup } from "../enums/ComponentGroup";
-import { ComponentType } from "../enums/ComponentType";
-
+import { System } from "../../../core/base/System";
+import { EngineConfig } from "../../../global/config/EngineConfig";
+import type { RigidBody2D } from "../../2D/RigidBody2D";
+import type { Transform } from "../../3D/Transform";
+import { ComponentGroup } from "../../enums/ComponentGroup";
+import { ComponentType } from "../../enums/ComponentType";
 
 export class PhysicsSystem extends System {
     fixedUpdate(fdt: number) {
