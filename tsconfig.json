@@ -38,7 +38,6 @@
   "include": [
     "game",
     "engine",
-    "editor",
-    "project"
+    "editor"
   ]
 }
