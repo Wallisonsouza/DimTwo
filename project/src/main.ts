@@ -1,3 +1,4 @@
+import { EditorEngine } from "@editor/EditorEngine";
 import { GameEntity } from "@engine/core/base/GameEntity";
 import { ImageFileLoader } from "@engine/core/loaders/ImageFileLoader";
 import { EngineResourceManager } from "@engine/core/managers/EngineResourceManager";
@@ -5,9 +6,6 @@ import { EngineSystem, EngineSystemManager } from "@engine/core/managers/EngineS
 import type { EngineResource } from "@engine/core/managers/Resource";
 import { SceneManager } from "@engine/core/managers/SceneManager";
 import { Scene } from "@engine/core/scene/scene";
-import { EngineWindow } from "@engine/core/window/EngineWindow";
-import { Engine } from "@engine/Engine";
-import { PerspectiveCamera } from "@engine/modules/3D/PerspesctiveCamera";
 import { AdvancedShaderSystem } from "@engine/modules/resources/material/AdvancedShaderSystem";
 import { GizmosShaderSystem } from "@engine/modules/resources/material/GizmosShaderSystem";
 import { SimpleShaderSystem } from "@engine/modules/resources/material/SimpleShaderSystem";
@@ -18,6 +16,7 @@ import { RenderSystem } from "@engine/modules/shared/render/RenderSystem";
 import { configureCamera } from "@game/entities/CameraEntity";
 import { configurePlayer } from "@game/entities/PlayerEntity";
 import { configureSlime } from "@game/entities/SlimeEntity";
+import { GameEngine } from "@game/GameEngine";
 import { CameraSystem } from "@game/systems/CameraSystem";
 import { CharacterControlerSystem } from "@game/systems/CharacterControlerSystem";
 import { CharacterControllerAnimationSystem } from "@game/systems/CharacterControllerAnimationSystem";
@@ -111,53 +110,20 @@ const cameraEntity = new GameEntity({ name: "camera", tag: "MainCamera" });
 scene.addEntity(cameraEntity);
 configureCamera(scene, cameraEntity);
 
-const app = document.querySelector("#app") as HTMLDivElement;
 
-//-------------------------__EDITOR-------------------------------
-const editorWindow = new EngineWindow();
-app.appendChild(editorWindow.container);
-
-const editor = new Engine(editorWindow);
+const editor = new EditorEngine();
 EngineResourceManager.loadResources(editor, resources);
-
-const editorCamera = new GameEntity({
-  name: "editor_camera",
-  tag: "EditorCamera",
-});
-
-editorCamera.transform.position.z = 10;
-const cameraComponent = new PerspectiveCamera({
-  entity: editorCamera
-
-});
-
-editor.forcedCamera = cameraComponent;
-
-editor.enableSystem(EngineSystem.RenderSystem);
-editor.enableSystem(EngineSystem.EditorGizmosSystem);
-editor.enableSystem(EngineSystem.EditorTransformSystem);
-editor.enableSystem(EngineSystem.EditorFreeCameraSystem);
-
 editor.loadScene("simple_scene");
 editor.time.play();
 
-const gameWindow = new EngineWindow();
-const game = new Engine(gameWindow);
+const game = new GameEngine();
 EngineResourceManager.loadResources(game, resources);
-
-game.enableSystem(EngineSystem.RenderSystem);
-game.enableSystem(EngineSystem.AnimatorSystem);
-game.enableSystem(EngineSystem.TerrainSystem);
-game.enableSystem(EngineSystem.CharacterControlerAnimationSystem);
-game.enableSystem(EngineSystem.CharacterControlerSystem);
-game.enableSystem(EngineSystem.ColliderSystem);
-game.enableSystem(EngineSystem.CameraSystem);
-game.enableSystem(EngineSystem.FollowSystem);
-
 game.loadScene("simple_scene");
 game.time.play();
 
-app.appendChild(gameWindow.container);
 
-editorWindow.resize();
-gameWindow.resize();
+const app = document.querySelector("#app") as HTMLDivElement;
+app.appendChild(editor.targetWindow.container);
+app.appendChild(game.targetWindow.container);
+editor.targetWindow.resize();
+game.targetWindow.resize();
