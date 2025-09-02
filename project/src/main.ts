@@ -23,6 +23,7 @@ import { CharacterControlerSystem } from "@game/systems/CharacterControlerSystem
 import { CharacterControllerAnimationSystem } from "@game/systems/CharacterControllerAnimationSystem";
 import { EditorFreeCamera2DSystem } from "@game/systems/EditorFreeCamera2DSystem";
 import { EditorTransformSystem } from "@game/systems/EditorTransformSystem";
+import { FollowSystem } from "@game/systems/FollowSystem";
 import { GizmosSystem } from "@game/systems/GizmosSystem";
 import { TerrainSystem } from "@game/systems/TerrainSystem";
 import { loadEngine } from "engine/main";
@@ -70,6 +71,8 @@ async function loadResources() {
   EngineSystemManager.register(EngineSystem.CharacterControlerAnimationSystem, () => new CharacterControllerAnimationSystem());
   EngineSystemManager.register(EngineSystem.ColliderSystem, () => new ColliderSystem());
   EngineSystemManager.register(EngineSystem.CameraSystem, () => new CameraSystem());
+  EngineSystemManager.register(EngineSystem.FollowSystem, () => new FollowSystem());
+
 
   EngineSystemManager.register(EngineSystem.EditorGizmosSystem, () => new GizmosSystem());
   EngineSystemManager.register(EngineSystem.EditorTransformSystem, () => new EditorTransformSystem());
@@ -92,7 +95,7 @@ const resources: EngineResource[] = [
   { name: "wireQuad", type: "mesh", path: "wireQuad" }
 ];
 
-//-------------------
+//-------------------Scene---------------------
 const scene = new Scene("simple_scene");
 SceneManager.addScene(scene);
 
@@ -149,6 +152,7 @@ game.enableSystem(EngineSystem.CharacterControlerAnimationSystem);
 game.enableSystem(EngineSystem.CharacterControlerSystem);
 game.enableSystem(EngineSystem.ColliderSystem);
 game.enableSystem(EngineSystem.CameraSystem);
+game.enableSystem(EngineSystem.FollowSystem);
 
 game.loadScene("simple_scene");
 game.time.play();

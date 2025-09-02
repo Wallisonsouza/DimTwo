@@ -15,11 +15,6 @@ import { GRASS_0_PREFAB, GROUND_PREFAB, OAK_TREE_PREFAB, type Prefab } from "./P
 import { World, type TerrainCell } from "./Word";
 
 export class EasyGetter {
-  public static getSpriteRender(scene: Scene, entity: GameEntity): SpriteRender2D | null {
-    return scene.components.getComponent<SpriteRender2D>(entity.id.getValue(), ComponentType.SpriteRender);
-
-  }
-
   public static getAllByGroup<T extends Component>(scene: Scene, group: ComponentGroup): T[] {
     return scene.components.getAllByGroup<T>(group);
   }
@@ -59,7 +54,7 @@ function generateGrounds(
 
     entity.transform.position = cell.position;
 
-    const spriteRender = EasyGetter.getSpriteRender(scene, entity);
+    const spriteRender = scene.components.getComponent<SpriteRender2D>(entity, ComponentType.SpriteRender);
     if (spriteRender === null) return;
     spriteRender.color = getBiomeColor(cell.biome ?? BiomeName.DEEP_WATER);
   }
@@ -127,7 +122,7 @@ function generateTrees(scene: Scene, terrainCells: TerrainCell[], chunkPos: Vec2
         const entity = scene.instantiate(entry.prefab, tempVec3);
         if (!entity) break;
 
-        const sprite = EasyGetter.getSpriteRender(scene, entity);
+        const sprite = scene.components.getComponent<SpriteRender2D>(entity, ComponentType.SpriteRender);
         if (!sprite) break;
         sprite.layer = -cell.position.y;
 

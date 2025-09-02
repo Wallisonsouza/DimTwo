@@ -11,30 +11,30 @@ import { ShaderSystem } from "../../../Rendering/ShaderSystem";
 
 export class GizmosShaderSystem extends ShaderSystem {
 
-    global(engine: Engine, scene: Scene, shader: Shader) {
-        const camera = engine.getActivedCamera();
-        shader.setMat4(Uniforms.ViewProjection, camera.getViewProjectionMatrix().data);
-    }
+  global(engine: Engine, scene: Scene, shader: Shader) {
+    const camera = engine.getActivedCamera();
+    shader.setMat4(Uniforms.ViewProjection, camera.getViewProjectionMatrix().data);
+  }
 
-    local(_: Engine, gameEntity: GameEntity, scene: Scene, shader: Shader) {
+  local(_: Engine, gameEntity: GameEntity, scene: Scene, shader: Shader) {
 
-        const collider = scene.components.getComponent<Collider2D>(gameEntity.id.getValue(), ComponentType.BoxCollider2D);
-        if (!collider) return;
+    const collider = scene.components.getComponent<Collider2D>(gameEntity, ComponentType.BoxCollider2D);
+    if (!collider) return;
 
-        const transform = gameEntity.transform;
-        const modelMatrix = transform.getWorldMatrix();
+    const transform = gameEntity.transform;
+    const modelMatrix = transform.getWorldMatrix();
 
-        Mat4.compose(modelMatrix, transform.position, transform.rotation, transform.scale);
-        shader.setMat4("uModel", modelMatrix.data);
+    Mat4.compose(modelMatrix, transform.position, transform.rotation, transform.scale);
+    shader.setMat4("uModel", modelMatrix.data);
 
-        const color = collider.isColliding ? Color.green : Color.red;
+    const color = collider.isColliding ? Color.green : Color.red;
 
-        shader.set4F(
-            "uColor",
-            color.r,
-            color.g,
-            color.b,
-            color.a,
-        );
-    }
+    shader.set4F(
+      "uColor",
+      color.r,
+      color.g,
+      color.b,
+      color.a,
+    );
+  }
 }

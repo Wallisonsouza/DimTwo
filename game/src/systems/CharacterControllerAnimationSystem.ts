@@ -8,52 +8,52 @@ import { CharacterControler2D } from "./character.controller.types";
 
 export class CharacterControllerAnimationSystem extends System {
 
-    lateUpdate() {
+  lateUpdate() {
 
-        const input = this.engine.input;
+    const input = this.engine.input;
 
-        const scene = this.getScene();
-        const components = scene.components;
+    const scene = this.getScene();
+    const components = scene.components;
 
-        const characterControlers = components.getAllOfType<CharacterControler2D>(ComponentType.CharacterController);
+    const characterControlers = components.getAllOfType<CharacterControler2D>(ComponentType.CharacterController);
 
-        for (const characterControler of characterControlers) {
+    for (const characterControler of characterControlers) {
 
-            const entityID = characterControler.gameEntity.id.getValue();
+      const entity = characterControler.gameEntity;
 
-            const spriteRender = components.getComponent<SpriteRender2D>(
-                entityID,
-                ComponentType.SpriteRender
-            );
-            if (!spriteRender) continue;
+      const spriteRender = components.getComponent<SpriteRender2D>(
+        entity,
+        ComponentType.SpriteRender
+      );
+      if (!spriteRender) continue;
 
-            const animator = components.getComponent<Animator>(
-                entityID,
-                ComponentType.Animator
-            );
-            if (!animator) continue;
+      const animator = components.getComponent<Animator>(
+        entity,
+        ComponentType.Animator
+      );
+      if (!animator) continue;
 
-            animator.playbackSpeed = input.getKey(KeyCode.ShiftLeft) ? 1.5 : 1.0;
+      animator.playbackSpeed = input.getKey(KeyCode.ShiftLeft) ? 1.5 : 1.0;
 
-            const dir = characterControler.direction;
+      const dir = characterControler.direction;
 
-            if (characterControler.direction.x < 0) spriteRender.flipHorizontal = true;
-            else if (characterControler.direction.x > 0) spriteRender.flipHorizontal = false;
+      if (characterControler.direction.x < 0) spriteRender.flipHorizontal = true;
+      else if (characterControler.direction.x > 0) spriteRender.flipHorizontal = false;
 
-            if (dir.x !== 0 || dir.y !== 0) {
-                if (dir.x !== 0) {
-                    animator.setAnimatorState("walk_side");
-                } else if (dir.y < 0) {
-                    animator.setAnimatorState("walk_back");
-                } else if (dir.y > 0) {
-                    animator.setAnimatorState("walk_front");
+      if (dir.x !== 0 || dir.y !== 0) {
+        if (dir.x !== 0) {
+          animator.setAnimatorState("walk_side");
+        } else if (dir.y < 0) {
+          animator.setAnimatorState("walk_back");
+        } else if (dir.y > 0) {
+          animator.setAnimatorState("walk_front");
 
-                }
-            } else {
-                animator.setAnimatorState("idle");
-            }
         }
+      } else {
+        animator.setAnimatorState("idle");
+      }
     }
+  }
 }
 
 

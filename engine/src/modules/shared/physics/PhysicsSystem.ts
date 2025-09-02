@@ -6,36 +6,36 @@ import { ComponentGroup } from "../../enums/ComponentGroup";
 import { ComponentType } from "../../enums/ComponentType";
 
 export class PhysicsSystem extends System {
-    fixedUpdate(fdt: number) {
+  fixedUpdate(fdt: number) {
 
-        const scene = this.getScene();
-        const components = scene.components;
+    const scene = this.getScene();
+    const components = scene.components;
 
-        const rigidbodies = components.getAllByGroup<RigidBody2D>(
-            ComponentGroup.RigidBody2D
-        );
+    const rigidbodies = components.getAllByGroup<RigidBody2D>(
+      ComponentGroup.RigidBody2D
+    );
 
-        for (const rigid of rigidbodies) {
-            if (rigid.isStatic) continue;
+    for (const rigid of rigidbodies) {
+      if (rigid.isStatic) continue;
 
-            const transform = components.getComponent<Transform>(
-                rigid.gameEntity.id.getValue(),
-                ComponentType.Transform
-            );
+      const transform = components.getComponent<Transform>(
+        rigid.gameEntity,
+        ComponentType.Transform
+      );
 
-            if (!transform) continue;
+      if (!transform) continue;
 
-            if (rigid.useGravity) {
-                rigid.velocity.x += EngineConfig.PHYSICS.gravity.x * fdt;
-                rigid.velocity.y += EngineConfig.PHYSICS.gravity.y * fdt;
-            }
+      if (rigid.useGravity) {
+        rigid.velocity.x += EngineConfig.PHYSICS.gravity.x * fdt;
+        rigid.velocity.y += EngineConfig.PHYSICS.gravity.y * fdt;
+      }
 
-            const decay = Math.exp(-rigid.drag * fdt);
-            rigid.velocity.x *= decay;
-            rigid.velocity.y *= decay;
+      const decay = Math.exp(-rigid.drag * fdt);
+      rigid.velocity.x *= decay;
+      rigid.velocity.y *= decay;
 
-            transform.position.x -= rigid.velocity.x * fdt;
-            transform.position.y += rigid.velocity.y * fdt;
-        }
+      transform.position.x -= rigid.velocity.x * fdt;
+      transform.position.y += rigid.velocity.y * fdt;
     }
+  }
 }

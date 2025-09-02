@@ -14,16 +14,35 @@ import { PerspectiveCamera } from "./modules/3D/PerspesctiveCamera";
 import type { Camera } from "./modules/shared/camera/Camera";
 import { Shader } from "./Rendering/Shader";
 
-export enum Cameras {
-  "MainCamera",
-  "EditorCamera"
+abstract class SceneAbstraction {
+  private _internalSene: Scene | null = null;
+
+  public get activedScene(): Scene {
+    if (!this._internalSene) {
+      throw new NullReferenceException("Nao foi possivel ecnontar uma cena");
+    }
+    return this._internalSene;
+  }
+
+  public set activedScene(v: Scene | null) {
+    this._internalSene = v;
+  }
+
+  public get components() {
+    return this.activedScene.components;
+  }
+
+  public get entities() {
+    return this.activedScene.entities;
+  }
 }
 
-export class Engine {
+export class Engine extends SceneAbstraction {
   public targetWindow: EngineWindow;
   public readonly time: Time;
-  protected scene: Scene | null = null;
-  public input: Input;
+  public input: Input
+
+
 
   public forcedCamera: Camera | null = null;
 
@@ -31,10 +50,7 @@ export class Engine {
 
     if (this.forcedCamera != null) return this.forcedCamera;
 
-    const scene = this.getScene();
-    if (!scene) throw new NullReferenceException();
-
-    const camera = scene.getCamera();
+    const camera = this.activedScene.getCamera();
     if (!camera) throw new NullReferenceException();
 
     return camera;
@@ -53,6 +69,7 @@ export class Engine {
 
   constructor(engineWindow: EngineWindow) {
 
+    super();
     this.targetWindow = engineWindow;
     const context = engineWindow.context;
     this.input = new Input(this.targetWindow.container);
@@ -80,7 +97,7 @@ export class Engine {
 
     this.time.on("render", () => {
 
-      if (!this.scene) return;
+      if (!this.activedScene) return;
 
       const camera = this.getActivedCamera();
       if (camera instanceof PerspectiveCamera) camera.aspect = this.targetWindow.aspectRatio;
@@ -111,8 +128,8 @@ export class Engine {
   }
 
   public unloadScene() {
-    if (this.scene) {
-      const camera = this.scene.getCamera();
+    if (this.activedScene) {
+      const camera = this.activedScene.getCamera();
       const clearColor = camera.clearColor;
 
       const context = this.targetWindow.context;
@@ -120,12 +137,12 @@ export class Engine {
       context.clear(context.COLOR_BUFFER_BIT | context.DEPTH_BUFFER_BIT);
 
       this.systems.clear();
-      this.scene = null;
+      this.activedScene = null;
     }
   }
 
   loadSceneByInstance(scene: Scene) {
-    this.unloadScene();
+    /*  this.unloadScene(); */
     for (const system of this.usedSystems) {
       let systemInstance = this.systems.getSystem(system);
       if (systemInstance) {
@@ -143,18 +160,9 @@ export class Engine {
       this.systems.addSystem(system, systemInstance);
     }
 
-    this.scene = scene;
+    this.activedScene = scene;
     this.systems.callStart();
     this.onLoadSceneCallback?.(scene);
-  }
-
-  setScene(scene: Scene) {
-    this.scene = scene;
-  }
-
-  getScene() {
-    if (!this.scene) throw new NullReferenceException();
-    return this.scene;
   }
 
   protected onLoadSceneCallback?: (scene: Scene) => void;
