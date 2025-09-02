@@ -2,7 +2,8 @@
 import { System } from "@engine/core/base/System";
 import { Vec2 } from "@engine/core/math/Vec2";
 import { ComponentType } from "@engine/modules/enums/ComponentType";
-import { WebKeyCode } from "@engine/modules/webInput/WebKeyCode";
+
+import { KeyCode } from "@engine/modules/webInput/WebKeyCode";
 import { CharacterControler2D } from "./character.controller.types";
 
 export class CharacterControlerSystem extends System {
@@ -20,13 +21,13 @@ export class CharacterControlerSystem extends System {
       characterControler.direction.x = 0;
       characterControler.direction.y = 0;
 
-      if (input.getKey(WebKeyCode.KeyA)) characterControler.direction.x -= 1;
-      if (input.getKey(WebKeyCode.KeyD)) characterControler.direction.x += 1;
-      if (input.getKey(WebKeyCode.KeyW)) characterControler.direction.y += 1;
-      if (input.getKey(WebKeyCode.KeyS)) characterControler.direction.y -= 1;
+      if (input.getKey(KeyCode.KeyA)) characterControler.direction.x -= 1;
+      if (input.getKey(KeyCode.KeyD)) characterControler.direction.x += 1;
+      if (input.getKey(KeyCode.KeyW)) characterControler.direction.y += 1;
+      if (input.getKey(KeyCode.KeyS)) characterControler.direction.y -= 1;
 
       Vec2.normalize(characterControler.direction, characterControler.direction);
-      const speed = input.getKey(WebKeyCode.ShiftLeft)
+      const speed = input.getKey(KeyCode.ShiftLeft)
         ? characterControler.runSpeed
         : characterControler.speed;
 

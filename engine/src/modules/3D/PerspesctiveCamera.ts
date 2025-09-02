@@ -1,4 +1,4 @@
-import { Display } from "@engine/core/display/Display";
+import { EngineWindow } from "@engine/core/display/Display";
 import { Mat4, Mat4Error } from "@engine/core/math/Mat4";
 import { Vec3 } from "@engine/core/math/Vec3";
 import { Vec4 } from "@engine/core/math/Vec4";
@@ -36,9 +36,12 @@ export class PerspectiveCamera extends Camera {
 
   public getViewMatrix(): Mat4 {
     const worldNoScale = Mat4.create();
-    this.transform.getWorldMatrix
 
-    Mat4.composeTR(worldNoScale, this.transform.position, this.transform.rotation);
+    Mat4.composeTR(
+      worldNoScale,
+      this.transform.position,
+      this.transform.rotation
+    );
 
     if (!Mat4.invert(worldNoScale, this._VIEW_MATRIX_CACHE)) {
       throw Mat4Error.INVERT_ERROR;
@@ -59,50 +62,83 @@ export class PerspectiveCamera extends Camera {
   }
 
   public getViewProjectionMatrix(): Mat4 {
-    Mat4.multiply(this.getProjectionMatrix(), this.getViewMatrix(), this._VIEW_PROJECTION_MATRIX_CACHE);
+    Mat4.multiply(
+      this.getProjectionMatrix(),
+      this.getViewMatrix(),
+      this._VIEW_PROJECTION_MATRIX_CACHE
+    );
     return this._VIEW_PROJECTION_MATRIX_CACHE;
   }
 
   public screenPointToWorld(point: Vec3, out: Vec3 = new Vec3()): Vec3 {
-    const ndc = Display.toNDC(point);
+    const currentWindow = EngineWindow.current;
+
+    const ndc = currentWindow.toNDC(point);
     const clip = new Vec4(ndc.x, ndc.y, ndc.z, 1.0);
 
-    if (!Mat4.invert(this.getViewProjectionMatrix(), this._MATRIX_OPERATION_CACHE)) {
+    if (
+      !Mat4.invert(this.getViewProjectionMatrix(), this._MATRIX_OPERATION_CACHE)
+    ) {
       throw Mat4Error.INVERT_ERROR;
     }
 
-    const world = Mat4.multiplyVec4(this._MATRIX_OPERATION_CACHE, clip);
-    out.set(world.x / world.w, world.y / world.w, world.z / world.w);
+    const world = Mat4.multiplyVec4(
+      this._MATRIX_OPERATION_CACHE,
+      clip
+    ).perspectiveDivide();
+
+    out.set(world.x, world.y, world.z);
     return out;
   }
 
   public worldPointToScreen(worldPoint: Vec3): Vec3 {
-    this._VEC4_OPERATION_CACHE.set(worldPoint.x, worldPoint.y, worldPoint.z, 1);
+    this._VEC4_OPERATION_CACHE.set(
+      worldPoint.x,
+      worldPoint.y,
+      worldPoint.z,
+      1
+    );
 
-    const clip = Mat4.multiplyVec4(this.getViewProjectionMatrix(), this._VEC4_OPERATION_CACHE);
+    const clip = Mat4.multiplyVec4(
+      this.getViewProjectionMatrix(),
+      this._VEC4_OPERATION_CACHE
+    );
 
     clip.x /= clip.w;
     clip.y /= clip.w;
     clip.z /= clip.w;
 
-    const screenX = ((clip.x + 1) / 2) * Display.width;
-    const screenY = ((1 - clip.y) / 2) * Display.height;
+    const currentWindow = EngineWindow.current;
+    if (!currentWindow) return new Vec3(0, 0, 0);
+
+    const screenX = ((clip.x + 1) / 2) * currentWindow.width;
+    const screenY = ((1 - clip.y) / 2) * currentWindow.height;
 
     return new Vec3(screenX, screenY, clip.z);
   }
 
   public screenPointToRay(point: Vec3): Ray {
-    const ndc = Display.toNDC(point);
+    const currentWindow = EngineWindow.current;
+
+    const ndc = currentWindow.toNDC(point);
 
     const nearClip = new Vec4(ndc.x, ndc.y, -1, 1);
     const farClip = new Vec4(ndc.x, ndc.y, 1, 1);
 
-    if (!Mat4.invert(this.getViewProjectionMatrix(), this._MATRIX_OPERATION_CACHE)) {
+    if (
+      !Mat4.invert(this.getViewProjectionMatrix(), this._MATRIX_OPERATION_CACHE)
+    ) {
       throw Mat4Error.INVERT_ERROR;
     }
 
-    const nearWorld = Mat4.multiplyVec4(this._MATRIX_OPERATION_CACHE, nearClip).perspectiveDivide();
-    const farWorld = Mat4.multiplyVec4(this._MATRIX_OPERATION_CACHE, farClip).perspectiveDivide();
+    const nearWorld = Mat4.multiplyVec4(
+      this._MATRIX_OPERATION_CACHE,
+      nearClip
+    ).perspectiveDivide();
+    const farWorld = Mat4.multiplyVec4(
+      this._MATRIX_OPERATION_CACHE,
+      farClip
+    ).perspectiveDivide();
 
     const origin = this.transform.transformPointToWorldSpace(nearWorld);
     const direction = farWorld.clone().subtractInplace(origin).normalizeInPlace();
@@ -116,7 +152,7 @@ export class PerspectiveCamera extends Camera {
       far: this.far,
       fov: this.fov,
       aspect: this.aspect,
-      clearColor: this.clearColor.clone()
+      clearColor: this.clearColor.clone(),
     });
   }
 }

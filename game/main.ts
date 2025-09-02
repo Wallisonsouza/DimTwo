@@ -1,5 +1,5 @@
 import { GameEntity } from "@engine/core/base/GameEntity";
-import { Display, EngineWindow } from "@engine/core/display/Display";
+import { EngineWindow } from "@engine/core/display/Display";
 import { ImageFileLoader } from "@engine/core/loaders/ImageFileLoader";
 import { EngineResourceManager } from "@engine/core/managers/EngineResourceManager";
 import { EngineSystem, EngineSystemManager } from "@engine/core/managers/EngineSystemManager";
@@ -29,38 +29,57 @@ import { loadEngine } from "engine/main";
 
 await loadEngine();
 
-const app = document.querySelector("#app") as HTMLDivElement;
+async function loadResources() {
+  EngineResourceManager.register(
+    "player_image",
+    new ImageFileLoader("../game/src/assets/images/Player.png")
+  );
 
-EngineResourceManager.register(
-  "player_image",
-  new ImageFileLoader("../game/src/assets/images/Player.png")
-);
+  EngineResourceManager.register(
+    "slime_image",
+    new ImageFileLoader("../game/src/assets/images/Slime.png")
+  );
 
-EngineResourceManager.register(
-  "slime_image",
-  new ImageFileLoader("../game/src/assets/images/Slime.png")
-);
+  EngineResourceManager.register(
+    "tree_image",
+    new ImageFileLoader("../game/src/assets/images/Tree.png")
+  );
 
-EngineResourceManager.register(
-  "tree_image",
-  new ImageFileLoader("../game/src/assets/images/Tree.png")
-);
+  EngineResourceManager.register(
+    "bushe_image",
+    new ImageFileLoader("../game/src/assets/images/Bushes.png")
+  );
 
-EngineResourceManager.register(
-  "bushe_image",
-  new ImageFileLoader("../game/src/assets/images/Bushes.png")
-);
+  EngineResourceManager.register(
+    "grass_image",
+    new ImageFileLoader("../game/src/assets/images/Grass.png")
+  );
 
-EngineResourceManager.register(
-  "grass_image",
-  new ImageFileLoader("../game/src/assets/images/Grass.png")
-);
+  await EngineResourceManager.load();
 
-await EngineResourceManager.load();
+  new AdvancedShaderSystem("advancedShaderSystem");
+  new SimpleShaderSystem("simpleShaderSystem");
+  new GizmosShaderSystem("gizmosShaderSystem");
 
-new AdvancedShaderSystem("advancedShaderSystem");
-new SimpleShaderSystem("simpleShaderSystem");
-new GizmosShaderSystem("gizmosShaderSystem");
+  EngineSystemManager.register(EngineSystem.RenderSystem, () => new RenderSystem());
+  EngineSystemManager.register(EngineSystem.TerrainSystem, () => new TerrainSystem());
+  EngineSystemManager.register(EngineSystem.AnimatorSystem, () => new AnimatorSystem());
+  EngineSystemManager.register(EngineSystem.PhysicsSystem, () => new PhysicsSystem());
+  EngineSystemManager.register(EngineSystem.CharacterControlerSystem, () => new CharacterControlerSystem());
+  EngineSystemManager.register(EngineSystem.CharacterControlerAnimationSystem, () => new CharacterControllerAnimationSystem());
+  EngineSystemManager.register(EngineSystem.ColliderSystem, () => new ColliderSystem());
+  EngineSystemManager.register(EngineSystem.CameraSystem, () => new CameraSystem());
+
+
+  EngineSystemManager.register(EngineSystem.EditorGizmosSystem, () => new GizmosSystem());
+  EngineSystemManager.register(EngineSystem.EditorTransformSystem, () => new EditorTransformSystem());
+  EngineSystemManager.register(EngineSystem.EditorFreeCameraSystem, () => new EditorFreeCamera2DSystem());
+}
+
+await loadResources();
+
+
+
 
 const resources: EngineResource[] = [
   { name: "advanced", type: "shader", vert: "advancedShaderVertex", frag: "advancedShaderFragment", system: "advancedShaderSystem" },
@@ -77,20 +96,6 @@ const resources: EngineResource[] = [
 
 
 
-
-EngineSystemManager.register(EngineSystem.RenderSystem, () => new RenderSystem());
-EngineSystemManager.register(EngineSystem.TerrainSystem, () => new TerrainSystem());
-EngineSystemManager.register(EngineSystem.AnimatorSystem, () => new AnimatorSystem());
-EngineSystemManager.register(EngineSystem.PhysicsSystem, () => new PhysicsSystem());
-EngineSystemManager.register(EngineSystem.CharacterControlerSystem, () => new CharacterControlerSystem());
-EngineSystemManager.register(EngineSystem.CharacterControlerAnimationSystem, () => new CharacterControllerAnimationSystem());
-EngineSystemManager.register(EngineSystem.ColliderSystem, () => new ColliderSystem());
-EngineSystemManager.register(EngineSystem.CameraSystem, () => new CameraSystem());
-
-
-EngineSystemManager.register(EngineSystem.EditorGizmosSystem, () => new GizmosSystem());
-EngineSystemManager.register(EngineSystem.EditorTransformSystem, () => new EditorTransformSystem());
-EngineSystemManager.register(EngineSystem.EditorFreeCameraSystem, () => new EditorFreeCamera2DSystem());
 
 //-------------------
 const scene = new Scene("simple_scene");
@@ -111,15 +116,13 @@ configureCamera(scene, cameraEntity);
 
 
 
+const app = document.querySelector("#app") as HTMLDivElement;
 
 //-------------------------__EDITOR-------------------------------
 
 
 const editorWindow = new EngineWindow();
-Display.addEngineWindow(editorWindow);
 app.appendChild(editorWindow.container);
-
-
 
 const editor = new Engine(editorWindow);
 EngineResourceManager.loadResources(editor, resources);
@@ -146,13 +149,11 @@ editor.enableSystem(EngineSystem.EditorFreeCameraSystem);
 editor.loadScene("simple_scene");
 editor.time.play();
 
-//--------------_Game------------------
 const gameWindow = new EngineWindow();
-Display.addEngineWindow(gameWindow);
-app.appendChild(gameWindow.container);
-
 const game = new Engine(gameWindow);
 EngineResourceManager.loadResources(game, resources);
+
+
 
 game.enableSystem(EngineSystem.RenderSystem);
 game.enableSystem(EngineSystem.AnimatorSystem);
@@ -167,11 +168,7 @@ game.time.play();
 
 
 
+app.appendChild(gameWindow.container);
+
 editorWindow.resize();
 gameWindow.resize();
-
-
-Display.setActive(0);
-
-
-

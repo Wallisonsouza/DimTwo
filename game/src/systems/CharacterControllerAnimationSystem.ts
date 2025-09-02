@@ -2,7 +2,7 @@ import { System } from "@engine/core/base/System";
 import type { SpriteRender2D } from "@engine/modules/2D/SpriteRender2D";
 import { ComponentType } from "@engine/modules/enums/ComponentType";
 import type { Animator } from "@engine/modules/shared/animator/Animator";
-import { WebKeyCode } from "@engine/modules/webInput/WebKeyCode";
+import { KeyCode } from "@engine/modules/webInput/WebKeyCode";
 import { CharacterControler2D } from "./character.controller.types";
 
 
@@ -33,7 +33,7 @@ export class CharacterControllerAnimationSystem extends System {
             );
             if (!animator) continue;
 
-            animator.playbackSpeed = input.getKey(WebKeyCode.ShiftLeft) ? 1.5 : 1.0;
+            animator.playbackSpeed = input.getKey(KeyCode.ShiftLeft) ? 1.5 : 1.0;
 
             const dir = characterControler.direction;
 

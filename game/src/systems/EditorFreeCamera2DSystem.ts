@@ -1,6 +1,7 @@
 import { System } from "@engine/core/base/System";
 import { Vec3 } from "@engine/core/math/Vec3";
 import type { Camera } from "@engine/modules/shared/camera/Camera";
+import { KeyCode } from "@engine/modules/webInput/WebKeyCode";
 
 export class EditorFreeCamera2DSystem extends System {
   private moveSpeed = 5;
@@ -20,10 +21,10 @@ export class EditorFreeCamera2DSystem extends System {
     const transform = this.camera.transform;
     this.moveDir.set(0, 0, 0);
 
-    if (input.getKey("KeyW")) this.moveDir.y += 1;
-    if (input.getKey("KeyS")) this.moveDir.y -= 1;
-    if (input.getKey("KeyA")) this.moveDir.x -= 1;
-    if (input.getKey("KeyD")) this.moveDir.x += 1;
+    if (input.getKey(KeyCode.KeyW)) this.moveDir.y += 1;
+    if (input.getKey(KeyCode.KeyS)) this.moveDir.y -= 1;
+    if (input.getKey(KeyCode.KeyA)) this.moveDir.x -= 1;
+    if (input.getKey(KeyCode.KeyD)) this.moveDir.x += 1;
 
     this.camera.transform.position.z +=
       input.getScrollDelta().y * dt * this.scrollSpeed;
@@ -32,7 +33,7 @@ export class EditorFreeCamera2DSystem extends System {
       Vec3.normalize(this.moveDir, this.moveDir);
 
       let speed = this.moveSpeed;
-      if (input.getKey("ShiftLeft")) {
+      if (input.getKey(KeyCode.ShiftLeft)) {
         speed *= this.runMultiplier;
       }
 

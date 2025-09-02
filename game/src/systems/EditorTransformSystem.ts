@@ -3,11 +3,6 @@ import { System } from "@engine/core/base/System";
 import { Vec3 } from "@engine/core/math/Vec3";
 import { Physics2D } from "@engine/modules/2D/Physics2D";
 
-export class Selection {
-    private _entities: GameEntity[] = [];
-
-}
-
 export class EditorTransformSystem extends System {
 
     private selectedGameEntity: GameEntity | null = null;
