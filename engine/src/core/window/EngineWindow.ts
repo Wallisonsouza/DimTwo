@@ -1,8 +1,5 @@
 import { Vec3 } from "../math/Vec3";
 
-// ---------------------------
-// EngineWindow
-// ---------------------------
 export class EngineWindow {
   readonly context: WebGL2RenderingContext;
   readonly canvas: HTMLCanvasElement;

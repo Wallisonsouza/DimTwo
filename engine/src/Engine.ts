@@ -1,5 +1,4 @@
-import { ElementInput } from "@game/systems/ElementInput";
-import { EngineWindow } from "./core/display/Display";
+import { Input } from "@engine/core/input/ElementInput";
 import { EngineSystem, EngineSystemManager } from "./core/managers/EngineSystemManager";
 import { SceneManager } from "./core/managers/SceneManager";
 import { SimpleManager } from "./core/managers/SimpleManager";
@@ -9,6 +8,7 @@ import type { Scene } from "./core/scene/scene";
 import Time from "./core/time/Time";
 import type { MeshBuffer } from "./core/webgl/MeshBuffer";
 import type { TextureBuffer } from "./core/webgl/TextureBuffer";
+import { EngineWindow } from "./core/window/EngineWindow";
 import { NullReferenceException } from "./errors/NullReferenceException";
 import { PerspectiveCamera } from "./modules/3D/PerspesctiveCamera";
 import type { Camera } from "./modules/shared/camera/Camera";
@@ -23,7 +23,7 @@ export class Engine {
   public targetWindow: EngineWindow;
   public readonly time: Time;
   protected scene: Scene | null = null;
-  public input: ElementInput;
+  public input: Input;
 
   public forcedCamera: Camera | null = null;
 
@@ -55,7 +55,7 @@ export class Engine {
 
     this.targetWindow = engineWindow;
     const context = engineWindow.context;
-    this.input = new ElementInput(this.targetWindow.container);
+    this.input = new Input(this.targetWindow.container);
 
 
     this.time = new Time();

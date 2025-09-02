@@ -3,7 +3,7 @@ import { System } from "@engine/core/base/System";
 import { Vec2 } from "@engine/core/math/Vec2";
 import { ComponentType } from "@engine/modules/enums/ComponentType";
 
-import { KeyCode } from "@engine/modules/webInput/WebKeyCode";
+import { KeyCode } from "@engine/core/input/KeyCode";
 import { CharacterControler2D } from "./character.controller.types";
 
 export class CharacterControlerSystem extends System {

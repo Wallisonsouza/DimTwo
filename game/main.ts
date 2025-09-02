@@ -1,11 +1,11 @@
 import { GameEntity } from "@engine/core/base/GameEntity";
-import { EngineWindow } from "@engine/core/display/Display";
 import { ImageFileLoader } from "@engine/core/loaders/ImageFileLoader";
 import { EngineResourceManager } from "@engine/core/managers/EngineResourceManager";
 import { EngineSystem, EngineSystemManager } from "@engine/core/managers/EngineSystemManager";
 import type { EngineResource } from "@engine/core/managers/Resource";
 import { SceneManager } from "@engine/core/managers/SceneManager";
 import { Scene } from "@engine/core/scene/scene";
+import { EngineWindow } from "@engine/core/window/EngineWindow";
 import { Engine } from "@engine/Engine";
 import { PerspectiveCamera } from "@engine/modules/3D/PerspesctiveCamera";
 import { AdvancedShaderSystem } from "@engine/modules/resources/material/AdvancedShaderSystem";

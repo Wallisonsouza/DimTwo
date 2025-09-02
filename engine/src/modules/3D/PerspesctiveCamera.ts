@@ -1,7 +1,7 @@
-import { EngineWindow } from "@engine/core/display/Display";
 import { Mat4, Mat4Error } from "@engine/core/math/Mat4";
 import { Vec3 } from "@engine/core/math/Vec3";
 import { Vec4 } from "@engine/core/math/Vec4";
+import { EngineWindow } from "@engine/core/window/EngineWindow";
 import { ComponentType } from "@engine/modules/enums/ComponentType";
 import { Camera, type CameraOptions } from "../shared/camera/Camera";
 import { Ray } from "../shared/physics/Ray";

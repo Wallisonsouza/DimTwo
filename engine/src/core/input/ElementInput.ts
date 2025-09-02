@@ -1,7 +1,7 @@
+import type { KeyCode } from "@engine/core/input/KeyCode";
 import { Vec3 } from "@engine/core/math/Vec3";
-import type { KeyCode } from "@engine/modules/webInput/WebKeyCode";
 
-export class ElementInput {
+export class Input {
     private key = new Map<string, boolean>();
     private keyDown = new Map<string, boolean>();
     private keyUp = new Map<string, boolean>();
