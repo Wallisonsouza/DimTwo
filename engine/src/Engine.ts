@@ -16,6 +16,11 @@ import type { Camera } from "./modules/shared/camera/Camera";
 import { Shader } from "./Rendering/Shader";
 import { Texture } from "./Rendering/Texture";
 
+export enum Cameras {
+  "MainCamera",
+  "EditorCamera"
+}
+
 export class Engine {
   public targetWindow: EngineWindow;
   public readonly time: Time;
