@@ -27,6 +27,7 @@ import { GizmosSystem } from "@game/systems/GizmosSystem";
 import { TerrainSystem } from "@game/systems/TerrainSystem";
 import { loadEngine } from "engine/main";
 
+
 await loadEngine();
 
 async function loadResources() {
@@ -70,15 +71,12 @@ async function loadResources() {
   EngineSystemManager.register(EngineSystem.ColliderSystem, () => new ColliderSystem());
   EngineSystemManager.register(EngineSystem.CameraSystem, () => new CameraSystem());
 
-
   EngineSystemManager.register(EngineSystem.EditorGizmosSystem, () => new GizmosSystem());
   EngineSystemManager.register(EngineSystem.EditorTransformSystem, () => new EditorTransformSystem());
   EngineSystemManager.register(EngineSystem.EditorFreeCameraSystem, () => new EditorFreeCamera2DSystem());
 }
 
 await loadResources();
-
-
 
 
 const resources: EngineResource[] = [
@@ -93,9 +91,6 @@ const resources: EngineResource[] = [
   { name: "fillQuad", type: "mesh", path: "fillQuad" },
   { name: "wireQuad", type: "mesh", path: "wireQuad" }
 ];
-
-
-
 
 //-------------------
 const scene = new Scene("simple_scene");
@@ -113,14 +108,9 @@ const cameraEntity = new GameEntity({ name: "camera", tag: "MainCamera" });
 scene.addEntity(cameraEntity);
 configureCamera(scene, cameraEntity);
 
-
-
-
 const app = document.querySelector("#app") as HTMLDivElement;
 
 //-------------------------__EDITOR-------------------------------
-
-
 const editorWindow = new EngineWindow();
 app.appendChild(editorWindow.container);
 
@@ -138,7 +128,6 @@ const cameraComponent = new PerspectiveCamera({
 
 });
 
-
 editor.forcedCamera = cameraComponent;
 
 editor.enableSystem(EngineSystem.RenderSystem);
@@ -153,8 +142,6 @@ const gameWindow = new EngineWindow();
 const game = new Engine(gameWindow);
 EngineResourceManager.loadResources(game, resources);
 
-
-
 game.enableSystem(EngineSystem.RenderSystem);
 game.enableSystem(EngineSystem.AnimatorSystem);
 game.enableSystem(EngineSystem.TerrainSystem);
@@ -165,8 +152,6 @@ game.enableSystem(EngineSystem.CameraSystem);
 
 game.loadScene("simple_scene");
 game.time.play();
-
-
 
 app.appendChild(gameWindow.container);
 
