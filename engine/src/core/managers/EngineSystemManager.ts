@@ -1,4 +1,8 @@
+import type { Engine } from "@engine/Engine";
+import { Texture } from "@engine/Rendering/Texture";
 import type { System } from "../base/System";
+import type { EngineResourceManager } from "./EngineResourceManager";
+import type { EngineResource } from "./Resource";
 
 export enum EngineSystem {
     RenderSystem,
@@ -36,4 +40,7 @@ export class EngineSystemManager {
     public static has(key: EngineSystem): boolean {
         return this.builders.has(key);
     }
+
+    
+
 }

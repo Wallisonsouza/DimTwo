@@ -10,11 +10,9 @@ import Time from "./core/time/Time";
 import type { MeshBuffer } from "./core/webgl/MeshBuffer";
 import type { TextureBuffer } from "./core/webgl/TextureBuffer";
 import { NullReferenceException } from "./errors/NullReferenceException";
-import { ResourcesManager } from "./global/ResourcesManager";
 import { PerspectiveCamera } from "./modules/3D/PerspesctiveCamera";
 import type { Camera } from "./modules/shared/camera/Camera";
 import { Shader } from "./Rendering/Shader";
-import { Texture } from "./Rendering/Texture";
 
 export enum Cameras {
   "MainCamera",
@@ -159,29 +157,6 @@ export class Engine {
     return this.scene;
   }
 
-  public compileShader(name: string, vertSource: string, fragSource: string, system: string) {
-    const shader = new Shader(this.targetWindow.context, name, vertSource, fragSource);
-    shader.systemName = system;
-    this.shaders.add(name, shader);
-  }
-
-  public compileTexture(texture: Texture) {
-    const textureBuffer = texture.compile(this.targetWindow.context);
-    if (!textureBuffer) return;
-    this.textureBuffers.add(texture.name, textureBuffer);
-  }
-
-  public compileMesh(id: string) {
-    const mesh = ResourcesManager.MeshManager.get(id);
-    if (!mesh) {
-      return;
-    }
-
-    const meshBuffer = mesh.compile(this.targetWindow.context);
-    this.meshBuffers.add(mesh.name, meshBuffer);
-  }
-
-  protected onFocusCallback?: (engine: Engine) => void;
   protected onLoadSceneCallback?: (scene: Scene) => void;
   protected onStopCallback?: () => void;
 
@@ -193,7 +168,4 @@ export class Engine {
     this.onLoadSceneCallback = callback;
   }
 
-  public onFocusWindow(callback: (engine: Engine) => void) {
-    this.onFocusCallback = callback;
-  }
 }
