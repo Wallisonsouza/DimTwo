@@ -30,10 +30,14 @@
       "@game/*": [
         "./game/src/*"
       ],
+      "@editor/*": [
+        "./editor/src/*"
+      ],
     }
   },
   "include": [
     "game",
-    "engine"
+    "engine",
+    "editor"
   ]
 }
