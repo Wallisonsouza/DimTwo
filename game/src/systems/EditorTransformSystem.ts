@@ -2,7 +2,11 @@ import type { GameEntity } from "@engine/core/base/GameEntity";
 import { System } from "@engine/core/base/System";
 import { Vec3 } from "@engine/core/math/Vec3";
 import { Physics2D } from "@engine/modules/2D/Physics2D";
-import { Input } from "./InputSystem";
+
+export class Selection {
+    private _entities: GameEntity[] = [];
+
+}
 
 export class EditorTransformSystem extends System {
 
@@ -10,13 +14,16 @@ export class EditorTransformSystem extends System {
     private offset = { x: 0, y: 0 };
 
     update(): void {
+
+        const input = this.engine.input;
+
         const camera = this.engine.getActivedCamera();
         if (!camera) return;
 
-        const mousePos = Input.mouse.getMousePosition();
+        const mousePos = input.getMousePosition();
         if (!mousePos) return;
 
-        if (Input.mouse.getMouseButtonDown(0)) {
+        if (input.getMouseButtonDown(0)) {
             const ray = camera.screenPointToRay(mousePos);
             const hit = Physics2D.rayCast2D(ray.origin, ray.direction);
             if (hit) {
@@ -27,7 +34,7 @@ export class EditorTransformSystem extends System {
             }
         }
 
-        if (Input.mouse.getMouseButtonUp(0)) {
+        if (input.getMouseButtonUp(0)) {
             this.selectedGameEntity = null;
         }
 

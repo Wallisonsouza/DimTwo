@@ -1,5 +1,5 @@
+import { Vec2 } from "@engine/core/math/Vec2";
 import { Sprite2D } from "@engine/modules/2D/Sprite2D";
-import { Vec2 } from "@engine/modules/2D/Vec2";
 
 export const SLIME_SPRITE = new Sprite2D({
     textureID: "slime",

@@ -6,7 +6,6 @@ export interface GameEntityOptions {
     tag?: string;
     active?: boolean;
     static?: boolean;
-    parentID?: number | null;
 }
 
 export class GameEntity extends Entity {
@@ -15,7 +14,6 @@ export class GameEntity extends Entity {
     tag: string;
     active: boolean;
     name: string;
-    parentID: number | null;
     static: boolean;
 
     constructor(options: GameEntityOptions = {}) {
@@ -23,7 +21,6 @@ export class GameEntity extends Entity {
         this.name = options.name ?? "";
         this.tag = options.tag ?? "";
         this.active = options.active ?? true;
-        this.parentID = options.parentID ?? null;
         this.static = options.static ?? false;
     }
 
@@ -32,7 +29,6 @@ export class GameEntity extends Entity {
             name: this.name,
             tag: this.tag,
             active: this.active,
-            parentID: this.parentID
         });
     }
 }

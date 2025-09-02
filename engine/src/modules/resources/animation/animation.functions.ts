@@ -1,5 +1,5 @@
+import { Vec2 } from "../../../core/math/Vec2";
 import { Sprite2D } from "../../2D/Sprite2D";
-import { Vec2 } from "../../2D/Vec2";
 import type { AnimationClip, AnimationFrame } from "./animation.types";
 
 export function createAnimationClip(

@@ -1,5 +1,5 @@
+import { Vec2 } from "@engine/core/math/Vec2";
 import { Sprite2D } from "@engine/modules/2D/Sprite2D";
-import { Vec2 } from "@engine/modules/2D/Vec2";
 
 const BUSHE_0 = new Sprite2D({
     meshID: null,

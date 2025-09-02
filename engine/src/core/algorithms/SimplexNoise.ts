@@ -1,4 +1,4 @@
-import { Vec2 } from "../../modules/2D/Vec2";
+import { Vec2 } from "../math/Vec2";
 import { Vec3 } from "../math/Vec3";
 
 export class SimplexNoise {
@@ -28,7 +28,6 @@ export class SimplexNoise {
     new Vec2(0, 1),
     new Vec2(0, -1),
   ];
-
 
   private perm: number[] = [];
   private random: () => number;

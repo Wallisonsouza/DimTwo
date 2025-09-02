@@ -9,16 +9,25 @@ export class CameraSystem extends System {
 
     start(): void {
         const scene = this.getScene();
-
         this.player = scene.entities.getByTag("Player");
         this.camera = scene.entities.getByTag("MainCamera");
         this.cameraZ = this.camera?.transform.position.z || 0;
     }
-    update(dt: number) {
-
+    update() {
         if (!this.camera || !this.player) return;
-
         this.camera.transform.position = this.player.transform.position;
         this.camera.transform.position.z = this.cameraZ;
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,5 +1,5 @@
 import { Component } from "@engine/core/base/Component";
-import { Vec2 } from "@engine/modules/2D/Vec2";
+import { Vec2 } from "@engine/core/math/Vec2";
 import { ComponentGroup } from "@engine/modules/enums/ComponentGroup";
 import { ComponentType } from "@engine/modules/enums/ComponentType";
 
@@ -26,13 +26,13 @@ export class CharacterControler2D extends Component {
 
   clone(): CharacterControler2D {
     const clone = new CharacterControler2D();
-    clone.direction = this.direction.clone(); 
+    clone.direction = this.direction.clone();
     clone.speed = this.speed;
     clone.runSpeed = this.runSpeed;
     clone.moving = this.moving;
     clone.state = this.state;
     clone.facing = this.facing;
     return clone;
-}
+  }
 
 }

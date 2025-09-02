@@ -1,3 +1,4 @@
+import { ElementInput } from "@game/systems/ElementInput";
 import { EngineWindow } from "./core/display/Display";
 import { EngineSystem, EngineSystemManager } from "./core/managers/EngineSystemManager";
 import { SceneManager } from "./core/managers/SceneManager";
@@ -16,172 +17,178 @@ import { Shader } from "./Rendering/Shader";
 import { Texture } from "./Rendering/Texture";
 
 export class Engine {
-    public targetWindow: EngineWindow;
-    public readonly time: Time;
-    protected scene: Scene | null = null;
+  public targetWindow: EngineWindow;
+  public readonly time: Time;
+  protected scene: Scene | null = null;
+  public input: ElementInput;
+
+  public forcedCamera: Camera | null = null;
+
+  public getActivedCamera() {
+
+    if (this.forcedCamera != null) return this.forcedCamera;
+
+    const scene = this.getScene();
+    if (!scene) throw new NullReferenceException();
+
+    const camera = scene.getCamera();
+    if (!camera) throw new NullReferenceException();
+
+    return camera;
+  }
+
+  public shaders: SimpleManager<Shader> = new SimpleManager("Shader Manager");
+  public matrices: SimpleManager<Mat4> = new SimpleManager("Matrix Manager");
+  public meshBuffers: SimpleManager<MeshBuffer> = new SimpleManager("Mesh Buffer Manager");
+  public textureBuffers: SimpleManager<TextureBuffer> = new SimpleManager("Texture Buffer Manager");
+  public systems: SystemManager = new SystemManager();
+  public usedSystems: EngineSystem[] = [];
+
+  public enableSystem(systemType: EngineSystem) {
+    this.usedSystems.push(systemType);
+  }
+
+  constructor(engineWindow: EngineWindow) {
+
+    this.targetWindow = engineWindow;
+    const context = engineWindow.context;
+    this.input = new ElementInput(this.targetWindow.container);
 
 
-    public forcedCamera: Camera | null = null;
+    this.time = new Time();
 
-    public getActivedCamera() {
+    this.time.on("start", () => {
+      this.systems.callStart();
+    });
 
-        if (this.forcedCamera !== null) return this.forcedCamera;
+    this.time.on("fixedUpdate", () => {
+      this.systems.callFixedUpdate(this.time.fixedDeltaTime);
+    });
 
-        const scene = this.getScene();
-        if (!scene) throw new NullReferenceException();
+    this.time.on("update", () => {
+      this.systems.callUpdate(this.time.deltaTime);
+      this.systems.callLateUpdate(this.time.deltaTime);
+    });
 
-        const camera = scene.getCamera();
-        if (!camera) throw new NullReferenceException();
+    this.time.on("lateUpdate", () => {
+      this.input.clear()
+    });
 
-        return camera;
+
+    this.time.on("render", () => {
+
+      if (!this.scene) return;
+
+      const camera = this.getActivedCamera();
+      if (camera instanceof PerspectiveCamera) camera.aspect = this.targetWindow.aspectRatio;
+
+      const color = camera.clearColor;
+
+      context.clearColor(color.r, color.g, color.b, color.a);
+      context.clear(context.COLOR_BUFFER_BIT | context.DEPTH_BUFFER_BIT);
+
+      this.systems.callRender(this.time.deltaTime);
+      this.systems.callDrawGizmos();
+    });
+
+    this.time.on("stop", () => {
+      this.onStopCallback?.();
+    })
+  }
+
+  loadScene(name: string, clone: boolean = false) {
+
+    const scene = SceneManager.getScene(name);
+    if (!scene) {
+      throw new Error(`Scene "${name}" not found`);
     }
 
-    public shaders: SimpleManager<Shader> = new SimpleManager("Shader Manager");
-    public matrices: SimpleManager<Mat4> = new SimpleManager("Matrix Manager");
-    public meshBuffers: SimpleManager<MeshBuffer> = new SimpleManager("Mesh Buffer Manager");
-    public textureBuffers: SimpleManager<TextureBuffer> = new SimpleManager("Texture Buffer Manager");
-    public systems: SystemManager = new SystemManager();
-    public usedSystems: EngineSystem[] = [];
+    const s = clone ? scene.clone() : scene;
+    this.loadSceneByInstance(s);
+  }
 
-    public enableSystem(systemType: EngineSystem) {
-        this.usedSystems.push(systemType);
+  public unloadScene() {
+    if (this.scene) {
+      const camera = this.scene.getCamera();
+      const clearColor = camera.clearColor;
+
+      const context = this.targetWindow.context;
+      context.clearColor(clearColor.r, clearColor.g, clearColor.b, 1.0);
+      context.clear(context.COLOR_BUFFER_BIT | context.DEPTH_BUFFER_BIT);
+
+      this.systems.clear();
+      this.scene = null;
+    }
+  }
+
+  loadSceneByInstance(scene: Scene) {
+    this.unloadScene();
+    for (const system of this.usedSystems) {
+      let systemInstance = this.systems.getSystem(system);
+      if (systemInstance) {
+        systemInstance.setScene(scene);
+        continue;
+      }
+
+      systemInstance = EngineSystemManager.create(system);
+      if (!systemInstance) {
+        throw new Error(`System ${EngineSystem[system]} could not be created`);
+      }
+
+      systemInstance.setScene(scene);
+      systemInstance.setEngine(this);
+      this.systems.addSystem(system, systemInstance);
     }
 
-    constructor(engineWindow: EngineWindow) {
+    this.scene = scene;
+    this.systems.callStart();
+    this.onLoadSceneCallback?.(scene);
+  }
 
-        this.targetWindow = engineWindow;
-        const context = engineWindow.context;
+  setScene(scene: Scene) {
+    this.scene = scene;
+  }
 
-        this.time = new Time();
+  getScene() {
+    if (!this.scene) throw new NullReferenceException();
+    return this.scene;
+  }
 
-        this.time.on("start", () => {
-            this.systems.callStart();
-        });
+  public compileShader(name: string, vertSource: string, fragSource: string, system: string) {
+    const shader = new Shader(this.targetWindow.context, name, vertSource, fragSource);
+    shader.systemName = system;
+    this.shaders.add(name, shader);
+  }
 
-        this.time.on("fixedUpdate", () => {
-            this.systems.callFixedUpdate(this.time.fixedDeltaTime);
-        });
+  public compileTexture(texture: Texture) {
+    const textureBuffer = texture.compile(this.targetWindow.context);
+    if (!textureBuffer) return;
+    this.textureBuffers.add(texture.name, textureBuffer);
+  }
 
-        this.time.on("update", () => {
-            this.systems.callUpdate(this.time.deltaTime);
-            this.systems.callLateUpdate(this.time.deltaTime);
-        });
-
-
-        this.time.on("render", () => {
-
-            if (!this.scene) return;
-
-            const camera = this.getActivedCamera();
-            if (camera instanceof PerspectiveCamera) camera.aspect = this.targetWindow.aspectRatio;
-
-            const color = camera.clearColor;
-
-            context.clearColor(color.r, color.g, color.b, color.a);
-            context.clear(context.COLOR_BUFFER_BIT | context.DEPTH_BUFFER_BIT);
-
-            this.systems.callRender(this.time.deltaTime);
-            this.systems.callDrawGizmos();
-        });
-
-        this.time.on("stop", () => {
-            this.onStopCallback?.();
-        })
+  public compileMesh(id: string) {
+    const mesh = ResourcesManager.MeshManager.get(id);
+    if (!mesh) {
+      return;
     }
 
-    loadScene(name: string, clone: boolean = false) {
+    const meshBuffer = mesh.compile(this.targetWindow.context);
+    this.meshBuffers.add(mesh.name, meshBuffer);
+  }
 
-        const scene = SceneManager.getScene(name);
-        if (!scene) {
-            throw new Error(`Scene "${name}" not found`);
-        }
+  protected onFocusCallback?: (engine: Engine) => void;
+  protected onLoadSceneCallback?: (scene: Scene) => void;
+  protected onStopCallback?: () => void;
 
-        const s = clone ? scene.clone() : scene;
-        this.loadSceneByInstance(s);
-    }
+  public onStop(callback: () => void) {
+    this.onStopCallback = callback;
+  }
 
-    public unloadScene() {
-        if (this.scene) {
-            const camera = this.scene.getCamera();
-            const clearColor = camera.clearColor;
+  public onLoadScene(callback: (scene: Scene) => void) {
+    this.onLoadSceneCallback = callback;
+  }
 
-            const context = this.targetWindow.context;
-            context.clearColor(clearColor.r, clearColor.g, clearColor.b, 1.0);
-            context.clear(context.COLOR_BUFFER_BIT | context.DEPTH_BUFFER_BIT);
-
-            this.systems.clear();
-            this.scene = null;
-        }
-    }
-
-    loadSceneByInstance(scene: Scene) {
-        this.unloadScene();
-        for (const system of this.usedSystems) {
-            let systemInstance = this.systems.getSystem(system);
-            if (systemInstance) {
-                systemInstance.setScene(scene);
-                continue;
-            }
-
-            systemInstance = EngineSystemManager.create(system);
-            if (!systemInstance) {
-                throw new Error(`System ${EngineSystem[system]} could not be created`);
-            }
-
-            systemInstance.setScene(scene);
-            systemInstance.setEngine(this);
-            this.systems.addSystem(system, systemInstance);
-        }
-
-        this.scene = scene;
-        this.systems.callStart();
-        this.onLoadSceneCallback?.(scene);
-    }
-
-    setScene(scene: Scene) {
-        this.scene = scene;
-    }
-
-    getScene() {
-        if (!this.scene) throw new NullReferenceException();
-        return this.scene;
-    }
-
-    public compileShader(name: string, vertSource: string, fragSource: string, system: string) {
-        const shader = new Shader(this.targetWindow.context, name, vertSource, fragSource);
-        shader.systemName = system;
-        this.shaders.add(name, shader);
-    }
-
-    public compileTexture(texture: Texture) {
-        const textureBuffer = texture.compile(this.targetWindow.context);
-        if (!textureBuffer) return;
-        this.textureBuffers.add(texture.name, textureBuffer);
-    }
-
-    public compileMesh(id: string) {
-        const mesh = ResourcesManager.MeshManager.get(id);
-        if (!mesh) {
-            return;
-        }
-
-        const meshBuffer = mesh.compile(this.targetWindow.context);
-        this.meshBuffers.add(mesh.name, meshBuffer);
-    }
-
-    protected onFocusCallback?: (engine: Engine) => void;
-    protected onLoadSceneCallback?: (scene: Scene) => void;
-    protected onStopCallback?: () => void;
-
-    public onStop(callback: () => void) {
-        this.onStopCallback = callback;
-    }
-
-    public onLoadScene(callback: (scene: Scene) => void) {
-        this.onLoadSceneCallback = callback;
-    }
-
-    public onFocusWindow(callback: (engine: Engine) => void) {
-        this.onFocusCallback = callback;
-    }
+  public onFocusWindow(callback: (engine: Engine) => void) {
+    this.onFocusCallback = callback;
+  }
 }

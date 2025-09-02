@@ -10,7 +10,7 @@ export class WebKeyboardInput implements IKeyboardInput {
 
   enable(target: HTMLElement) {
 
-   target.tabIndex = 0;
+    target.tabIndex = 0;
     target.addEventListener('keydown', this.onKeyDown);
     target.addEventListener('keyup', this.onKeyUp);
   }
@@ -34,23 +34,19 @@ export class WebKeyboardInput implements IKeyboardInput {
     this.keyUp.set(code, true);
   }
 
-  /** Limpa os estados de teclas de um frame */
   clear(): void {
     this.keyDown.clear();
     this.keyUp.clear();
   }
 
-  /** Retorna true se a tecla foi pressionada neste frame */
   getKeyDown(code: string): boolean {
     return this.keyDown.get(code) ?? false;
   }
 
-  /** Retorna true se a tecla está pressionada atualmente */
   getKey(code: string): boolean {
     return this.key.get(code) ?? false;
   }
 
-  /** Retorna true se a tecla foi solta neste frame */
   getKeyUp(code: string): boolean {
     return this.keyUp.get(code) ?? false;
   }

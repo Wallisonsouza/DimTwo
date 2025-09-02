@@ -1,9 +1,9 @@
-
-import type { AnimatorController } from "../../../engine/src/modules/shared/animator/AnimatorController";
+import type { AnimatorController } from "@engine/modules/shared/animator/AnimatorController";
 import { PLAYER_ANIMATIONS } from "./player.animation";
 
+
 export const PLAYER_ANIMATOR_CONTROLLER: AnimatorController = {
-  
+
   name: "playerController",
   currentState: "idle",
 

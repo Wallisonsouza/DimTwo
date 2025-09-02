@@ -1,7 +1,7 @@
 import type { Engine } from "@engine/Engine";
-import { Vec2 } from "./Vec2";
+import { Vec2 } from "../../core/math/Vec2";
 
-export interface SrpiteOptions {
+export interface Sprite2DOptions {
   textureID?: string | null;
   position?: Vec2;
   origin?: Vec2;
@@ -16,7 +16,7 @@ export class Sprite2D {
   size: Vec2;
   meshID: string | null;
 
-  constructor(options: SrpiteOptions) {
+  constructor(options: Sprite2DOptions) {
     this.textureID = options.textureID ?? null;
     this.position = options.position ?? new Vec2(0, 0);
     this.origin = options.origin ?? new Vec2(0, 0);

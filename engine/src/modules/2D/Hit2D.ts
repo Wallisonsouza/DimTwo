@@ -1,4 +1,4 @@
-import type { Vec2 } from "@engine/modules/2D/Vec2";
+import type { Vec2 } from "@engine/core/math/Vec2";
 import type { Collider2D } from "./Collider2D";
 
 export class Hit2D {

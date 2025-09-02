@@ -1,13 +1,16 @@
-import { Input } from "@game/systems/InputSystem";
 import { Vec3 } from "../math/Vec3";
 
+// ---------------------------
+// EngineWindow
+// ---------------------------
 export class EngineWindow {
   readonly context: WebGL2RenderingContext;
   readonly canvas: HTMLCanvasElement;
   readonly container: HTMLDivElement;
 
-  public width: number = 0;
-  public height: number = 0;
+  public isFocus: boolean = false;
+  public width = 0;
+  public height = 0;
   public auto: boolean = true;
 
   public get aspectRatio() {
@@ -15,7 +18,6 @@ export class EngineWindow {
   }
 
   constructor() {
-
     this.container = document.createElement("div");
     this.container.className = "engine-window";
 
@@ -44,8 +46,7 @@ export class EngineWindow {
 
     this.canvas.width = this.width;
     this.canvas.height = this.height;
-
-    this.context.viewport(0, 0, this.canvas.width, this.canvas.height);
+    this.context.viewport(0, 0, this.width, this.height);
   }
 
   public toNDC(p: Vec3): Vec3 {
@@ -61,22 +62,24 @@ export class EngineWindow {
   }
 }
 
+// ---------------------------
+// Display
+// ---------------------------
 export class Display {
   private static windows: EngineWindow[] = [];
-  private static windowIndex: number = 0;
+  private static windowIndex = 0;
 
   public static get current(): EngineWindow | null {
     return this.windows[this.windowIndex] ?? null;
   }
 
   public static addEngineWindow(window: EngineWindow) {
+    const index = this.windows.length;
     this.windows.push(window);
 
+    // Clique na janela ativa ela
     window.container.addEventListener("click", () => {
-      if (this.current) {
-        Input.keyboard.disable(this.current.container);
-        Input.mouse.disable(this.current.container);
-      }
+      this.setActive(index);
     });
   }
 
@@ -97,12 +100,13 @@ export class Display {
   }
 
   public static setActive(index: number) {
-    if (index >= 0 && index < this.windows.length) {
-      this.windowIndex = index;
-      Input.mouse.enable(this.windows[this.windowIndex].container);
-      Input.keyboard.enable(this.windows[this.windowIndex].container);
+    if (index < 0 || index >= this.windows.length) return;
 
-    }
+    const prev = this.current;
+    if (prev) prev.isFocus = false;
+
+    this.windowIndex = index;
+    const active = this.current!;
+    active.isFocus = true;
   }
 }
-

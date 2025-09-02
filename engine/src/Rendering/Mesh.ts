@@ -1,7 +1,7 @@
+import { Vec2 } from "../core/math/Vec2";
 import { Vec3 } from "../core/math/Vec3";
 import type { MeshBuffer } from "../core/webgl/MeshBuffer";
 import { ResourcesManager } from "../global/ResourcesManager";
-import { Vec2 } from "../modules/2D/Vec2";
 
 export class Mesh {
     name: string;

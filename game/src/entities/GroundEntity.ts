@@ -5,7 +5,6 @@ import type { Scene } from "@engine/core/scene/scene";
 import { SpriteRender2D } from "@engine/modules/2D/SpriteRender2D";
 import { Transform } from "@engine/modules/3D/Transform";
 
-
 export function configureGroundEntity(
     scene: Scene,
     entity: GameEntity,

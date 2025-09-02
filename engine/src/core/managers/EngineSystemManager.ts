@@ -3,7 +3,6 @@ import type { System } from "../base/System";
 export enum EngineSystem {
     RenderSystem,
     EditorRenderSystem,
-    InputSystem,
     CameraSystem,
     EditorFreeCameraSystem,
     AnimatorSystem,

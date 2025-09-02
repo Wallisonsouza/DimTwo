@@ -4,12 +4,14 @@ import { ComponentType } from "@engine/modules/enums/ComponentType";
 import type { Animator } from "@engine/modules/shared/animator/Animator";
 import { WebKeyCode } from "@engine/modules/webInput/WebKeyCode";
 import { CharacterControler2D } from "./character.controller.types";
-import { Input } from "./InputSystem";
 
 
 export class CharacterControllerAnimationSystem extends System {
 
     lateUpdate() {
+
+        const input = this.engine.input;
+
         const scene = this.getScene();
         const components = scene.components;
 
@@ -31,7 +33,7 @@ export class CharacterControllerAnimationSystem extends System {
             );
             if (!animator) continue;
 
-            animator.playbackSpeed = Input.keyboard.getKey(WebKeyCode.ShiftLeft) ? 1.5 : 1.0;
+            animator.playbackSpeed = input.getKey(WebKeyCode.ShiftLeft) ? 1.5 : 1.0;
 
             const dir = characterControler.direction;
 

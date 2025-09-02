@@ -1,6 +1,7 @@
 import type { Component } from "@engine/core/base/Component";
 import { type GameEntityOptions } from "@engine/core/base/GameEntity";
 import { Quat } from "@engine/core/math/quat";
+import { Vec2 } from "@engine/core/math/Vec2";
 import { Vec3 } from "@engine/core/math/Vec3";
 import { BoxCollider2D } from "@engine/modules/2D/BoxCollider2D";
 import { SpriteRender2D } from "@engine/modules/2D/SpriteRender2D";
@@ -38,6 +39,7 @@ export const OAK_TREE_PREFAB: Prefab = {
             sprite: OAK_TRE_0
         }),
         new BoxCollider2D({
+            size: new Vec2(0.1, 1),
             collisionLayer: CollisionLayer.Tree
         }),
     ],
@@ -192,5 +194,5 @@ export const GRASS_0_PREFAB: Prefab = {
     ],
 };
 
-
-Physics.collisionMatrix.setCollision(CollisionLayer.Player, CollisionLayer.Enemy, true);
+Physics.collisionMatrix.setCollision(CollisionLayer.Enemy, CollisionLayer.Player, true);
+Physics.collisionMatrix.setCollision(CollisionLayer.Tree, CollisionLayer.Player, true);
