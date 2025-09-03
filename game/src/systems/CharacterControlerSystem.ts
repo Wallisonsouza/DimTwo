@@ -30,6 +30,8 @@ export class CharacterControlerSystem extends System {
         ComponentType.RigidBody2D
       );
 
+
+
       const animator = this.engine.components.getComponent<Animator>(
         characterControler.gameEntity,
         ComponentType.Animator
@@ -61,6 +63,9 @@ export class CharacterControlerSystem extends System {
       if (rigid.velocity.x > speed) rigid.velocity.x = speed;
       if (rigid.velocity.x < -speed) rigid.velocity.x = -speed;
 
+
+
+
       if (input.getKeyDown(KeyCode.Space) && characterControler.jumpCount < 2) {
         animator.setAnimatorState("jump", true);
         const up = new Vec2(0, 1);
@@ -70,6 +75,7 @@ export class CharacterControlerSystem extends System {
     }
   }
 
+  // atrito totalmente intencional
   onCollisionStay(collisionEvent: CollisionEvent): void {
     const characterControlerA = this.engine.components.getComponent<CharacterControler2D>(
       collisionEvent.a.gameEntity,
@@ -87,6 +93,43 @@ export class CharacterControlerSystem extends System {
 
     if (characterControlerB) {
       characterControlerB.jumpCount = 0;
+    }
+
+    const rididA = this.engine.components.getComponent<RigidBody2D>(
+      collisionEvent.a.gameEntity,
+      ComponentType.RigidBody2D
+    );
+
+    const rigidB = this.engine.components.getComponent<RigidBody2D>(
+      collisionEvent.b.gameEntity,
+      ComponentType.RigidBody2D
+    );
+
+    if (rididA) {
+      rididA.drag = 10;
+    }
+
+    if (rigidB) {
+      rigidB.drag = 10;
+    }
+  }
+  onCollisionExit(collisionEvent: CollisionEvent): void {
+    const rididA = this.engine.components.getComponent<RigidBody2D>(
+      collisionEvent.a.gameEntity,
+      ComponentType.RigidBody2D
+    );
+
+    const rigidB = this.engine.components.getComponent<RigidBody2D>(
+      collisionEvent.b.gameEntity,
+      ComponentType.RigidBody2D
+    );
+
+    if (rididA) {
+      rididA.drag = 0.1;
+    }
+
+    if (rigidB) {
+      rigidB.drag = 0.1;
     }
   }
 
