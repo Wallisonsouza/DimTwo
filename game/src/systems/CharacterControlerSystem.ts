@@ -1,5 +1,5 @@
 
-import { System } from "@engine/core/base/System";
+import { System, type CollisionEvent } from "@engine/core/base/System";
 import { ComponentType } from "@engine/modules/enums/ComponentType";
 
 import { KeyCode } from "@engine/core/input/KeyCode";
@@ -23,6 +23,7 @@ export class CharacterControlerSystem extends System {
     for (const characterControler of characterControlers) {
 
       characterControler.direction.x = 0;
+      characterControler.direction.y = 0;
 
       const rigid = this.engine.components.getComponent<RigidBody2D>(
         characterControler.gameEntity,
@@ -60,14 +61,32 @@ export class CharacterControlerSystem extends System {
       if (rigid.velocity.x > speed) rigid.velocity.x = speed;
       if (rigid.velocity.x < -speed) rigid.velocity.x = -speed;
 
-      if (input.getKeyDown(KeyCode.Space)) {
+      if (input.getKeyDown(KeyCode.Space) && characterControler.jumpCount < 2) {
         animator.setAnimatorState("jump", true);
         const up = new Vec2(0, 1);
         rigid.addForce(up.scale(200), ForceMode.Force);
         characterControler.jumpCount += 1;
       }
+    }
+  }
 
+  onCollisionStay(collisionEvent: CollisionEvent): void {
+    const characterControlerA = this.engine.components.getComponent<CharacterControler2D>(
+      collisionEvent.a.gameEntity,
+      ComponentType.CharacterController
+    );
 
+    const characterControlerB = this.engine.components.getComponent<CharacterControler2D>(
+      collisionEvent.b.gameEntity,
+      ComponentType.CharacterController
+    );
+
+    if (characterControlerA) {
+      characterControlerA.jumpCount = 0;
+    }
+
+    if (characterControlerB) {
+      characterControlerB.jumpCount = 0;
     }
   }
 

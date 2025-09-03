@@ -9,7 +9,7 @@ export class Color {
   }
 
   public static readonly Red = new Color(255, 0, 0);
-  public static readonly green = new Color(0, 255, 0);
+  public static readonly Green = new Color(0, 255, 0);
   public static readonly blue = new Color(0, 0, 255);
   public static readonly yellow = new Color(255, 255, 0);
   public static readonly cyan = new Color(0, 255, 255);

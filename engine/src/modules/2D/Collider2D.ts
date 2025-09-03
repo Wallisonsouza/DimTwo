@@ -23,7 +23,7 @@ export abstract class Collider2D extends Component {
   collisionLayer: number;
   ignoreSelfCollisions: boolean;
   private _bounds: Bounds2D;
-  debugColor: Color = Color.green;
+  debugColor: Color = Color.Green;
 
   public getBounds(): Bounds2D {
 

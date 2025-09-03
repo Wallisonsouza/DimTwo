@@ -31,6 +31,8 @@ export class Collider2DSystem extends System {
     // Detecta EXIT
     for (const [key, { a, b }] of this.previousCollisions) {
       if (!this.currentCollisions.has(key)) {
+        a.isColliding = false;
+        b.isColliding = false;
         this.engine.systems.callCollisionExitEvents({ a, b });
       }
     }
@@ -95,10 +97,10 @@ export class Collider2DSystem extends System {
           const aEnd = Vec2.add(aStart, aDelta);
           const bEnd = Vec2.add(bStart, bDelta);
 
-          // Swept AABB check
-          const aSwept = a.getSweptBounds(aStart, aEnd);
-          const bSwept = b.getSweptBounds(bStart, bEnd);
-          if (!aSwept.intersects(bSwept)) continue;
+          /*   // Swept AABB check
+            const aSwept = a.getSweptBounds(aStart, aEnd);
+            const bSwept = b.getSweptBounds(bStart, bEnd);
+            if (!aSwept.intersects(bSwept)) continue; */
 
           // Passos finos
           const relativeDelta = Vec2.sub(aDelta, bDelta);
@@ -141,8 +143,12 @@ export class Collider2DSystem extends System {
             this.currentCollisions.set(key, { a, b });
 
             if (!this.previousCollisions.has(key)) {
+              a.isColliding = true;
+              b.isColliding = true;
               this.engine.systems.callCollisionEnterEvents({ a, b });
             } else {
+              a.isColliding = true;
+              b.isColliding = true;
               this.engine.systems.callCollisionStayEvents({ a, b });
             }
           }

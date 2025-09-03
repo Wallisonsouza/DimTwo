@@ -1,5 +1,4 @@
-import { System, type CollisionEvent } from "@engine/core/base/System";
-import { Color } from "@engine/core/math/Color";
+import { System } from "@engine/core/base/System";
 import { ResourcesManager } from "@engine/global/ResourcesManager";
 import type { Collider2D } from "@engine/modules/2D/Collider2D";
 import { ComponentGroup } from "@engine/modules/enums/ComponentGroup";
@@ -25,7 +24,6 @@ export class EditorGizmosSystem extends System {
     if (!mesh) return;
 
     for (const collider of colliders) {
-
       shaderSystem.local?.(engine, collider.gameEntity, scene, shader);
 
       const vao = engine.meshBuffers.get(mesh.name);
@@ -36,13 +34,4 @@ export class EditorGizmosSystem extends System {
       gl.bindVertexArray(null);
     }
   }
-  onCollisionStay(collisionEvent: CollisionEvent): void {
-    collisionEvent.a.debugColor = Color.yellow;
-    collisionEvent.b.debugColor = Color.yellow;
-  }
-  onCollisionExit(collisionEvent: CollisionEvent): void {
-    collisionEvent.b.debugColor = Color.Red;
-    collisionEvent.a.debugColor = Color.Red;
-  }
-
 }
