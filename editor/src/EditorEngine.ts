@@ -59,7 +59,10 @@ export class EditorEngine extends Engine {
       EngineSystem.ColliderSystem,
       new Collider2DSystem()
     );
-
+    this.enableSystem(
+      EngineSystem.TerrainSystem,
+      new Collider2DSystem()
+    );
 
   }
 }

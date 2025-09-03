@@ -11,7 +11,7 @@ export class Physics2D {
     let closestHit: Hit2D | null = null;
 
     for (const col of this.colliders) {
-      const b = col.bounds;
+      const b = col.getBounds();
 
       const plane = new Plane(new Vec3(0, 0, 1), new Vec3(0, 0, col.transform.position.z));
 

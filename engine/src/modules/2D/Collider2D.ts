@@ -23,19 +23,15 @@ export abstract class Collider2D extends Component {
   ignoreSelfCollisions: boolean;
   private _bounds: Bounds2D;
 
-  public get bounds() {
-    const worldCenter = new Vec2(
-      this.center.x + this.transform.position.x,
-      this.center.y + this.transform.position.y
-    );
+  public getBounds(): Bounds2D {
 
-    const scaledSize = new Vec2(
-      this.size.x * this.transform.scale.x,
-      this.size.y * this.transform.scale.y
-    );
+    const position = Vec2.fromVec3(this.transform.position);
+    const scale = Vec2.fromVec3(this.transform.scale);
+
+    const worldCenter = this.center.add(position);
+    const scaledSize = this.size.mul(scale);
 
     this._bounds.setFromCenterAndSize(worldCenter, scaledSize);
-
     return this._bounds;
   }
 
@@ -58,6 +54,12 @@ export abstract class Collider2D extends Component {
     target.collisionLayer = this.collisionLayer;
     target.ignoreSelfCollisions = this.ignoreSelfCollisions;
   }
+
+
+
+
+
+
 
 
   public abstract intersects(other: Collider2D): boolean;

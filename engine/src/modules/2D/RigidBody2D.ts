@@ -75,14 +75,16 @@ export class RigidBody2D extends Component {
       this.applyResolution(aTransform, bTransform, resolution, 0, 1);
     }
 
-    if (aRigid) {
+    if (aRigid && !aRigid.isStatic) {
       if (resolution.x !== 0) aRigid.velocity.x = 0;
       if (resolution.y !== 0) aRigid.velocity.y = 0;
     }
-    if (bRigid) {
+
+    if (bRigid && !bRigid.isStatic) {
       if (resolution.x !== 0) bRigid.velocity.x = 0;
       if (resolution.y !== 0) bRigid.velocity.y = 0;
     }
+
   }
 
   private static applyResolution(
