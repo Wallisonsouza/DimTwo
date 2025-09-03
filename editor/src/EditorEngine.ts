@@ -26,7 +26,7 @@ export class EditorEngine extends Engine {
 
     });
 
-    this.forcedCamera = cameraComponent;
+    this.forceActiveCamera = cameraComponent;
 
     this.enableSystem(
       EngineSystem.RenderSystem,

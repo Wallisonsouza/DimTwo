@@ -11,7 +11,6 @@ export class Scene {
   public name: string;
   public components: ComponentManager = new ComponentManager();
   public entities: EntityManager = new EntityManager();
-  private activedCamera: Camera | null = null;
 
   constructor(name: string) {
     this.name = name;
@@ -25,20 +24,29 @@ export class Scene {
     this.components.addComponent(entity, component);
   }
 
-  public getCamera(): Camera {
-    if (this.activedCamera?.enabled) return this.activedCamera;
 
-    const cam = this.components
-      .getAllOfType<Camera>(ComponentType.Camera)
-      .find(c => c.enabled);
+  private cameraCache: Camera | null = null;
 
-    if (!cam) {
-      throw new CameraNotFoundException("No active camera found in the scene");
+  public get activeCamera(): Camera {
+
+    if (this.cameraCache !== null && this.cameraCache.enabled) {
+      return this.cameraCache;
     }
 
-    this.activedCamera = cam;
-    return cam;
+    const cameras = this.components.getAllOfType<Camera>(ComponentType.Camera);
+
+    for (const camera of cameras) {
+      if (camera.enabled) {
+        this.cameraCache = camera;
+        return this.cameraCache;
+      }
+    }
+
+    throw new CameraNotFoundException(
+      `[Scene.activeCamera] Nenhuma câmera ativa encontrada na cena.`
+    );
   }
+
 
   public clone(): Scene {
     const sceneClone = new Scene(this.name + "_clone");
