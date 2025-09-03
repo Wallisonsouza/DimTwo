@@ -4,7 +4,7 @@ import type { Collider2D } from "@engine/modules/2D/Collider2D";
 import { ComponentGroup } from "@engine/modules/enums/ComponentGroup";
 import type { Mesh } from "@engine/Rendering/Mesh";
 
-export class GizmosSystem extends System {
+export class EditorGizmosSystem extends System {
   onDrawGizmos(): void {
 
     const engine = this.engine;

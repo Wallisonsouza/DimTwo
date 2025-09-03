@@ -1,4 +1,3 @@
-import type { System } from "../base/System";
 
 export enum EngineSystem {
   RenderSystem,
@@ -15,7 +14,7 @@ export enum EngineSystem {
   FollowSystem,
   TerrainSystem
 }
-
+/* 
 type SystemFactory = () => System;
 
 export class EngineSystemManager {
@@ -40,4 +39,4 @@ export class EngineSystemManager {
 
 
 
-}
+} */

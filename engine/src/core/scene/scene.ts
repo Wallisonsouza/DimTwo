@@ -25,29 +25,6 @@ export class Scene {
     this.components.addComponent(entity, component);
   }
 
-  /* public instantiate(prefab: Prefab, position: Vec3) {
-    const entity = new GameEntity(prefab);
-
-    if (prefab.transform) {
-      entity.transform.position = prefab.transform.position ?? position;
-      entity.transform.rotation = prefab.transform.rotation ?? new Quat(0, 0, 0, 1);
-      entity.transform.scale = prefab.transform.scale ?? new Vec3(1, 1, 1);
-    }
-    const id = entity.id.getValue();
-    entity.name = `${entity.name}_${id}`;
-
-    if (!prefab.components) return;
-
-    for (const component of prefab.components) {
-      const clone = component.clone();
-      this.addComponent(entity, clone);
-
-      clone.transform.position = position;
-    }
-
-    return entity;
-  } */
-
   public getCamera(): Camera {
     if (this.activedCamera?.enabled) return this.activedCamera;
 
@@ -84,15 +61,17 @@ export class Scene {
     this.entities.clear();
   }
 
-  public serialize() {
-    return JSON.stringify({
-      name: this.name,
-      entities: serializeEntitiesMap(this.entities.getData()),
-      components: serializeComponentMap(this.components.getData())
-    }, undefined, 4);
-  }
+
 }
 
+
+/*  public serialize() {
+  return JSON.stringify({
+    name: this.name,
+    entities: serializeEntitiesMap(this.entities.getData()),
+    components: serializeComponentMap(this.components.getData())
+  }, undefined, 4);
+}
 function serializeEntitiesMap(entities: Map<number, GameEntity>): any[] {
   const result: any[] = [];
   for (const entity of entities.values()) {
@@ -117,4 +96,4 @@ function serializeComponentMap(map: Map<string, Map<number, any>>): any {
   }
 
   return result;
-}
+} */

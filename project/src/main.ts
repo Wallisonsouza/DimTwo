@@ -1,15 +1,10 @@
 import { EditorEngine } from "@editor/EditorEngine";
-import { EditorFreeCamera2DSystem } from "@editor/EditorFreeCamera2DSystem";
-import { EditorTransformSystem } from "@editor/EditorTransformSystem";
-import { GizmosSystem } from "@editor/GizmosSystem";
 import { EngineResourceManager } from "@engine/core/managers/EngineResourceManager";
-import { EngineSystem, EngineSystemManager } from "@engine/core/managers/EngineSystemManager";
 import type { EngineResource } from "@engine/core/managers/Resource";
 import { SceneManager } from "@engine/core/managers/SceneManager";
 import { AdvancedShaderSystem } from "@engine/modules/resources/material/AdvancedShaderSystem";
 import { GizmosShaderSystem } from "@engine/modules/resources/material/GizmosShaderSystem";
 import { SimpleShaderSystem } from "@engine/modules/resources/material/SimpleShaderSystem";
-import { RenderSystem } from "@engine/modules/shared/render/RenderSystem";
 import { loadEngine } from "engine/main";
 import { SimpleScene } from "examples/SimpleScene";
 
@@ -18,15 +13,9 @@ await loadEngine();
 
 async function loadResources() {
   await EngineResourceManager.load();
-
   new AdvancedShaderSystem("advancedShaderSystem");
   new SimpleShaderSystem("simpleShaderSystem");
   new GizmosShaderSystem("gizmosShaderSystem");
-
-  EngineSystemManager.register(EngineSystem.RenderSystem, () => new RenderSystem());
-  EngineSystemManager.register(EngineSystem.EditorGizmosSystem, () => new GizmosSystem());
-  EngineSystemManager.register(EngineSystem.EditorTransformSystem, () => new EditorTransformSystem());
-  EngineSystemManager.register(EngineSystem.EditorFreeCameraSystem, () => new EditorFreeCamera2DSystem());
 }
 
 await loadResources();

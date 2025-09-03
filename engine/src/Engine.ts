@@ -43,11 +43,15 @@ abstract class SceneAbstraction {
   public onLoadScene(callback: (scene: Scene) => void) {
     this.onLoadSceneCallback = callback;
   }
+
   loadScene(name: string, clone: boolean = false) {
 
     const scene = SceneManager.getScene(name);
     if (!scene) {
-      throw new Error(`Scene "${name}" not found`);
+      throw new SceneNotFoundException(
+        `[SceneManager.loadScene] Falha ao carregar a cena "${name}". Cena não encontrada.`
+      );
+
     }
 
     this.activeScene = clone ? scene.clone() : scene;
