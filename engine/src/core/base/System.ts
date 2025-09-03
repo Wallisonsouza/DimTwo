@@ -1,4 +1,11 @@
+import type { Collider2D } from "@engine/modules/2D/Collider2D";
 import type { Engine } from "../../Engine";
+
+
+export interface CollisionEvent {
+  a: Collider2D,
+  b: Collider2D
+}
 
 export class System {
 
@@ -24,12 +31,12 @@ export class System {
   onDrawGizmos?(): void;
 
 
-  /* onCollisionEnter?(collisionEvent: CollisionEvent): void;
+  onCollisionEnter?(collisionEvent: CollisionEvent): void;
   onCollisionStay?(collisionEvent: CollisionEvent): void;
   onCollisionExit?(collisionEvent: CollisionEvent): void;
 
 
-  onTriggerEnter?(triggerEvent: TriggerEvent): void;
-  onTriggerStay?(triggerEvent: TriggerEvent): void;
-  onTriggerExit?(triggerEvent: TriggerEvent): void; */
+  /*   onTriggerEnter?(triggerEvent: TriggerEvent): void;
+    onTriggerStay?(triggerEvent: TriggerEvent): void;
+    onTriggerExit?(triggerEvent: TriggerEvent): void; */
 }

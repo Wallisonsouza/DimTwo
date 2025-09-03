@@ -3,6 +3,7 @@ import { Component } from "../../core/base/Component";
 import type { ComponentGroup } from "../enums/ComponentGroup";
 import { ComponentType } from "../enums/ComponentType";
 
+import { Color } from "@engine/core/math/Color";
 import { CollisionLayer } from "@engine/modules/shared/physics/CollisionLayer";
 import { Bounds2D } from "./Bounds2D";
 
@@ -22,6 +23,7 @@ export abstract class Collider2D extends Component {
   collisionLayer: number;
   ignoreSelfCollisions: boolean;
   private _bounds: Bounds2D;
+  debugColor: Color = Color.green;
 
   public getBounds(): Bounds2D {
 

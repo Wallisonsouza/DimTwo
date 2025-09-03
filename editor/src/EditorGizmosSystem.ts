@@ -1,4 +1,5 @@
-import { System } from "@engine/core/base/System";
+import { System, type CollisionEvent } from "@engine/core/base/System";
+import { Color } from "@engine/core/math/Color";
 import { ResourcesManager } from "@engine/global/ResourcesManager";
 import type { Collider2D } from "@engine/modules/2D/Collider2D";
 import { ComponentGroup } from "@engine/modules/enums/ComponentGroup";
@@ -6,7 +7,6 @@ import type { Mesh } from "@engine/Rendering/Mesh";
 
 export class EditorGizmosSystem extends System {
   onDrawGizmos(): void {
-
     const engine = this.engine;
     const scene = engine.activeScene;
     const gl = engine.engineWindow.context;
@@ -36,4 +36,13 @@ export class EditorGizmosSystem extends System {
       gl.bindVertexArray(null);
     }
   }
+  onCollisionStay(collisionEvent: CollisionEvent): void {
+    collisionEvent.a.debugColor = Color.yellow;
+    collisionEvent.b.debugColor = Color.yellow;
+  }
+  onCollisionExit(collisionEvent: CollisionEvent): void {
+    collisionEvent.b.debugColor = Color.Red;
+    collisionEvent.a.debugColor = Color.Red;
+  }
+
 }

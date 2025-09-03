@@ -1,6 +1,6 @@
 import type { GameEntity } from "@engine/core/base/GameEntity";
-import { Color } from "@engine/core/math/Color";
 import { Mat4 } from "@engine/core/math/Mat4";
+import { Vec3 } from "@engine/core/math/Vec3";
 import type { Scene } from "@engine/core/scene/scene";
 import type { Engine } from "@engine/Engine";
 import type { Collider2D } from "@engine/modules/2D/Collider2D";
@@ -24,11 +24,13 @@ export class GizmosShaderSystem extends ShaderSystem {
     const transform = gameEntity.transform;
     const modelMatrix = transform.getWorldMatrix();
 
-    Mat4.compose(modelMatrix, transform.position, transform.rotation, transform.scale);
+    const scaleX = transform.scale.x * collider.size.x;
+    const scaleY = transform.scale.y * collider.size.y;
+
+    Mat4.compose(modelMatrix, transform.position, transform.rotation, new Vec3(scaleX, scaleY));
     shader.setMat4("uModel", modelMatrix.data);
 
-    const color = collider.isColliding ? Color.green : Color.red;
-
+    const color = collider.debugColor;
     shader.set4F(
       "uColor",
       color.r,

@@ -1,17 +1,21 @@
 
 import { System } from "@engine/core/base/System";
-import { Vec2 } from "@engine/core/math/Vec2";
 import { ComponentType } from "@engine/modules/enums/ComponentType";
 
 import { KeyCode } from "@engine/core/input/KeyCode";
+import { Vec2 } from "@engine/core/math/Vec2";
+import { ForceMode, RigidBody2D } from "@engine/modules/2D/RigidBody2D";
+import type { SpriteRender2D } from "@engine/modules/2D/SpriteRender2D";
+import type { Animator } from "@engine/modules/shared/animator/Animator";
 import { CharacterControler2D } from "./character.controller.types";
 
 export class CharacterControlerSystem extends System {
-  update(dt: number) {
+  private running: boolean = false;
 
+  update(dt: number) {
     const input = this.engine.input;
 
-    const components = this.getScene().components;
+    const components = this.engine.components;
     const characterControlers = components.getAllOfType<CharacterControler2D>(
       ComponentType.CharacterController
     );
@@ -19,23 +23,52 @@ export class CharacterControlerSystem extends System {
     for (const characterControler of characterControlers) {
 
       characterControler.direction.x = 0;
-      characterControler.direction.y = 0;
 
-      if (input.getKey(KeyCode.KeyA)) characterControler.direction.x -= 1;
-      if (input.getKey(KeyCode.KeyD)) characterControler.direction.x += 1;
-      if (input.getKey(KeyCode.KeyW)) characterControler.direction.y += 1;
-      if (input.getKey(KeyCode.KeyS)) characterControler.direction.y -= 1;
+      const rigid = this.engine.components.getComponent<RigidBody2D>(
+        characterControler.gameEntity,
+        ComponentType.RigidBody2D
+      );
 
-      Vec2.normalize(characterControler.direction, characterControler.direction);
-      const speed = input.getKey(KeyCode.ShiftLeft)
-        ? characterControler.runSpeed
-        : characterControler.speed;
+      const animator = this.engine.components.getComponent<Animator>(
+        characterControler.gameEntity,
+        ComponentType.Animator
+      );
 
-      const deltaX = characterControler.direction.x * speed * dt;
-      const deltaY = characterControler.direction.y * speed * dt;
+      const spriteRender = this.engine.components.getComponent<SpriteRender2D>(
+        characterControler.gameEntity,
+        ComponentType.SpriteRender
+      );
+      if (!rigid || !animator || !spriteRender) continue;
 
-      characterControler.transform.position.x += deltaX;
-      characterControler.transform.position.y += deltaY;
+      this.running = input.getKey(KeyCode.ShiftLeft);
+
+      if (input.getKey(KeyCode.KeyA)) {
+        animator.setAnimatorState(this.running ? "run" : "walk");
+        spriteRender.flipHorizontal = true;
+        characterControler.direction.x -= 1;
+      }
+
+      if (input.getKey(KeyCode.KeyD)) {
+        animator.setAnimatorState(this.running ? "run" : "walk");
+        spriteRender.flipHorizontal = false;
+        characterControler.direction.x += 1;
+      }
+
+      const speed = this.running ? 1.2 : 0.5;
+      rigid.addForce(characterControler.direction.scale(speed), ForceMode.Impulse);
+
+      if (rigid.velocity.x > speed) rigid.velocity.x = speed;
+      if (rigid.velocity.x < -speed) rigid.velocity.x = -speed;
+
+      if (input.getKeyDown(KeyCode.Space)) {
+        animator.setAnimatorState("jump", true);
+        const up = new Vec2(0, 1);
+        rigid.addForce(up.scale(200), ForceMode.Force);
+        characterControler.jumpCount += 1;
+      }
+
+
     }
   }
+
 }

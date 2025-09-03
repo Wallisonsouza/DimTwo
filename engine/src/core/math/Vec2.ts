@@ -9,6 +9,10 @@ export class Vec2 {
     this.y = y;
   }
 
+  public set(x: number, y: number) {
+    this.x = x;
+    this.y = y;
+  }
   public static fromVec3(v: Vec3) {
     return new Vec2(v.x, v.y);
   }
@@ -53,6 +57,9 @@ export class Vec2 {
 
   public add(v: Vec2): Vec2 {
     return new Vec2(this.x + v.x, this.y + v.y);
+  }
+  public sub(v: Vec2): Vec2 {
+    return new Vec2(this.x - v.x, this.y - v.y);
   }
 
   public mul(v: Vec2): Vec2 {

@@ -5,7 +5,6 @@ import { ComponentType } from "@engine/modules/enums/ComponentType";
 import { SpatialHash } from "../../core/algorithms/SpatialHash";
 import { System } from "../../core/base/System";
 import { ComponentGroup } from "../enums/ComponentGroup";
-import { Physics } from "../shared/physics/Physics";
 import { Collider2D } from "./Collider2D";
 
 function makePairKeyInt(idA: number, idB: number): number {
@@ -18,12 +17,27 @@ export class Collider2DSystem extends System {
   spatialHash = new SpatialHash<Collider2D>(64);
   checked: Set<number> = new Set();
 
+  // Guardar colisões do frame anterior e do frame atual
+  private previousCollisions: Map<number, { a: Collider2D; b: Collider2D }> = new Map();
+  private currentCollisions: Map<number, { a: Collider2D; b: Collider2D }> = new Map();
+
   fixedUpdate() {
     const components = this.engine.components;
     const colliders = components.getAllByGroup<Collider2D>(ComponentGroup.Collider);
 
     this.prepareSpatialHash(colliders);
     this.runBroadphase();
+
+    // Detecta EXIT
+    for (const [key, { a, b }] of this.previousCollisions) {
+      if (!this.currentCollisions.has(key)) {
+        this.engine.systems.callCollisionExitEvents({ a, b });
+      }
+    }
+
+    // Atualiza histórico
+    this.previousCollisions = new Map(this.currentCollisions);
+    this.currentCollisions.clear();
   }
 
   private prepareSpatialHash(colliders: Collider2D[]) {
@@ -32,268 +46,125 @@ export class Collider2DSystem extends System {
 
     for (const collider of colliders) {
       if (!collider.enabled) continue;
-
       const bounds = collider.getBounds();
       this.spatialHash.insert(bounds.min, bounds.max, collider);
     }
   }
 
   private runBroadphase() {
+    const contacts: {
+      a: Collider2D;
+      b: Collider2D;
+      resolution: Vec2;
+    }[] = [];
+
     for (const bucket of this.spatialHash.getBuckets()) {
-      this.checkBucketPairs(bucket);
-    }
-  }
+      for (let i = 0; i < bucket.length; i++) {
+        const a = bucket[i];
+        const aId = a.id.getValue();
 
-  private checkBucketPairs(bucket: Collider2D[]) {
-    for (let i = 0; i < bucket.length; i++) {
-      const a = bucket[i];
-      const aId = a.id.getValue();
+        for (let j = i + 1; j < bucket.length; j++) {
+          const b = bucket[j];
+          const bId = b.id.getValue();
 
-      for (let j = i + 1; j < bucket.length; j++) {
-        const b = bucket[j];
+          const key = makePairKeyInt(aId, bId);
+          if (this.checked.has(key)) continue;
+          this.checked.add(key);
 
-        if (!Physics.collisionMatrix.canCollide(a.collisionLayer, b.collisionLayer)) continue;
+          if (!(a instanceof BoxCollider2D && b instanceof BoxCollider2D)) continue;
 
-        const bId = b.id.getValue();
-        const key = makePairKeyInt(aId, bId);
-        if (this.checked.has(key)) continue;
-        this.checked.add(key);
+          const aRigid = this.engine.components.getComponent<RigidBody2D>(
+            a.gameEntity,
+            ComponentType.RigidBody2D
+          );
+          const bRigid = this.engine.components.getComponent<RigidBody2D>(
+            b.gameEntity,
+            ComponentType.RigidBody2D
+          );
 
-        if (!(a instanceof BoxCollider2D && b instanceof BoxCollider2D)) continue;
+          const aStart = Vec2.fromVec3(a.transform.position.clone());
+          const bStart = Vec2.fromVec3(b.transform.position.clone());
 
-        const aRigid = this.engine.components.getComponent<RigidBody2D>(a.gameEntity, ComponentType.RigidBody2D);
-        const bRigid = this.engine.components.getComponent<RigidBody2D>(b.gameEntity, ComponentType.RigidBody2D);
+          const aDelta = aRigid
+            ? Vec2.scale(aRigid.velocity, this.engine.time.deltaTime)
+            : new Vec2(0, 0);
+          const bDelta = bRigid
+            ? Vec2.scale(bRigid.velocity, this.engine.time.deltaTime)
+            : new Vec2(0, 0);
 
-        const aStart = Vec2.fromVec3(a.transform.position.clone());
-        const bStart = Vec2.fromVec3(b.transform.position.clone());
+          const aEnd = Vec2.add(aStart, aDelta);
+          const bEnd = Vec2.add(bStart, bDelta);
 
-        const aDelta = aRigid ? Vec2.scale(aRigid.velocity, this.engine.time.deltaTime) : new Vec2(0, 0);
-        const bDelta = bRigid ? Vec2.scale(bRigid.velocity, this.engine.time.deltaTime) : new Vec2(0, 0);
+          // Swept AABB check
+          const aSwept = a.getSweptBounds(aStart, aEnd);
+          const bSwept = b.getSweptBounds(bStart, bEnd);
+          if (!aSwept.intersects(bSwept)) continue;
 
-        const aEnd = Vec2.add(aStart, aDelta);
-        const bEnd = Vec2.add(bStart, bDelta);
+          // Passos finos
+          const relativeDelta = Vec2.sub(aDelta, bDelta);
+          const distance = Math.sqrt(relativeDelta.x ** 2 + relativeDelta.y ** 2);
 
-        // Swept AABB check
-        const aSwept = a.getSweptBounds(aStart, aEnd);
-        const bSwept = b.getSweptBounds(bStart, bEnd);
-        if (!aSwept.intersects(bSwept)) continue;
+          const aBounds = a.getBounds();
+          const bBounds = b.getBounds();
+          const minSize = Math.min(
+            aBounds.max.x - aBounds.min.x,
+            aBounds.max.y - aBounds.min.y,
+            bBounds.max.x - bBounds.min.x,
+            bBounds.max.y - bBounds.min.y
+          );
 
-        // Passos finos pra evitar tunneling
-        const relativeDelta = Vec2.sub(aDelta, bDelta);
-        const distance = Math.sqrt(relativeDelta.x ** 2 + relativeDelta.y ** 2);
+          const steps = Math.max(1, Math.ceil(distance / (minSize * 0.2)));
 
-        const aBounds = a.getBounds();
-        const bBounds = b.getBounds();
-        const minSize = Math.min(
-          aBounds.max.x - aBounds.min.x,
-          aBounds.max.y - aBounds.min.y,
-          bBounds.max.x - bBounds.min.x,
-          bBounds.max.y - bBounds.min.y
-        );
+          let contactA: Vec2 | null = null;
+          let contactB: Vec2 | null = null;
 
-        const steps = Math.max(1, Math.ceil(distance / (minSize * 0.2)));
+          for (let s = 1; s <= steps; s++) {
+            const t = s / steps;
+            const aPos = Vec2.lerp(aStart, aEnd, t);
+            const bPos = Vec2.lerp(bStart, bEnd, t);
 
-        let contactA: Vec2 | null = null;
-        let contactB: Vec2 | null = null;
+            if (a.getBoundsAt(aPos).intersects(b.getBoundsAt(bPos))) {
+              contactA = aPos;
+              contactB = bPos;
+              break;
+            }
+          }
 
-        for (let s = 1; s <= steps; s++) {
-          const t = s / steps;
-          const aPos = Vec2.lerp(aStart, aEnd, t);
-          const bPos = Vec2.lerp(bStart, bEnd, t);
+          if (contactA && contactB) {
+            const aBoundsAtContact = a.getBoundsAt(contactA);
+            const bBoundsAtContact = b.getBoundsAt(contactB);
 
-          if (a.getBoundsAt(aPos).intersects(b.getBoundsAt(bPos))) {
-            contactA = aPos;
-            contactB = bPos;
-            break;
+            const resolution = a.getResolution(aBoundsAtContact, bBoundsAtContact);
+            contacts.push({ a, b, resolution });
+
+            // Marca colisão atual
+            this.currentCollisions.set(key, { a, b });
+
+            if (!this.previousCollisions.has(key)) {
+              this.engine.systems.callCollisionEnterEvents({ a, b });
+            } else {
+              this.engine.systems.callCollisionStayEvents({ a, b });
+            }
           }
         }
-
-        if (contactA && contactB) {
-          const aBoundsAtContact = a.getBoundsAt(contactA);
-          const bBoundsAtContact = b.getBoundsAt(contactB);
-
-          const resolution = a.getResolution(aBoundsAtContact, bBoundsAtContact);
-          RigidBody2D.resolveRigidBody(aRigid, a.transform, bRigid, b.transform, resolution);
-
-          a.isColliding = true;
-          b.isColliding = true;
-        } else {
-          a.isColliding = false;
-          b.isColliding = false;
-        }
       }
     }
-  }
-
-}
 
 
+    /// me atentar aqui, posso mudar para physics
 
+    // Resolve colisões
+    for (const { a, b, resolution } of contacts) {
+      const aRigid = this.engine.components.getComponent<RigidBody2D>(
+        a.gameEntity,
+        ComponentType.RigidBody2D
+      );
+      const bRigid = this.engine.components.getComponent<RigidBody2D>(
+        b.gameEntity,
+        ComponentType.RigidBody2D
+      );
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*   previous: Map<string, CollisionPair> = new Map();
-    collision: Set<string> = new Set();
-  current: Map<string, CollisionPair> = new Map(); */
-/*  collisionState.current.clear();
-   collisionState.checked.clear();
-   collisionState.collision.clear();
-   spatialHash.clear();
- 
-
-/* function detectCollisions(
-  components: ECSComponent,
-  spatialHash: SpatialHash<Collider>,
-  collisionState: CollisionState,
-  systems: ECSSystem,
-) {
-  const scene =SceneManager.getCurrentScene();
-
-  for (const collidersInCell of spatialHash.getBuckets()) {
-    const length = collidersInCell.length;
-
-    for (let i = 0; i < length; i++) {
-      const colliderA = collidersInCell[i];
-      const aTransform = Transform.getTransform(colliderA.getEntityID());
-      if (!aTransform) continue;
-
-      for (let j = i + 1; j < length; j++) {
-        const colliderB = collidersInCell[j];
-        if (colliderA.getEntityID().id === colliderB.getEntityID().id) continue;
-
-        if (
-
-          !scene.collisionMatrix.canCollide(
-            colliderA.collisionMask,
-            colliderB.collisionMask,
-          )
-        ) continue;
-
-        const bTransform = Transform.getTransform(colliderB.getEntityID());
-        if (!bTransform) continue;
-
-        const pairKey = makePairKey(colliderA.instanceID.getValue(), colliderB.instanceID.getValue());
-
-        if (collisionState.checked.has(pairKey)) continue;
-        collisionState.checked.add(pairKey);
-
-        if (!testOverlap(aTransform.position, colliderA, bTransform.position, colliderB)) {
-          continue;
-        }
-
-        collisionState.current.set(pairKey, { a: colliderA, b: colliderB });
-
-        collisionState.collision.add(colliderA.instanceID.toString());
-        collisionState.collision.add(colliderB.instanceID.toString());
-
-        const wasColliding = collisionState.previous.has(pairKey);
-
-        const aIsTrigger = colliderA.isTrigger;
-        const bIsTrigger = colliderB.isTrigger;
-        const isTriggerInteraction = aIsTrigger || bIsTrigger;
-
-        if (isTriggerInteraction) {
-          if (!wasColliding) {
-            systems.callTriggerEnterEvents({
-              a: colliderA,
-              b: colliderB,
-            });
-          }
-          systems.callTriggerStayEvents({
-            a: colliderA,
-            b: colliderB,
-          });
-          colliderA.isColliding = true;
-          colliderB.isColliding = true;
-          continue;
-        }
-
-        if (!wasColliding) {
-          systems.callCollisionEnterEvents({
-            a: colliderA,
-            b: colliderB,
-          });
-        }
-
-        systems.callCollisionStayEvents({
-          a: colliderA,
-          b: colliderB,
-        });
-        colliderA.isColliding = true;
-        colliderB.isColliding = true;
-
-        const resolution = resolveOverlap(
-          aTransform.position,
-          colliderA,
-          bTransform.position,
-          colliderB,
-        );
-
-        if (resolution) {
-
-          const aRigid = components.getComponent<RigidBody2D>(
-            colliderA.getEntityID(),
-            ComponentType.RigidBody2D,
-          );
-
-          const bRigid = components.getComponent<RigidBody2D>(
-            colliderB.getEntityID(),
-            ComponentType.RigidBody2D,
-          );
-
-          if (!aRigid || !bRigid) return;
-
-          RigidBody2D.resolveRigidBody(
-            aRigid,
-            aTransform,
-            bRigid,
-            bTransform,
-            resolution,
-          );
-        }
-      }
+      RigidBody2D.resolveRigidBody(aRigid, a.transform, bRigid, b.transform, resolution);
     }
-  }
-
-  for (const [pairKey, pair] of collisionState.previous.entries()) {
-    if (!collisionState.current.has(pairKey)) {
-      if (pair.a.isTrigger || pair.b.isTrigger) {
-        systems.callTriggerExitEvents(pair);
-        pair.a.isColliding = false;
-        pair.b.isColliding = false;
-      } else {
-        pair.a.isColliding = false;
-        pair.b.isColliding = false;
-        systems.callCollisionExitEvents(pair);
-      }
-    }
-  }
-
-  collisionState.previous.clear();
-  for (const [pairKey, pair] of collisionState.current.entries()) {
-    collisionState.previous.set(pairKey, pair);
   }
 }
- */

@@ -97,6 +97,7 @@ export class Engine extends SceneAbstraction {
   private safeUpdate(): void {
     try {
       this.systems.callUpdate(this.time.deltaTime);
+      this.systems.callLateUpdate(this.time.deltaTime);
       this.input.clear();
     } catch (e: any) {
       this.logErrorOnce("update", e);

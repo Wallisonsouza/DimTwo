@@ -3,8 +3,8 @@ import { EngineSystem } from "@engine/core/managers/EngineSystemManager";
 import { EngineWindow } from "@engine/core/window/EngineWindow";
 import { Engine } from "@engine/Engine";
 import { Collider2DSystem } from "@engine/modules/2D/Collider2DSystem";
+import { PhysicsSystem } from "@engine/modules/2D/Physics2DSystem";
 import { PerspectiveCamera } from "@engine/modules/3D/PerspesctiveCamera";
-import { PhysicsSystem } from "@engine/modules/shared/physics/PhysicsSystem";
 import { RenderSystem } from "@engine/modules/shared/render/RenderSystem";
 import { EditorFreeCameraSystem } from "./EditorFreeCameraSystem";
 import { EditorGizmosSystem } from "./EditorGizmosSystem";
@@ -55,14 +55,14 @@ export class EditorEngine extends Engine {
       new PhysicsSystem()
     );
 
-    this.enableSystem(
-      EngineSystem.ColliderSystem,
-      new Collider2DSystem()
-    );
+
     this.enableSystem(
       EngineSystem.TerrainSystem,
       new Collider2DSystem()
     );
-
+    this.enableSystem(
+      EngineSystem.ColliderSystem,
+      new Collider2DSystem()
+    );
   }
 }

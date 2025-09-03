@@ -15,6 +15,7 @@ export class Bounds2D {
     this.max = new Vec2(this.center.x + this.extents.x, this.center.y + this.extents.y);
   }
 
+
   public setFromCenterAndSize(center: Vec2, size: Vec2) {
     this.center = center.clone();
     this.size = size.clone();

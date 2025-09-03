@@ -13,6 +13,8 @@ export class CharacterControler2D extends Component {
   moving: boolean;
   state: CharacterState;
   facing: FacingDirection;
+  jumpCount: number = 0;
+  isGrounded: boolean = false;
 
   constructor() {
     super(ComponentType.CharacterController, ComponentGroup.Controller, {});

@@ -14,6 +14,11 @@ export interface RigidBody2DOptions extends ComponentOptions {
   useGravity?: boolean;
 }
 
+export enum ForceMode {
+  Impulse,
+  Force
+}
+
 export class RigidBody2D extends Component {
   mass: number;
   velocity: Vec2;
@@ -33,6 +38,31 @@ export class RigidBody2D extends Component {
     this.isStatic = options.isStatic ?? false;
     this.useGravity = options.useGravity ?? true;
   }
+
+  public movePosition(target: Vec2, deltaTime: number) {
+    if (this.isStatic) return;
+
+    const deltaX = target.x - this.transform.position.x;
+    const deltaY = target.y - this.transform.position.y;
+
+    this.velocity.x = deltaX / deltaTime;
+    this.velocity.y = deltaY / deltaTime;
+  }
+
+
+  public addForce(force: Vec2, mode: ForceMode = ForceMode.Force) {
+    if (this.isStatic) return;
+
+    if (mode === ForceMode.Force) {
+      const accelerationDelta = new Vec2(force.x / this.mass, force.y / this.mass);
+      this.acceleration = this.acceleration.add(accelerationDelta);
+    } else if (mode === ForceMode.Impulse) {
+      // aplica velocidade instantânea, sem acumular
+      this.velocity.x += force.x / this.mass;
+      this.velocity.y += force.y / this.mass;
+    }
+  }
+
 
   clone(): RigidBody2D {
     return new RigidBody2D({

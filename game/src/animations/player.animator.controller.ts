@@ -1,5 +1,5 @@
 import type { AnimatorController } from "@engine/modules/shared/animator/AnimatorController";
-import { PLAYER_ANIMATIONS } from "./player.animation";
+import { KnightIdle, KnightJump, KnightRun, KnightWalk } from "./KnightAnimations";
 
 
 export const PLAYER_ANIMATOR_CONTROLLER: AnimatorController = {
@@ -9,32 +9,21 @@ export const PLAYER_ANIMATOR_CONTROLLER: AnimatorController = {
 
   states: {
     idle: {
-      clip: PLAYER_ANIMATIONS.PLAYER_IDLE_DOWN_CLIP,
+      clip: KnightIdle,
       loop: true
     },
-    walk_front: {
-      clip: PLAYER_ANIMATIONS.PLAYER_WALK_DOWN_CLIP,
+    walk: {
+      clip: KnightWalk,
       loop: true
     },
-    walk_back: {
-      clip: PLAYER_ANIMATIONS.PLAYER_WALK_UP_CLIP,
-      loop: true
-    },
-    walk_side: {
-      clip: PLAYER_ANIMATIONS.PLAYER_WALK_SIDE_CLIP,
-      loop: true
-    },
-    attack_down: {
-      clip: PLAYER_ANIMATIONS.PLAYER_ATTACK_DOWN_CLIP,
+    jump: {
+      clip: KnightJump,
       loop: false
     },
-    attack_up: {
-      clip: PLAYER_ANIMATIONS.PLAYER_ATTACK_UP_CLIP,
-      loop: false
-    },
-    attack_side: {
-      clip: PLAYER_ANIMATIONS.PLAYER_ATTACK_SIDE_CLIP,
-      loop: false
-    },
+    run: {
+      clip: KnightRun,
+      loop: true
+    }
   }
+
 };
