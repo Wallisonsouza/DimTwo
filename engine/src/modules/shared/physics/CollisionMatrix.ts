@@ -4,7 +4,7 @@ export class CollisionMatrix {
   constructor(size: number) {
 
     this.matrix = Array.from({ length: size }, () =>
-      Array(size).fill(false)
+      Array(size).fill(true)
     );
 
     this.size = size;
@@ -14,7 +14,7 @@ export class CollisionMatrix {
     this.validateLayer(layerA);
     this.validateLayer(layerB);
     this.matrix[layerA][layerB] = canCollide;
-    this.matrix[layerB][layerA] = canCollide; 
+    this.matrix[layerB][layerA] = canCollide;
   }
 
   public canCollide(layerA: number, layerB: number): boolean {
@@ -34,7 +34,7 @@ export class CollisionMatrix {
   }
 
   public printTable(): void {
-   
+
     const table: Record<string, Record<string, string>> = {};
 
     for (let i = 0; i < this.size; i++) {

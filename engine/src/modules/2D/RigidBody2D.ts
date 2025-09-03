@@ -51,67 +51,50 @@ export class RigidBody2D extends Component {
     aTransform: Transform,
     bRigid: RigidBody2D | null,
     bTransform: Transform,
-    resolution: Vec2,
+    resolution: Vec2
   ) {
-    if (!aRigid && !bRigid) {
-      this.resolveWithoutRigidBody(aTransform, bTransform, resolution);
-      return;
-    }
+    const aStaticOrNoGravity = !aRigid || aRigid.isStatic || !aRigid.useGravity;
+    const bStaticOrNoGravity = !bRigid || bRigid.isStatic || !bRigid.useGravity;
 
-    if (aRigid && bRigid) {
-      this.resolveWithRigidBody(aTransform, bTransform, aRigid, bRigid, resolution);
-      return;
-    }
+    const aMass = aRigid?.mass ?? 1;
+    const bMass = bRigid?.mass ?? 1;
 
-  }
-
-  public static applyResolution(transform: Transform, resolution: Vec2, factor: number) {
-    transform.position.x += resolution.x * factor;
-    transform.position.y += resolution.y * factor;
-  }
-
-  public static resolveWithRigidBody(
-    aTransform: Transform,
-    bTransform: Transform,
-    aRigid: RigidBody2D,
-    bRigid: RigidBody2D,
-    mtv: Vec2
-  ) {
-    const aStatic = !!aRigid.isStatic;
-    const bStatic = !!bRigid.isStatic;
-
-    if (aStatic && bStatic) return;
-
-    const aMass = aRigid.mass > 0 ? aRigid.mass : 1;
-    const bMass = bRigid.mass > 0 ? bRigid.mass : 1;
-
-    if (!aStatic && !bStatic) {
+    if (!aStaticOrNoGravity && !bStaticOrNoGravity) {
       const totalMass = aMass + bMass;
-      const aMoveFactor = bMass / totalMass;
-      const bMoveFactor = aMass / totalMass;
+      const aFactor = bMass / totalMass;
+      const bFactor = aMass / totalMass;
 
-      this.applyResolution(aTransform, mtv, aMoveFactor);
-      this.applyResolution(bTransform, mtv, -bMoveFactor);
-      return;
+      this.applyResolution(aTransform, bTransform, resolution, aFactor, bFactor);
     }
 
-    if (!aStatic) {
-      this.applyResolution(aTransform, mtv, 1);
-      return;
+    else if (!aStaticOrNoGravity) {
+      this.applyResolution(aTransform, bTransform, resolution, 1, 0);
     }
 
-    if (!bStatic) {
-      this.applyResolution(bTransform, mtv, -1);
-      return;
+    else if (!bStaticOrNoGravity) {
+      this.applyResolution(aTransform, bTransform, resolution, 0, 1);
+    }
+
+    if (aRigid) {
+      if (resolution.x !== 0) aRigid.velocity.x = 0;
+      if (resolution.y !== 0) aRigid.velocity.y = 0;
+    }
+    if (bRigid) {
+      if (resolution.x !== 0) bRigid.velocity.x = 0;
+      if (resolution.y !== 0) bRigid.velocity.y = 0;
     }
   }
 
-  public static resolveWithoutRigidBody(
+  private static applyResolution(
     aTransform: Transform,
     bTransform: Transform,
     resolution: Vec2,
+    aFactor: number,
+    bFactor: number
   ) {
-    this.applyResolution(aTransform, resolution, 0.5);
-    this.applyResolution(bTransform, resolution, -0.5);
+    aTransform.position.x += resolution.x * aFactor;
+    aTransform.position.y += resolution.y * aFactor;
+    bTransform.position.x -= resolution.x * bFactor;
+    bTransform.position.y -= resolution.y * bFactor;
   }
 }

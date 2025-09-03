@@ -1,4 +1,6 @@
-import type { Scene } from "@engine/core/scene/scene";
+import { BoxCollider2D } from "@engine/modules/2D/BoxCollider2D";
+import { RigidBody2D } from "@engine/modules/2D/RigidBody2D";
+import { ComponentType } from "@engine/modules/enums/ComponentType";
 import { SpatialHash } from "../../../core/algorithms/SpatialHash";
 import { System } from "../../../core/base/System";
 import { Collider2D } from "../../2D/Collider2D";
@@ -6,22 +8,21 @@ import { ComponentGroup } from "../../enums/ComponentGroup";
 import { Physics } from "../physics/Physics";
 
 function makePairKeyInt(idA: number, idB: number): number {
-  const min = idA < idB ? idA : idB;
-  const max = idA ^ idB ^ min;
-  return (min << 32) | max;
+  const a = idA < idB ? idA : idB;
+  const b = idA < idB ? idB : idA;
+  return ((a + b) * (a + b + 1)) / 2 + b;
 }
 
-
-export class ColliderSystem extends System {
+export class Collider2DSystem extends System {
   spatialHash = new SpatialHash<Collider2D>(64);
   checked: Set<number> = new Set();
 
   fixedUpdate() {
-    const scene = this.engine.activeScene;
-    const colliders = scene.components.getAllByGroup<Collider2D>(ComponentGroup.Collider);
+    const components = this.engine.components;
+    const colliders = components.getAllByGroup<Collider2D>(ComponentGroup.Collider);
 
     this.prepareSpatialHash(colliders);
-    this.runBroadphase(scene);
+    this.runBroadphase();
   }
 
   private prepareSpatialHash(colliders: Collider2D[]) {
@@ -34,15 +35,13 @@ export class ColliderSystem extends System {
     }
   }
 
-  private runBroadphase(scene: Scene) {
+  private runBroadphase() {
     for (const bucket of this.spatialHash.getBuckets()) {
-      this.checkBucketPairs(bucket, scene);
+      this.checkBucketPairs(bucket);
     }
   }
 
-  private checkBucketPairs(bucket: Collider2D[], scene: Scene) {
-
-
+  private checkBucketPairs(bucket: Collider2D[]) {
     for (let i = 0; i < bucket.length; i++) {
       const a = bucket[i];
       const aId = a.id.getValue();
@@ -50,9 +49,7 @@ export class ColliderSystem extends System {
       for (let j = i + 1; j < bucket.length; j++) {
         const b = bucket[j];
 
-        if (!Physics.collisionMatrix.canCollide(a.collisionLayer, b.collisionLayer)) {
-          continue;
-        }
+        if (!Physics.collisionMatrix.canCollide(a.collisionLayer, b.collisionLayer)) continue;
 
         const bId = b.id.getValue();
         const key = makePairKeyInt(aId, bId);
@@ -61,14 +58,36 @@ export class ColliderSystem extends System {
 
         if (a.intersects(b)) {
           a.isColliding = true;
-          return;
-        }
+          b.isColliding = true;
 
-        a.isColliding = false;
+          if (!a.isTrigger && !b.isTrigger) {
+            if (a instanceof BoxCollider2D && b instanceof BoxCollider2D) {
+              const resolution = BoxCollider2D.calculateResolution(a, b);
+
+              const aRigid = this.engine.components.getComponent<RigidBody2D>(a.gameEntity, ComponentType.RigidBody2D);
+              const bRigid = this.engine.components.getComponent<RigidBody2D>(b.gameEntity, ComponentType.RigidBody2D);
+
+              RigidBody2D.resolveRigidBody(aRigid, a.transform, bRigid, b.transform, resolution);
+            }
+          }
+        } else {
+          a.isColliding = false;
+        }
       }
     }
   }
+
 }
+
+
+
+
+
+
+
+
+
+
 
 
 

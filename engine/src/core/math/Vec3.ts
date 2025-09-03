@@ -1,3 +1,4 @@
+import type { Vec2 } from "./Vec2";
 
 export class Vec3 {
   public x: number;
@@ -101,7 +102,16 @@ export class Vec3 {
     out.z = a.z + b.z;
     return out;
   }
+  public addInPlace(other: Vec3): this {
+    this.x += other.x;
+    this.y += other.y;
+    this.z += other.z;
+    return this;
+  }
 
+  public static fromVec2(v: Vec2) {
+    return new Vec3(v.x, v.y);
+  }
 
   public static normalize(v: Vec3, out: Vec3 = new Vec3()) {
     const length = Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
