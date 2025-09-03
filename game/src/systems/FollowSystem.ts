@@ -1,4 +1,4 @@
-import type { Component } from "@engine/core/base/Component";
+/* import type { Component } from "@engine/core/base/Component";
 import type { GameEntity } from "@engine/core/base/GameEntity";
 import { System } from "@engine/core/base/System";
 import { Vec3 } from "@engine/core/math/Vec3";
@@ -88,3 +88,4 @@ export class FollowSystem extends System {
 
   }
 }
+ */

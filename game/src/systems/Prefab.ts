@@ -1,4 +1,4 @@
-import type { Component } from "@engine/core/base/Component";
+/* import type { Component } from "@engine/core/base/Component";
 import { type GameEntityOptions } from "@engine/core/base/GameEntity";
 import { Quat } from "@engine/core/math/quat";
 import { Vec2 } from "@engine/core/math/Vec2";
@@ -195,4 +195,4 @@ export const GRASS_0_PREFAB: Prefab = {
 };
 
 Physics.collisionMatrix.setCollision(CollisionLayer.Enemy, CollisionLayer.Player, true);
-Physics.collisionMatrix.setCollision(CollisionLayer.Tree, CollisionLayer.Player, true);
+Physics.collisionMatrix.setCollision(CollisionLayer.Tree, CollisionLayer.Player, true); */
