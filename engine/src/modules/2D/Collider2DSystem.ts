@@ -1,11 +1,11 @@
 import { BoxCollider2D } from "@engine/modules/2D/BoxCollider2D";
 import { RigidBody2D } from "@engine/modules/2D/RigidBody2D";
 import { ComponentType } from "@engine/modules/enums/ComponentType";
-import { SpatialHash } from "../../../core/algorithms/SpatialHash";
-import { System } from "../../../core/base/System";
-import { Collider2D } from "../../2D/Collider2D";
-import { ComponentGroup } from "../../enums/ComponentGroup";
-import { Physics } from "../physics/Physics";
+import { SpatialHash } from "../../core/algorithms/SpatialHash";
+import { System } from "../../core/base/System";
+import { ComponentGroup } from "../enums/ComponentGroup";
+import { Physics } from "../shared/physics/Physics";
+import { Collider2D } from "./Collider2D";
 
 function makePairKeyInt(idA: number, idB: number): number {
   const a = idA < idB ? idA : idB;
