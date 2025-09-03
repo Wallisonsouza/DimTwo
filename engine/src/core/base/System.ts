@@ -1,20 +1,9 @@
 import type { Engine } from "../../Engine";
-import type { Scene } from "../scene/scene";
 
 export class System {
-  private scene: Scene | null = null;
+
   public engine!: Engine;
 
-  public setScene(scene: Scene) {
-    this.scene = scene;
-  }
-
-  public getScene(): Scene {
-    if (!this.scene) {
-      throw new Error("System not connected to any scene");
-    }
-    return this.scene;
-  }
 
   public getEngine(): Engine {
     if (!this.engine) {

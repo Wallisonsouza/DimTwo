@@ -39,6 +39,7 @@
     "game",
     "engine",
     "editor",
-    "project"
+    "project",
+    "examples"
   ]
 }

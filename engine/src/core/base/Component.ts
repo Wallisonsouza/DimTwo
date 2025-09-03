@@ -1,4 +1,4 @@
-import { NullReferenceException } from "@engine/errors/NullReferenceException";
+import { NullReferenceException } from "@engine/exception /NullReferenceException";
 import type { Transform } from "@engine/modules/3D/Transform";
 import type { ComponentGroup } from "../../modules/enums/ComponentGroup";
 import type { ComponentType } from "../../modules/enums/ComponentType";
@@ -10,7 +10,7 @@ export interface ComponentOptions {
   enabled?: boolean;
 }
 
-export abstract class Component  {
+export abstract class Component {
   private _entity: GameEntity | null = null;
   enabled: boolean;
   readonly type: ComponentType;
@@ -20,12 +20,12 @@ export abstract class Component  {
 
   public set gameEntity(v: GameEntity) { this._entity = v };
   public get gameEntity(): GameEntity {
-    if (!this._entity) throw new NullReferenceException(this.type, "gameEntity");
+    if (!this._entity) throw new NullReferenceException("gameEntity");
     return this._entity;
   }
 
   public get transform(): Transform {
-    if (!this._entity) throw new NullReferenceException(this.type, "transform");
+    if (!this._entity) throw new NullReferenceException("transform");
     return this._entity.transform;
   }
 

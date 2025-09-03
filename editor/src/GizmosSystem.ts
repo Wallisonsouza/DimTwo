@@ -1,9 +1,15 @@
-/* 
+import { System } from "@engine/core/base/System";
+import { ResourcesManager } from "@engine/global/ResourcesManager";
+import type { Collider2D } from "@engine/modules/2D/Collider2D";
+import { ComponentGroup } from "@engine/modules/enums/ComponentGroup";
+import type { Mesh } from "@engine/Rendering/Mesh";
+
 export class GizmosSystem extends System {
   onDrawGizmos(): void {
-    const scene = this.getScene();
-    const engine = this.getEngine();
-    const gl = engine.getContext();
+
+    const engine = this.engine;
+    const scene = engine.activeScene;
+    const gl = engine.engineWindow.context;
 
     const shader = engine.shaders.get("gizmos");
     if (!shader || !shader.systemName) return;
@@ -14,13 +20,13 @@ export class GizmosSystem extends System {
     gl.useProgram(shader.program);
     shaderSystem.global?.(engine, scene, shader);
 
-    const colliders = scene.components.getAllByGroup<Collider>(ComponentGroup.Collider);
+    const colliders = scene.components.getAllByGroup<Collider2D>(ComponentGroup.Collider);
     const mesh = ResourcesManager.MeshManager.get("wireQuad") as Mesh;
     if (!mesh) return;
 
     for (const collider of colliders) {
-      const entityID = collider.getEntityID();
-      shaderSystem.local?.(engine, entityID, scene, shader);
+
+      shaderSystem.local?.(engine, collider.gameEntity, scene, shader);
 
       const vao = engine.meshBuffers.get(mesh.name);
       if (!vao) continue;
@@ -31,4 +37,3 @@ export class GizmosSystem extends System {
     }
   }
 }
- */

@@ -59,9 +59,9 @@ export class RenderSystem extends System {
   }
 
   render() {
-    const engine = this.getEngine();
-    const scene = this.getScene();
-    const context = engine.targetWindow.context;
+    const engine = this.engine;
+    const scene = this.engine.activeScene;
+    const context = engine.engineWindow.context;
 
     const renders = scene.components.getAllByGroup<Render>(ComponentGroup.Render);
 

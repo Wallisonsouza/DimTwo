@@ -8,7 +8,7 @@ import { ComponentType } from "../../enums/ComponentType";
 export class PhysicsSystem extends System {
   fixedUpdate(fdt: number) {
 
-    const scene = this.getScene();
+    const scene = this.engine.activeScene;
     const components = scene.components;
 
     const rigidbodies = components.getAllByGroup<RigidBody2D>(

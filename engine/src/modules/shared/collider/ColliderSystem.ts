@@ -1,5 +1,4 @@
 import type { Scene } from "@engine/core/scene/scene";
-import { EasyGetter } from "@game/systems/TerrainSystem";
 import { SpatialHash } from "../../../core/algorithms/SpatialHash";
 import { System } from "../../../core/base/System";
 import { Collider2D } from "../../2D/Collider2D";
@@ -18,8 +17,8 @@ export class ColliderSystem extends System {
   checked: Set<number> = new Set();
 
   fixedUpdate() {
-    const scene = this.getScene();
-    const colliders = EasyGetter.getAllByGroup<Collider2D>(scene, ComponentGroup.Collider);
+    const scene = this.engine.activeScene;
+    const colliders = scene.components.getAllByGroup<Collider2D>(ComponentGroup.Collider);
 
     this.prepareSpatialHash(colliders);
     this.runBroadphase(scene);
@@ -47,8 +46,6 @@ export class ColliderSystem extends System {
     for (let i = 0; i < bucket.length; i++) {
       const a = bucket[i];
       const aId = a.id.getValue();
-      const aEntity = EasyGetter.getEntity(scene, a);
-      if (!aEntity) continue;
 
       for (let j = i + 1; j < bucket.length; j++) {
         const b = bucket[j];
@@ -61,9 +58,6 @@ export class ColliderSystem extends System {
         const key = makePairKeyInt(aId, bId);
         if (this.checked.has(key)) continue;
         this.checked.add(key);
-
-        const bEntity = EasyGetter.getEntity(scene, b);
-        if (!bEntity) continue;
 
         if (a.intersects(b)) {
           a.isColliding = true;

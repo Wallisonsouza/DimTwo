@@ -7,7 +7,7 @@ import type { AnimatorState } from "./AnimatorState";
 export class AnimatorSystem extends System {
 
   lateUpdate(dt: number) {
-    const scene = this.getScene();
+    const scene = this.engine.activeScene;
     const components = scene.components;
 
     const animators = components.getAllOfType<Animator>(ComponentType.Animator);

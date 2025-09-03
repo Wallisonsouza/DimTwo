@@ -3,6 +3,10 @@ import { EngineSystem } from "@engine/core/managers/EngineSystemManager";
 import { EngineWindow } from "@engine/core/window/EngineWindow";
 import { Engine } from "@engine/Engine";
 import { PerspectiveCamera } from "@engine/modules/3D/PerspesctiveCamera";
+import { RenderSystem } from "@engine/modules/shared/render/RenderSystem";
+import { EditorFreeCamera2DSystem } from "./EditorFreeCamera2DSystem";
+import { EditorTransformSystem } from "./EditorTransformSystem";
+import { GizmosSystem } from "./GizmosSystem";
 
 export class EditorEngine extends Engine {
   constructor() {
@@ -24,10 +28,10 @@ export class EditorEngine extends Engine {
 
     this.forcedCamera = cameraComponent;
 
-    this.enableSystem(EngineSystem.RenderSystem);
-    this.enableSystem(EngineSystem.EditorGizmosSystem);
-    this.enableSystem(EngineSystem.EditorTransformSystem);
-    this.enableSystem(EngineSystem.EditorFreeCameraSystem);
+    this.enableSystem(EngineSystem.RenderSystem, new RenderSystem());
+    this.enableSystem(EngineSystem.EditorGizmosSystem, new GizmosSystem());
+    this.enableSystem(EngineSystem.EditorTransformSystem, new EditorTransformSystem());
+    this.enableSystem(EngineSystem.EditorFreeCameraSystem, new EditorFreeCamera2DSystem());
 
   }
 }
