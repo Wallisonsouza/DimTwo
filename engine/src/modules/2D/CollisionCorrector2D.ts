@@ -30,7 +30,10 @@ export class CollisionCorrector2D {
     pair.a.transform.position.addInPlace(Vec3.fromVec2(Vec2.scale(correction, aFactor)));
     pair.b.transform.position.addInPlace(Vec3.fromVec2(Vec2.scale(correction, -bFactor)));
 
-    const restitution = Math.max(pair.a.physicsMaterial?.restitution ?? 0, pair.b.physicsMaterial?.restitution ?? 0);
+    const restitution = Math.max(
+      pair.a.physicsMaterial?.restitution ?? 0,
+      pair.b.physicsMaterial?.restitution ?? 0
+    );
 
     this.correctVelocity(aRigid, resolution.normal, restitution);
     this.correctVelocity(bRigid, resolution.normal.scale(-1), restitution);

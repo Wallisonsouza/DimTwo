@@ -11,6 +11,7 @@ export interface Collider2DOptions {
   isTrigger?: boolean;
   collisionLayer?: CollisionLayer;
   ignoreSelfCollisions?: boolean;
+  physicsMaterial?: PhysicsMaterial;
 }
 
 
@@ -46,7 +47,7 @@ export abstract class Collider2D extends Component {
     this.isTrigger = options?.isTrigger ?? false;
     this.collisionLayer = options?.collisionLayer ?? CollisionLayer.Default;
     this.ignoreSelfCollisions = options?.ignoreSelfCollisions ?? true;
-    this.physicsMaterial = new PhysicsMaterial();
+    this.physicsMaterial = options?.physicsMaterial ?? new PhysicsMaterial();
     this._bounds = new Bounds2D(this.center, this.size);
   }
 

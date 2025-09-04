@@ -77,14 +77,13 @@ export class CharacterControlerSystem extends System {
       if (input.getKeyDown(KeyCode.Space) && characterControler.jumpCount < 2) {
         animator.setAnimatorState("jump", true);
         const up = new Vec2(0, 1);
-        rigid.addForce(up.scale(200), ForceMode.Force);
+        rigid.addForce(up.scale(30), ForceMode.Force);
         characterControler.jumpCount += 1;
       }
     }
   }
 
-  // atrito totalmente intencional
-  onCollisionStay(collisionEvent: CollisionEvent): void {
+  onCollisionEnter(collisionEvent: CollisionEvent): void {
     const characterControlerA = this.engine.components.getComponent<CharacterControler2D>(
       collisionEvent.a.gameEntity,
       ComponentType.CharacterController

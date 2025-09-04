@@ -13,6 +13,12 @@ export class Vec2 {
     this.x -= v.x;
     this.y -= v.y;
   }
+
+
+  public addInPlace(v: Vec2) {
+    this.x += v.x;
+    this.y += v.y;
+  }
   public set(x: number, y: number) {
     this.x = x;
     this.y = y;

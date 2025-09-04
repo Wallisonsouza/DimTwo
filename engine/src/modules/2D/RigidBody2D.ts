@@ -18,26 +18,46 @@ export enum ForceMode {
   Force
 }
 
+
 export class RigidBody2D extends Component {
   mass: number;
   velocity: Vec2;
   acceleration: Vec2;
-  drag: number;
   gravityScale: number;
   isStatic: boolean;
   useGravity: boolean;
+  drag: number;
 
   constructor(options: RigidBody2DOptions = {}) {
     super(ComponentType.RigidBody2D, ComponentGroup.RigidBody2D, options);
     this.mass = options.mass ?? 1;
     this.velocity = options.velocity ?? new Vec2();
     this.acceleration = options.acceleration ?? new Vec2();
-    this.drag = options.drag ?? 0;
+    this.drag = options.drag ?? 0.01;
     this.gravityScale = options.gravityScale ?? 1;
     this.isStatic = options.isStatic ?? false;
     this.useGravity = options.useGravity ?? true;
-
   }
+
+
+
+  area: number = 1;
+  rho: number = 1.225;
+
+  applyDrag() {
+
+    const speed = this.velocity.magnitude;
+    if (speed > 0) {
+      const velocityDir = Vec2.normalize(this.velocity);
+      const dragMagnitude = 0.5 * this.rho * this.area * this.drag * speed * speed;
+      const dragForce = velocityDir.scale(-dragMagnitude);
+      const accelDrag = dragForce.scale(1 / this.mass);
+      this.acceleration.addInPlace(accelDrag);
+    }
+  }
+
+
+
 
   public movePosition(target: Vec2, deltaTime: number) {
     if (this.isStatic) return;
