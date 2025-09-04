@@ -35,20 +35,6 @@ export abstract class Collider2D extends Component {
 
   public abstract intersects(other: Collider2D): boolean;
 
-  public getCenterOffset() {
-    return new Vec2(
-      this.center.x + this.transform.position.x,
-      this.center.y + this.transform.position.y
-    )
-  }
-
-  public getSizeOffset() {
-    return new Vec2(
-      this.size.x * this.transform.scale.x,
-      this.size.y * this.transform.scale.y
-    )
-  }
-
   public getBounds(): Bounds2D {
     this._bounds.updateWithOffset(
       this.center, this.size,

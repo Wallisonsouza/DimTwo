@@ -32,8 +32,8 @@ export class Bounds2D {
     this.max.y = this.center.y + this.extents.y;
   }
 
-  getBoundAt(position: Vec2): Bounds2D {
-    return new Bounds2D(position, this.size);
+  static getBoundAt(position: Vec2, size: Vec2): Bounds2D {
+    return new Bounds2D(position, size);
   }
 
   public intersects(other: Bounds2D): boolean {
@@ -42,5 +42,34 @@ export class Bounds2D {
 
   public containsPoint(point: Vec2): boolean {
     return point.x >= this.min.x && point.x <= this.max.x && point.y >= this.min.y && point.y <= this.max.y;
+  }
+
+  public static timeOfImpact(a: Bounds2D, aDelta: Vec2, b: Bounds2D, bDelta: Vec2): number | null {
+    let tEnter = 0;
+    let tExit = 1;
+
+    const vRelX = aDelta.x - bDelta.x;
+    if (vRelX === 0) {
+      if (a.max.x < b.min.x || b.max.x < a.min.x) return null;
+    } else {
+      const t1x = (b.min.x - a.max.x) / vRelX;
+      const t2x = (b.max.x - a.min.x) / vRelX;
+      tEnter = Math.max(tEnter, Math.min(t1x, t2x));
+      tExit = Math.min(tExit, Math.max(t1x, t2x));
+      if (tEnter > tExit || tExit < 0 || tEnter > 1) return null;
+    }
+
+    const vRelY = aDelta.y - bDelta.y;
+    if (vRelY === 0) {
+      if (a.max.y < b.min.y || b.max.y < a.min.y) return null;
+    } else {
+      const t1y = (b.min.y - a.max.y) / vRelY;
+      const t2y = (b.max.y - a.min.y) / vRelY;
+      tEnter = Math.max(tEnter, Math.min(t1y, t2y));
+      tExit = Math.min(tExit, Math.max(t1y, t2y));
+      if (tEnter > tExit || tExit < 0 || tEnter > 1) return null;
+    }
+
+    return tEnter >= 0 && tEnter <= 1 ? tEnter : null;
   }
 }
