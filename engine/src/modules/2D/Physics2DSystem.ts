@@ -13,7 +13,7 @@ export class PhysicsSystem extends System {
 
     for (const rigid of rigidbodies) {
       if (rigid.isStatic) continue;
-      rigid.acceleration.set(0, 0);
+
 
 
 
@@ -28,7 +28,7 @@ export class PhysicsSystem extends System {
 
       rigid.velocity.x += rigid.acceleration.x * fdt;
       rigid.velocity.y += rigid.acceleration.y * fdt;
-
+      rigid.acceleration.set(0, 0);
     }
   }
 }

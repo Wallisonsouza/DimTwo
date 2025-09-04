@@ -22,7 +22,7 @@ export function configureGroundEntity(
 
   const boxCollider = new BoxCollider2D({
     physicsMaterial: new PhysicsMaterial({
-      dynamicFriction: 1000
+      dynamicFriction: 0.5
     }),
     ignoreSelfCollisions: true,
 

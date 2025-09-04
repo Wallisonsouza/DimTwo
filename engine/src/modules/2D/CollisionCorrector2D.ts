@@ -12,6 +12,9 @@ export class CollisionCorrector2D {
   ) {
     const { aRigid, bRigid } = pair;
 
+    const matA = pair.a.physicsMaterial;
+    const matB = pair.b.physicsMaterial;
+
     const aStatic = !aRigid || aRigid.isStatic || !aRigid.useGravity;
     const bStatic = !bRigid || bRigid.isStatic || !bRigid.useGravity;
 
@@ -30,13 +33,19 @@ export class CollisionCorrector2D {
     pair.a.transform.position.addInPlace(Vec3.fromVec2(Vec2.scale(correction, aFactor)));
     pair.b.transform.position.addInPlace(Vec3.fromVec2(Vec2.scale(correction, -bFactor)));
 
-    const restitution = Math.max(
-      pair.a.physicsMaterial?.restitution ?? 0,
-      pair.b.physicsMaterial?.restitution ?? 0
-    );
+    const restitution = Math.max(matA.restitution, matB.restitution);
+    const friction = Math.sqrt(matA.dynamicFriction * matB.dynamicFriction);
 
-    this.correctVelocity(aRigid, resolution.normal, restitution);
-    this.correctVelocity(bRigid, resolution.normal.scale(-1), restitution);
+    if (aRigid) {
+      this.correctVelocity(aRigid, resolution.normal, restitution);
+      this.applyFriction(aRigid, resolution.normal, friction);
+    }
+
+    if (bRigid) {
+      this.correctVelocity(bRigid, resolution.normal.scale(-1), restitution);
+      this.applyFriction(bRigid, resolution.normal.scale(-1), friction);
+    }
+
   }
 
   public static correctVelocity(rigid: RigidBody2D | null, normal: Vec2, restitution: number = 0) {
@@ -46,4 +55,32 @@ export class CollisionCorrector2D {
       rigid.velocity.subInPlace(normal.scale(vn * (1 + restitution)));
     }
   }
+
+  public static applyFriction(
+    rigid: RigidBody2D | null,
+    normal: Vec2,
+    friction: number
+  ) {
+    if (!rigid || rigid.isStatic) return;
+
+    const vn = Vec2.dot(rigid.velocity, normal);
+    const normalVel = normal.scale(vn);
+    const tangentVel = rigid.velocity.sub(normalVel);
+
+    const tMag = tangentVel.magnitude;
+    if (tMag === 0) return;
+
+    const tangentDir = Vec2.normalize(tangentVel);
+    const maxImpulse = tMag;
+
+    let frictionImpulseMag = tMag * friction;
+
+    if (frictionImpulseMag > maxImpulse) {
+      frictionImpulseMag = maxImpulse;
+    }
+
+    const frictionImpulse = tangentDir.scale(-frictionImpulseMag);
+    rigid.velocity.addInPlace(frictionImpulse);
+  }
+
 }

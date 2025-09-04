@@ -77,7 +77,7 @@ export class CharacterControlerSystem extends System {
       if (input.getKeyDown(KeyCode.Space) && characterControler.jumpCount < 2) {
         animator.setAnimatorState("jump", true);
         const up = new Vec2(0, 1);
-        rigid.addForce(up.scale(30), ForceMode.Force);
+        rigid.addForce(up.scale(100), ForceMode.Force);
         characterControler.jumpCount += 1;
       }
     }
