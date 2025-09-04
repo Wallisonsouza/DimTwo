@@ -103,42 +103,6 @@ export class CharacterControlerSystem extends System {
       characterControlerB.jumpCount = 0;
     }
 
-    const rididA = this.engine.components.getComponent<RigidBody2D>(
-      collisionEvent.a.gameEntity,
-      ComponentType.RigidBody2D
-    );
 
-    const rigidB = this.engine.components.getComponent<RigidBody2D>(
-      collisionEvent.b.gameEntity,
-      ComponentType.RigidBody2D
-    );
-
-    if (rididA) {
-      rididA.drag = 10;
-    }
-
-    if (rigidB) {
-      rigidB.drag = 10;
-    }
   }
-  onCollisionExit(collisionEvent: CollisionEvent): void {
-    const rididA = this.engine.components.getComponent<RigidBody2D>(
-      collisionEvent.a.gameEntity,
-      ComponentType.RigidBody2D
-    );
-
-    const rigidB = this.engine.components.getComponent<RigidBody2D>(
-      collisionEvent.b.gameEntity,
-      ComponentType.RigidBody2D
-    );
-
-    if (rididA) {
-      rididA.drag = 0.1;
-    }
-
-    if (rigidB) {
-      rigidB.drag = 0.1;
-    }
-  }
-
 }

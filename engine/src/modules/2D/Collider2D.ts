@@ -13,6 +13,21 @@ export interface Collider2DOptions {
   ignoreSelfCollisions?: boolean;
 }
 
+
+export class PhysicsMaterial {
+  restitution: number;
+  staticFriction: number;
+  dynamicFriction: number;
+  density: number;
+
+  constructor(options: Partial<PhysicsMaterial> = {}) {
+    this.restitution = options.restitution ?? 0.5;
+    this.staticFriction = options.staticFriction ?? 0.5;
+    this.dynamicFriction = options.dynamicFriction ?? 0.3;
+    this.density = options.density ?? 1;
+  }
+}
+
 export abstract class Collider2D extends Component {
   isColliding: boolean;
   center: Vec2;
@@ -20,6 +35,7 @@ export abstract class Collider2D extends Component {
   isTrigger: boolean;
   collisionLayer: number;
   ignoreSelfCollisions: boolean;
+  public physicsMaterial: PhysicsMaterial;
   private _bounds: Bounds2D;
 
   constructor(type: ComponentType, options?: Collider2DOptions) {
@@ -30,6 +46,7 @@ export abstract class Collider2D extends Component {
     this.isTrigger = options?.isTrigger ?? false;
     this.collisionLayer = options?.collisionLayer ?? CollisionLayer.Default;
     this.ignoreSelfCollisions = options?.ignoreSelfCollisions ?? true;
+    this.physicsMaterial = new PhysicsMaterial();
     this._bounds = new Bounds2D(this.center, this.size);
   }
 
