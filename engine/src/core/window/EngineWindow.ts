@@ -29,7 +29,8 @@ export class EngineWindow {
     if (!gl) throw new Error("WebGL2 not supported");
     this.context = gl;
 
-    this.container.addEventListener("click", () => {
+    this.container.addEventListener("mousedown", () => {
+      this.container.tabIndex = 1;
       this.setCurrentWindow();
     });
 
@@ -45,8 +46,9 @@ export class EngineWindow {
   private setCurrentWindow() {
     if (EngineWindow.current) {
       EngineWindow.current.isFocus = false;
+      EngineWindow.current.container.tabIndex = 0;
     }
-
+    this.container.tabIndex = 1;
     this.isFocus = true;
     EngineWindow.current = this;
   }

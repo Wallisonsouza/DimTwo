@@ -30,8 +30,6 @@ export class CharacterControlerSystem extends System {
         ComponentType.RigidBody2D
       );
 
-
-
       const animator = this.engine.components.getComponent<Animator>(
         characterControler.gameEntity,
         ComponentType.Animator
@@ -42,6 +40,8 @@ export class CharacterControlerSystem extends System {
         ComponentType.SpriteRender
       );
       if (!rigid || !animator || !spriteRender) continue;
+
+      if (animator.locked) return;
 
       this.running = input.getKey(KeyCode.ShiftLeft);
 
@@ -63,8 +63,16 @@ export class CharacterControlerSystem extends System {
       if (rigid.velocity.x > speed) rigid.velocity.x = speed;
       if (rigid.velocity.x < -speed) rigid.velocity.x = -speed;
 
+      if (characterControler.direction.x === 0) {
+        animator.setAnimatorState("idle");
+      }
 
-
+      if (input.getMouseButtonDown(0)) {
+        animator.setAnimatorState("attack1", true);
+      }
+      if (input.getMouseButtonDown(2)) {
+        animator.setAnimatorState("defend", true);
+      }
 
       if (input.getKeyDown(KeyCode.Space) && characterControler.jumpCount < 2) {
         animator.setAnimatorState("jump", true);

@@ -1,5 +1,5 @@
 import type { AnimatorController } from "@engine/modules/shared/animator/AnimatorController";
-import { KnightIdle, KnightJump, KnightRun, KnightWalk } from "./KnightAnimations";
+import { KnightAttack1, KnightDefend, KnightIdle, KnightJump, KnightRun, KnightWalk } from "./KnightAnimations";
 
 
 export const PLAYER_ANIMATOR_CONTROLLER: AnimatorController = {
@@ -23,6 +23,15 @@ export const PLAYER_ANIMATOR_CONTROLLER: AnimatorController = {
     run: {
       clip: KnightRun,
       loop: true
+    },
+    defend: {
+      clip: KnightDefend,
+      loop: false
+    },
+
+    attack1: {
+      clip: KnightAttack1,
+      loop: false
     }
   }
 

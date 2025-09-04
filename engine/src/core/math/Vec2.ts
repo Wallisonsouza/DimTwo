@@ -24,6 +24,11 @@ export class Vec2 {
     );
   }
 
+  public copy(other: Vec2) {
+    this.x = other.x;
+    this.y = other.y;
+  }
+
 
   public static normalize(v: Vec2, out: Vec2 = new Vec2()): Vec2 {
     const len = Math.sqrt(v.x * v.x + v.y * v.y);

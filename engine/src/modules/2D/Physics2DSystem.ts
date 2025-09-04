@@ -12,7 +12,6 @@ export class PhysicsSystem extends System {
       ComponentGroup.RigidBody2D
     );
 
-
     for (const rigid of rigidbodies) {
       if (rigid.isStatic) continue;
 

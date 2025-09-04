@@ -1,4 +1,4 @@
-import type { Vec2 } from "./Vec2";
+import { Vec2 } from "./Vec2";
 
 export class Vec3 {
   public x: number;
@@ -136,6 +136,11 @@ export class Vec3 {
   public clone() {
     return new Vec3(this.x, this.y, this.z);
   }
+
+  public cloneToVec2() {
+    return new Vec2(this.x, this.y);
+  }
+
 
   public scale(scalar: number) {
     return new Vec3(this.x * scalar, this.y * scalar, this.z * scalar);

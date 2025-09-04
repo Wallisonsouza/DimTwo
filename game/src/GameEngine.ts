@@ -16,20 +16,18 @@ export class GameEngine extends Engine {
 
     super(gameWindow);
 
-    this.enableSystem(EngineSystem.RenderSystem, new RenderSystem());
+
+
+    // loop de update
+    this.enableSystem(EngineSystem.CameraSystem, new CameraSystem());
     this.enableSystem(EngineSystem.AnimatorSystem, new AnimatorSystem());
     this.enableSystem(EngineSystem.CharacterControlerAnimationSystem, new CharacterControllerAnimationSystem());
-
-    this.enableSystem(EngineSystem.PhysicsSystem, new PhysicsSystem());
-    this.enableSystem(EngineSystem.CameraSystem, new CameraSystem());
+    this.enableSystem(EngineSystem.RenderSystem, new RenderSystem());
     this.enableSystem(EngineSystem.CharacterControlerSystem, new CharacterControlerSystem());
     this.enableSystem(EngineSystem.CharacterControlerAnimationSystem, new CharacterControllerAnimationSystem());
 
-    this.enableSystem(
-      EngineSystem.ColliderSystem,
-      new Collider2DSystem()
-    );
-
+    this.enableSystem(EngineSystem.PhysicsSystem, new PhysicsSystem());
+    this.enableSystem(EngineSystem.ColliderSystem, new Collider2DSystem());
   }
 }
 

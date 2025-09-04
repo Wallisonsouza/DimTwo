@@ -25,7 +25,7 @@ export function configurePlayer(scene: Scene, entity: GameEntity) {
 
   const rigidBody = new RigidBody2D({
     mass: 1,
-    drag: 10,
+    drag: 0,
     useGravity: true
   })
 

@@ -22,7 +22,8 @@ async function loadResources() {
   EngineResourceManager.register("KnightWalk", new ImageFileLoader("../../game/src/assets/Knight/Sprites/with_outline/WALK.png"));
   EngineResourceManager.register("KnightRun", new ImageFileLoader("../../game/src/assets/Knight/Sprites/with_outline/RUN.png"));
   EngineResourceManager.register("KnightJump", new ImageFileLoader("../../game/src/assets/Knight/Sprites/with_outline/JUMP.png"));
-
+  EngineResourceManager.register("KnightAttack1", new ImageFileLoader("../../game/src/assets/Knight/Sprites/with_outline/ATTACK 1.png"));
+  EngineResourceManager.register("KnightDefend", new ImageFileLoader("../../game/src/assets/Knight/Sprites/with_outline/DEFEND.png"));
   await EngineResourceManager.load();
   new AdvancedShaderSystem("advancedShaderSystem");
   new SimpleShaderSystem("simpleShaderSystem");
@@ -49,6 +50,8 @@ const resources: EngineResource[] = [
   { name: "KnightWalk", type: "texture", path: "KnightWalk" },
   { name: "KnightRun", type: "texture", path: "KnightRun" },
   { name: "KnightJump", type: "texture", path: "KnightJump" },
+  { name: "KnightAttack1", type: "texture", path: "KnightAttack1" },
+  { name: "KnightDefend", type: "texture", path: "KnightDefend" },
 ];
 
 
@@ -71,3 +74,9 @@ app.appendChild(editor.engineWindow.container);
 app.appendChild(game.engineWindow.container);
 editor.engineWindow.resize();
 game.engineWindow.resize();
+
+
+document.body.addEventListener("contextmenu", (event) => {
+  event.preventDefault();
+  event.stopImmediatePropagation();
+}, { capture: true });

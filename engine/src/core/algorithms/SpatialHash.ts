@@ -31,6 +31,24 @@ export class SpatialHash<T> {
     return this.buckets.values();
   }
 
+
+  getAllObjects(): T[] {
+    const result: T[] = [];
+    const seen = new Set<T>();
+
+    for (const bucket of this.buckets.values()) {
+      for (const item of bucket) {
+        if (!seen.has(item)) {
+          seen.add(item);
+          result.push(item);
+        }
+      }
+    }
+
+    return result;
+  }
+
+
   clear() {
     this.buckets.clear();
   }

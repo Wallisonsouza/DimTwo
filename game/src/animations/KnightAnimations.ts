@@ -45,3 +45,26 @@ export const KnightRun = createAnimationClip(
   32
 
 )
+
+export const KnightAttack1 = createAnimationClip(
+  "KnightAttack1",
+  "KnightAttack1",
+  6,
+  16, 16,
+  64, 64,
+  12,
+  32
+
+)
+
+
+export const KnightDefend = createAnimationClip(
+  "KnightDefend",
+  "KnightDefend",
+  6,
+  16, 16,
+  64, 64,
+  12,
+  32
+
+)

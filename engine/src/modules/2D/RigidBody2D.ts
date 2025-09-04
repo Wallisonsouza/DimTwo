@@ -37,6 +37,7 @@ export class RigidBody2D extends Component {
     this.gravityScale = options.gravityScale ?? 1;
     this.isStatic = options.isStatic ?? false;
     this.useGravity = options.useGravity ?? true;
+
   }
 
   public movePosition(target: Vec2, deltaTime: number) {
