@@ -9,12 +9,20 @@ export class Vec2 {
     this.y = y;
   }
 
+  public subInPlace(v: Vec2) {
+    this.x -= v.x;
+    this.y -= v.y;
+  }
   public set(x: number, y: number) {
     this.x = x;
     this.y = y;
   }
   public static fromVec3(v: Vec3) {
     return new Vec2(v.x, v.y);
+  }
+
+  get magnitude(): number {
+    return Math.sqrt(this.x * this.x + this.y * this.y);
   }
 
   public static lerp(a: Vec2, b: Vec2, t: number): Vec2 {

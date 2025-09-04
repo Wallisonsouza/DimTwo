@@ -14,7 +14,7 @@ export interface CollisionResolution2D {
 
 export class ResolveCollision2D {
 
-  public static getResolution(engine: Engine, a: Collider2D, b: Collider2D) {
+  public static getResolutionFactor(engine: Engine, a: Collider2D, b: Collider2D) {
 
     if (a instanceof BoxCollider2D && b instanceof BoxCollider2D) {
       return ResolveCollision2D.getBoxBoxCollision(engine, a, b);

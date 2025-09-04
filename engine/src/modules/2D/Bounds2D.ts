@@ -32,10 +32,6 @@ export class Bounds2D {
     this.max.y = this.center.y + this.extents.y;
   }
 
-  static getBoundAt(position: Vec2, size: Vec2): Bounds2D {
-    return new Bounds2D(position, size);
-  }
-
   public intersects(other: Bounds2D): boolean {
     return !(this.max.x < other.min.x || this.min.x > other.max.x || this.max.y < other.min.y || this.min.y > other.max.y);
   }
