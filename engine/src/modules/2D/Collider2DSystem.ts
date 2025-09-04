@@ -155,6 +155,9 @@ export class Collider2DSystem extends System {
       const aRigid = this.engine.components.getComponent<RigidBody2D>(pair.a.gameEntity, ComponentType.RigidBody2D);
       const bRigid = this.engine.components.getComponent<RigidBody2D>(pair.b.gameEntity, ComponentType.RigidBody2D);
 
+      if (aRigid) {
+
+      }
       RigidBody2D.resolveRigidBody(aRigid, pair.a.transform, bRigid, pair.b.transform, pair.resolution!);
     }
   }

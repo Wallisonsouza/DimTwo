@@ -1,23 +1,30 @@
 import { GameEntity } from "@engine/core/base/GameEntity";
-import type { Color } from "@engine/core/math/Color";
-import type { Vec3 } from "@engine/core/math/Vec3";
 import type { Scene } from "@engine/core/scene/scene";
+import { BoxCollider2D } from "@engine/modules/2D/BoxCollider2D";
+import { RigidBody2D } from "@engine/modules/2D/RigidBody2D";
+import type { Sprite2D } from "@engine/modules/2D/Sprite2D";
 import { SpriteRender2D } from "@engine/modules/2D/SpriteRender2D";
-import { Transform } from "@engine/modules/3D/Transform";
 
 export function configureGroundEntity(
-    scene: Scene,
-    entity: GameEntity,
-    color: Color,
-    position: Vec3
+  scene: Scene,
+  entity: GameEntity,
+  sprite: Sprite2D
 ) {
-    const transform = new Transform({ position: position });
-    const spriteRener = new SpriteRender2D({
-        layer: 1,
-        color: color,
-        material: "simpleMaterial",
-    });
+  const spriteRender = new SpriteRender2D({
+    material: "advancedMaterial",
+    sprite: sprite
+  });
 
-    scene.addComponent(entity, transform);
-    scene.addComponent(entity, spriteRener);
+  const rigd = new RigidBody2D({
+    useGravity: false
+  })
+
+  const boxCollider = new BoxCollider2D({
+    ignoreSelfCollisions: true,
+
+  });
+
+  scene.addComponent(entity, spriteRender);
+  scene.addComponent(entity, boxCollider);
+  /*  scene.addComponent(entity, rigd); */
 }
