@@ -2,6 +2,7 @@ import { type ComponentOptions, Component } from "@engine/core/base/Component";
 import { Vec2 } from "@engine/core/math/Vec2";
 import { ComponentGroup } from "@engine/modules/enums/ComponentGroup";
 import { ComponentType } from "@engine/modules/enums/ComponentType";
+import { PhysicsMath2D } from "./PhysicsMath2D";
 
 export interface RigidBody2DOptions extends ComponentOptions {
   mass?: number;
@@ -45,43 +46,26 @@ export class RigidBody2D extends Component {
   rho: number = 1.225;
 
   applyDrag() {
-
-    const speed = this.velocity.magnitude;
-    if (speed > 0) {
-      const velocityDir = Vec2.normalize(this.velocity);
-      const dragMagnitude = 0.5 * this.rho * this.area * this.drag * speed * speed;
-      const dragForce = velocityDir.scale(-dragMagnitude);
-      const accelDrag = dragForce.scale(1 / this.mass);
-      this.acceleration.addInPlace(accelDrag);
-    }
-  }
-
-
-
-
-  public movePosition(target: Vec2, deltaTime: number) {
     if (this.isStatic) return;
+    const speed = this.velocity.magnitude;
+    if (speed < 0) return;
 
-    const deltaX = target.x - this.transform.position.x;
-    const deltaY = target.y - this.transform.position.y;
-
-    this.velocity.x = deltaX / deltaTime;
-    this.velocity.y = deltaY / deltaTime;
+    const dragForce = PhysicsMath2D.drag(this.velocity, this.rho, this.area, this.drag);
+    const aceleration = PhysicsMath2D.forceToAcceleration(dragForce, this.mass);
+    this.acceleration.addInPlace(aceleration);
   }
-
 
   public addForce(force: Vec2, mode: ForceMode = ForceMode.Force) {
     if (this.isStatic) return;
 
     if (mode === ForceMode.Force) {
-      const accelerationDelta = new Vec2(force.x / this.mass, force.y / this.mass);
-      this.acceleration = this.acceleration.add(accelerationDelta);
+      const accel = PhysicsMath2D.forceToAcceleration(force, this.mass);
+      this.acceleration.addInPlace(accel);
     } else if (mode === ForceMode.Impulse) {
-      this.velocity.x += force.x / this.mass;
-      this.velocity.y += force.y / this.mass;
+      const deltaV = PhysicsMath2D.forceToAcceleration(force, this.mass);
+      this.velocity.addInPlace(deltaV);
     }
   }
-
 
   clone(): RigidBody2D {
     return new RigidBody2D({

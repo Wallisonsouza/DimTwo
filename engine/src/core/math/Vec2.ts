@@ -90,6 +90,19 @@ export class Vec2 {
     return new Vec2(this.x * scalar, this.y * scalar);
   }
 
+  public negativeInPlace(): this {
+    this.x *= -1;
+    this.y *= -1;
+    return this;
+  }
+
+  public scaleInPlace(scalar: number): this {
+    this.x *= scalar;
+    this.y *= scalar;
+
+    return this;
+  }
+
   public static perpendicular(v: Vec2, out: Vec2): Vec2 {
     out.x = -v.y;
     out.y = v.x;
