@@ -62,8 +62,8 @@ export class CharacterControlerSystem extends System {
       const speed = this.running ? 1.2 : 0.5;
       rigid.addForce(characterControler.direction.scale(speed), ForceMode.Impulse);
 
-      if (rigid.velocity.x > speed) rigid.velocity.x = speed;
-      if (rigid.velocity.x < -speed) rigid.velocity.x = -speed;
+      if (rigid.linearVelocity.x > speed) rigid.linearVelocity.x = speed;
+      if (rigid.linearVelocity.x < -speed) rigid.linearVelocity.x = -speed;
 
       if (characterControler.direction.x === 0) {
         animator.setAnimatorState("idle");

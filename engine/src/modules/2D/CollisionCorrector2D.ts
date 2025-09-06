@@ -77,7 +77,7 @@ export class CollisionCorrector2D {
       this.correctVelocity(aRigid, normal, restitution);
 
       const accelFrictionA = PhysicsMath2D.contactFriction(
-        aRigid.velocity,
+        aRigid.linearVelocity,
         normal,
         aRigid.mass,
         aNormalForce,
@@ -86,14 +86,14 @@ export class CollisionCorrector2D {
         deltaTime
       );
 
-      aRigid.velocity.addInPlace(accelFrictionA.scale(deltaTime));
+      aRigid.linearVelocity.addInPlace(accelFrictionA.scale(deltaTime));
     }
 
     if (bRigid) {
       this.correctVelocity(bRigid, normalB, restitution);
 
       const accelFrictionB = PhysicsMath2D.contactFriction(
-        bRigid.velocity,
+        bRigid.linearVelocity,
         normalB,
         bRigid.mass,
         bNormalForce,
@@ -102,16 +102,16 @@ export class CollisionCorrector2D {
         deltaTime
       );
 
-      bRigid.velocity.addInPlace(accelFrictionB.scale(deltaTime));
+      bRigid.linearVelocity.addInPlace(accelFrictionB.scale(deltaTime));
     }
 
   }
 
   public static correctVelocity(rigid: RigidBody2D | null, normal: Vec2, restitution: number = 0) {
     if (!rigid || rigid.bodyType) return;
-    const vn = Vec2.dot(rigid.velocity, normal);
+    const vn = Vec2.dot(rigid.linearVelocity, normal);
     if (vn < 0) {
-      rigid.velocity.subInPlace(normal.scale(vn * (1 + restitution)));
+      rigid.linearVelocity.subInPlace(normal.scale(vn * (1 + restitution)));
     }
   }
 

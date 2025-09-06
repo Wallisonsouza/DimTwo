@@ -2,6 +2,7 @@ import { EngineConfig } from "@engine/global/EngineConfig";
 import type { RigidBody2D } from "@engine/modules/2D/RigidBody2D";
 import { ComponentGroup } from "@engine/modules/enums/ComponentGroup";
 import { System } from "../../core/base/System";
+import { PhysicsMath2D } from "./PhysicsMath2D";
 
 export class PhysicsSystem extends System {
 
@@ -12,20 +13,25 @@ export class PhysicsSystem extends System {
     );
 
     for (const rigid of rigidbodies) {
-      if (rigid.bodyType) continue;
-
       if (rigid.useGravity) {
-        rigid.acceleration.y += EngineConfig.PHYSICS.gravity.y * rigid.gravityScale;
+        rigid.linearAcceleration.y += EngineConfig.PHYSICS.gravity.y * rigid.gravityScale;
       }
 
       rigid.applyDrag();
 
-      rigid.transform.position.x += rigid.velocity.x * fdt + 0.5 * rigid.acceleration.x * fdt * fdt;
-      rigid.transform.position.y += rigid.velocity.y * fdt + 0.5 * rigid.acceleration.y * fdt * fdt;
+      const position = PhysicsMath2D
+        .calculateMRUAPosition(
+          rigid.linearVelocity,
+          rigid.linearAcceleration,
+          fdt
+        );
 
-      rigid.velocity.x += rigid.acceleration.x * fdt;
-      rigid.velocity.y += rigid.acceleration.y * fdt;
-      rigid.acceleration.set(0, 0);
+      rigid.transform.position.x += position.x;
+      rigid.transform.position.y += position.y;
+
+      rigid.linearVelocity.x += rigid.linearAcceleration.x * fdt;
+      rigid.linearVelocity.y += rigid.linearAcceleration.y * fdt;
+      rigid.linearAcceleration.set(0, 0);
     }
   }
 }

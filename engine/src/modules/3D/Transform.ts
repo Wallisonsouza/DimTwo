@@ -35,6 +35,8 @@ export class Transform extends Component {
     this._position.set(v);
   }
 
+
+
   get rotation(): Quat { return this._rotation; }
   set rotation(q: Quat) {
     this._rotation.set(q);

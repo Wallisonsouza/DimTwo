@@ -128,6 +128,15 @@ export class PhysicsMath2D {
         return (frictionA + frictionB) / 2;
     }
   }
+
+  public static calculateMRUAPosition(
+    velocity: Vec2,
+    acceleration: Vec2,
+    deltaTime: number
+  ): Vec2 {
+    return new Vec2(
+      velocity.x * deltaTime + 0.5 * acceleration.x * deltaTime * deltaTime,
+      velocity.y * deltaTime + 0.5 * acceleration.y * deltaTime * deltaTime,
+    );
+  }
 }
-
-

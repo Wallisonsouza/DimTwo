@@ -20,14 +20,19 @@ export enum ForceMode {
 }
 
 export enum BodyType {
+  Dynamic,
   Static,
-  Dynamic
+  Kinematic
 }
 
 export class RigidBody2D extends Component {
   mass: number;
-  velocity: Vec2;
-  acceleration: Vec2;
+
+  linearVelocity: Vec2;
+  linearAcceleration: Vec2;
+  angularVelocity: number = 0;
+  angularAcceleration: number = 0;
+
   gravityScale: number;
   bodyType: BodyType;
   useGravity: boolean;
@@ -38,8 +43,8 @@ export class RigidBody2D extends Component {
   constructor(options: RigidBody2DOptions = {}) {
     super(ComponentType.RigidBody2D, ComponentGroup.RigidBody2D, options);
     this.mass = options.mass ?? 1;
-    this.velocity = options.velocity ?? new Vec2(0, 0);
-    this.acceleration = options.acceleration ?? new Vec2(0, 0);
+    this.linearVelocity = options.velocity ?? new Vec2(0, 0);
+    this.linearAcceleration = options.acceleration ?? new Vec2(0, 0);
     this.drag = options.drag ?? 0.01;
     this.gravityScale = options.gravityScale ?? 1;
     this.bodyType = options.bodyType ?? BodyType.Dynamic;
@@ -49,12 +54,12 @@ export class RigidBody2D extends Component {
 
   applyDrag() {
     if (this.bodyType === BodyType.Static) return;
-    const speed = this.velocity.magnitude;
+    const speed = this.linearVelocity.magnitude;
     if (speed < 0) return;
 
-    const dragForce = PhysicsMath2D.drag(this.velocity, this.rho, this.area, this.drag);
+    const dragForce = PhysicsMath2D.drag(this.linearVelocity, this.rho, this.area, this.drag);
     const aceleration = PhysicsMath2D.forceToAcceleration(dragForce, this.mass);
-    this.acceleration.addInPlace(aceleration);
+    this.linearAcceleration.addInPlace(aceleration);
   }
 
   public addForce(force: Vec2, mode: ForceMode = ForceMode.Force) {
@@ -63,18 +68,18 @@ export class RigidBody2D extends Component {
     if (mode === ForceMode.Force) {
       const accel = PhysicsMath2D.forceToAcceleration(force, this.mass);
       console.log(accel)
-      this.acceleration.addInPlace(accel);
+      this.linearAcceleration.addInPlace(accel);
     } else if (mode === ForceMode.Impulse) {
       const deltaV = PhysicsMath2D.forceToAcceleration(force, this.mass);
-      this.velocity.addInPlace(deltaV);
+      this.linearVelocity.addInPlace(deltaV);
     }
   }
 
   clone(): RigidBody2D {
     return new RigidBody2D({
       mass: this.mass,
-      velocity: this.velocity.clone(),
-      acceleration: this.acceleration.clone(),
+      velocity: this.linearVelocity.clone(),
+      acceleration: this.linearAcceleration.clone(),
       drag: this.drag,
       gravityScale: this.gravityScale,
       bodyType: this.bodyType,

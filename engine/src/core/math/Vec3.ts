@@ -15,6 +15,10 @@ export class Vec3 {
     this.z = z;
   }
 
+  get xy() {
+    return new Vec2(this.x, this.y);
+  }
+
   public static lerp(a: Vec3, b: Vec3, t: number, out: Vec3): Vec3 {
     out.x = a.x + (b.x - a.x) * t;
     out.y = a.y + (b.y - a.y) * t;

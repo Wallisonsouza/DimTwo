@@ -22,7 +22,7 @@ export class CollisionResolver2D {
 
     return null;
   }
-  
+
   public static getBoxBoxCollision(
     engine: Engine,
     a: BoxCollider2D,
@@ -35,8 +35,8 @@ export class CollisionResolver2D {
     const aRigid = engine.components.getComponent<RigidBody2D>(a.gameEntity, ComponentType.RigidBody2D);
     const bRigid = engine.components.getComponent<RigidBody2D>(b.gameEntity, ComponentType.RigidBody2D);
 
-    const aDelta = aRigid ? Vec2.scale(aRigid.velocity, engine.time.deltaTime) : new Vec2(0, 0);
-    const bDelta = bRigid ? Vec2.scale(bRigid.velocity, engine.time.deltaTime) : new Vec2(0, 0);
+    const aDelta = aRigid ? Vec2.scale(aRigid.linearVelocity, engine.time.deltaTime) : new Vec2(0, 0);
+    const bDelta = bRigid ? Vec2.scale(bRigid.linearVelocity, engine.time.deltaTime) : new Vec2(0, 0);
 
     const t = Bounds2D.timeOfImpact(aBounds, aDelta, bBounds, bDelta);
     if (t === null) return null;
