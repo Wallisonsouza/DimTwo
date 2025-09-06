@@ -1,10 +1,11 @@
 import { GameEntity } from "@engine/core/base/GameEntity";
+import { Quat } from "@engine/core/math/quat";
 import { Vec2 } from "@engine/core/math/Vec2";
 import { Vec3 } from "@engine/core/math/Vec3";
 import { Scene } from "@engine/core/scene/scene";
 import { Sprite2D } from "@engine/modules/2D/Sprite2D";
 import { configureCamera } from "@game/entities/CameraEntity";
-import { configureGroundEntity } from "@game/entities/GroundEntity";
+import { configureEntity } from "@game/entities/GroundEntity";
 import { configurePlayer } from "@game/entities/PlayerEntity";
 
 export class SimpleScene extends Scene {
@@ -29,27 +30,22 @@ export class SimpleScene extends Scene {
       size: new Vec2(512, 512),
     });
 
-    /*   create(this, "Quad Example", quadSprite, new Vec3(0, 0, 0), true);
-      create(this, "Triangle Example", triangleSprite, new Vec3(1.5, 0, 0), true);
-      create(this, "Circle Example", circleSprite, new Vec3(3, 0, 0)); */
-
-
-
-
     const player = new GameEntity({ name: "Player", tag: "Player" });
+    player.transform.position.x = -2;
     const camera = new GameEntity({ name: "Camera", tag: "MainCamera" });
 
 
-    const ground = new GameEntity({ name: "Ground", tag: "Ground" });
-    ground.transform.scale = new Vec3(10, 2, 0);
-    ground.transform.position = new Vec3(0, -5);
+    const quad = new GameEntity({ name: "Quad", tag: "Quad" });
+    quad.transform.rotation = Quat.fromEulerAngles(new Vec3(0, 0, 45))
+    quad.transform.position.x = 2;
 
-    this.addEntity(ground);
+
     this.addEntity(camera);
     this.addEntity(player);
+    this.addEntity(quad);
 
     configurePlayer(this, player);
     configureCamera(this, camera);
-    configureGroundEntity(this, ground, quadSprite);
+    configureEntity(this, quad, quadSprite);
   }
 }

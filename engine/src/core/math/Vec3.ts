@@ -75,7 +75,7 @@ export class Vec3 {
     return this.x === v.x && this.y === v.y && this.z === v.z;
   }
 
-  public static mult(out: Vec3, a: Vec3, b: Vec3): Vec3 {
+  public static mult(a: Vec3, b: Vec3, out: Vec3 = new Vec3()): Vec3 {
     out.x = a.x * b.x;
     out.y = a.y * b.y;
     out.z = a.z * b.z;

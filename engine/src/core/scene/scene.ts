@@ -23,8 +23,6 @@ export class Scene {
   public addComponent(entity: GameEntity, component: Component) {
     this.components.addComponent(entity, component);
   }
-
-
   private cameraCache: Camera | null = null;
 
   public get activeCamera(): Camera {
@@ -45,23 +43,6 @@ export class Scene {
     throw new CameraNotFoundException(
       `[Scene.activeCamera] Nenhuma câmera ativa encontrada na cena.`
     );
-  }
-
-
-  public clone(): Scene {
-    const sceneClone = new Scene(this.name + "_clone");
-
-    for (const entity of this.entities.getAll()) {
-      const entityClone = entity.clone();
-      sceneClone.addEntity(entityClone);
-
-      for (const component of this.components.getAllComponentsForEntity(entity.id.getValue())) {
-        const componentClone = component.clone();
-        sceneClone.addComponent(entityClone, componentClone);
-      }
-    }
-
-    return sceneClone;
   }
 
   public clear(): void {

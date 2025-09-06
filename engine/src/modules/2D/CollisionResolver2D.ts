@@ -12,17 +12,17 @@ export interface CollisionResolution2D {
   time: number;
 }
 
-export class ResolveCollision2D {
+export class CollisionResolver2D {
 
   public static getResolutionFactor(engine: Engine, a: Collider2D, b: Collider2D) {
 
     if (a instanceof BoxCollider2D && b instanceof BoxCollider2D) {
-      return ResolveCollision2D.getBoxBoxCollision(engine, a, b);
+      return CollisionResolver2D.getBoxBoxCollision(engine, a, b);
     }
 
     return null;
   }
-
+  
   public static getBoxBoxCollision(
     engine: Engine,
     a: BoxCollider2D,

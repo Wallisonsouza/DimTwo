@@ -9,11 +9,12 @@ export class Vec2 {
     this.y = y;
   }
 
+  public static readonly Zero = new Vec2(0.0, 0.0);
+
   public subInPlace(v: Vec2) {
     this.x -= v.x;
     this.y -= v.y;
   }
-
 
   public addInPlace(v: Vec2) {
     this.x += v.x;
@@ -43,7 +44,6 @@ export class Vec2 {
     this.y = other.y;
   }
 
-
   public static normalize(v: Vec2, out: Vec2 = new Vec2()): Vec2 {
     const len = Math.sqrt(v.x * v.x + v.y * v.y);
     if (len === 0) {
@@ -60,6 +60,14 @@ export class Vec2 {
     out.x = a.x * scalar;
     out.y = a.y * scalar;
     return out;
+  }
+  normalizeSelf(): Vec2 {
+    const len = Math.sqrt(this.x * this.x + this.y * this.y);
+    if (len > 0) {
+      this.x /= len;
+      this.y /= len;
+    }
+    return this;
   }
 
   public static sub(a: Vec2, b: Vec2, out: Vec2 = new Vec2()): Vec2 {

@@ -51,7 +51,7 @@ abstract class SceneAbstraction {
       throw new SceneNotFoundException(`[SceneManager.loadScene] Falha ao carregar a cena "${name}". Cena não encontrada.`);
     }
 
-    this.activeScene = clone ? scene.clone() : scene;
+    this.activeScene = scene;
     this.onLoadSceneCallback?.(scene);
   }
 

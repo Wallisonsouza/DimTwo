@@ -36,7 +36,7 @@ export class System {
   onCollisionExit?(collisionEvent: CollisionEvent): void;
 
 
-  /*   onTriggerEnter?(triggerEvent: TriggerEvent): void;
-    onTriggerStay?(triggerEvent: TriggerEvent): void;
-    onTriggerExit?(triggerEvent: TriggerEvent): void; */
+  onTriggerEnter?(triggerEvent: any): void;
+  onTriggerStay?(triggerEvent: any): void;
+  onTriggerExit?(triggerEvent: any): void;
 }

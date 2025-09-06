@@ -12,7 +12,7 @@ export class PhysicsSystem extends System {
     );
 
     for (const rigid of rigidbodies) {
-      if (rigid.isStatic) continue;
+      if (rigid.bodyType) continue;
 
       if (rigid.useGravity) {
         rigid.acceleration.y += EngineConfig.PHYSICS.gravity.y * rigid.gravityScale;

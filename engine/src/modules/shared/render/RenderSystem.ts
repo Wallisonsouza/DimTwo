@@ -39,7 +39,8 @@ export class RenderSystem extends System {
       if (!shaderSystem) continue;
 
       shaderSystem.global?.(engine, scene, shader);
-      shaderSystem.local?.(engine, render.gameEntity, scene, shader);
+
+      shaderSystem.local?.(engine, render.transform, scene, shader);
 
       if (!render.meshName) continue;
       const mesh = ResourcesManager.MeshManager.get(render.meshName);

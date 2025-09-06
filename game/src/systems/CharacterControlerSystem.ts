@@ -49,12 +49,14 @@ export class CharacterControlerSystem extends System {
         animator.setAnimatorState(this.running ? "run" : "walk");
         spriteRender.flipHorizontal = true;
         characterControler.direction.x -= 1;
+        spriteRender.transform.scale.x = -1;
       }
 
       if (input.getKey(KeyCode.KeyD)) {
         animator.setAnimatorState(this.running ? "run" : "walk");
         spriteRender.flipHorizontal = false;
         characterControler.direction.x += 1;
+        spriteRender.transform.scale.x = 1;
       }
 
       const speed = this.running ? 1.2 : 0.5;

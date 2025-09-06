@@ -52,13 +52,13 @@ export class SystemManager {
   }
 
 
-  public callTriggerEnterEvents(event: TriggerEvent): void {
+  public callTriggerEnterEvents(event: any): void {
     for (const system of this.data.values()) system.onTriggerEnter?.(event);
   }
-  public callTriggerStayEvents(event: TriggerEvent): void {
+  public callTriggerStayEvents(event: any): void {
     for (const system of this.data.values()) system.onTriggerStay?.(event);
   }
-  public callTriggerExitEvents(event: TriggerEvent): void {
+  public callTriggerExitEvents(event: any): void {
     for (const system of this.data.values()) system.onTriggerExit?.(event);
   }
 

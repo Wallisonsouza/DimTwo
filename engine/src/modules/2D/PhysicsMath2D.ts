@@ -1,5 +1,10 @@
 import { Vec2 } from "@engine/core/math/Vec2";
 
+export enum FrictionCombine {
+  Average,
+  Minimum,
+  Maximum
+}
 export class PhysicsMath2D {
   public static readonly EPSILON = 1e-6;
 
@@ -8,6 +13,12 @@ export class PhysicsMath2D {
     return force.scale(1 / mass);
   }
 
+  // Cd -> coeficient;
+  // p -> density;
+  // V -> velocity;
+  // A -> area;
+
+  //D = Cd (ρ * (V * V) * A) / 2
   public static drag(velocity: Vec2, rho: number, area: number, dragCoef: number): Vec2 {
     const speed = velocity.magnitude;
     if (speed < PhysicsMath2D.EPSILON) return new Vec2(0, 0);
@@ -86,4 +97,37 @@ export class PhysicsMath2D {
     return [aForce, bForce];
   }
 
+  public static springAcceleration(
+    penetration: number,
+    normal: Vec2,
+    velocity: Vec2,
+    mass: number,
+    k: number,
+    damping: number
+  ): Vec2 {
+
+    const springForce = normal.scale(k * penetration);
+    const dampingForce = velocity.scale(-damping);
+    const totalForce = springForce.add(dampingForce);
+    return PhysicsMath2D.forceToAcceleration(totalForce, mass);
+  }
+
+  public static getCombinedFriction(
+    frictionA: number,
+    frictionB: number,
+    mode: FrictionCombine = FrictionCombine.Average
+  ): number {
+    switch (mode) {
+      case FrictionCombine.Average:
+        return (frictionA + frictionB) / 2;
+      case FrictionCombine.Minimum:
+        return Math.min(frictionA, frictionB);
+      case FrictionCombine.Maximum:
+        return Math.max(frictionA, frictionB);
+      default:
+        return (frictionA + frictionB) / 2;
+    }
+  }
 }
+
+

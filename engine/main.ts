@@ -1,6 +1,6 @@
 import { ImageFileLoader } from "@engine/core/loaders/ImageFileLoader";
 import { Vec3 } from "@engine/core/math/Vec3";
-import { Quad } from "@engine/modules/resources/Quad";
+import { Circle, Quad } from "@engine/modules/resources/Quad";
 import { Material } from "@engine/Rendering/Material";
 import { TextFileLoader } from "./src/core/loaders/TextFileLoader";
 import { EngineResourceManager } from "./src/core/managers/EngineResourceManager";
@@ -9,6 +9,8 @@ export async function loadEngine() {
 
   Quad.createFillQuadMesh("fillQuad", new Vec3(1, 1, 0));
   Quad.createWireQuadMesh("wireQuad", new Vec3(1, 1, 0));
+
+  Circle.createWireCircleMesh("wireCircle", 0.5, 64);
 
   new Material({ name: "advancedMaterial", shaderName: "advanced", transparent: true });
   new Material({ name: "simpleMaterial", shaderName: "simple" });

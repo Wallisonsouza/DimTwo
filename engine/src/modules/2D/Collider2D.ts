@@ -4,6 +4,7 @@ import { Component } from "../../core/base/Component";
 import { ComponentGroup } from "../enums/ComponentGroup";
 import { ComponentType } from "../enums/ComponentType";
 import { Bounds2D } from "./Bounds2D";
+import { PhysicsMaterial } from "./PhysicsMaterial";
 
 export interface Collider2DOptions {
   center?: Vec2;
@@ -12,21 +13,6 @@ export interface Collider2DOptions {
   collisionLayer?: CollisionLayer;
   ignoreSelfCollisions?: boolean;
   physicsMaterial?: PhysicsMaterial;
-}
-
-
-export class PhysicsMaterial {
-  restitution: number;
-  staticFriction: number;
-  dynamicFriction: number;
-  density: number;
-
-  constructor(options: Partial<PhysicsMaterial> = {}) {
-    this.restitution = options.restitution ?? 0.5;
-    this.staticFriction = options.staticFriction ?? 0.5;
-    this.dynamicFriction = options.dynamicFriction ?? 0.3;
-    this.density = options.density ?? 1;
-  }
 }
 
 export abstract class Collider2D extends Component {
@@ -54,13 +40,18 @@ export abstract class Collider2D extends Component {
   public abstract intersects(other: Collider2D): boolean;
 
   public getBounds(): Bounds2D {
+    const scale = Vec2.fromVec3(this.transform.scale);
+    const correctedScale = new Vec2(Math.abs(scale.x), Math.abs(scale.y));
+
     this._bounds.updateWithOffset(
-      this.center, this.size,
+      this.center,
+      this.size,
       Vec2.fromVec3(this.transform.position),
-      Vec2.fromVec3(this.transform.scale)
+      correctedScale
     );
     return this._bounds;
   }
+
   public copyBase(target: Collider2D) {
     target.isColliding = this.isColliding;
     target.center = this.center.clone();

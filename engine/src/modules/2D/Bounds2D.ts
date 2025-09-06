@@ -69,3 +69,29 @@ export class Bounds2D {
     return tEnter >= 0 && tEnter <= 1 ? tEnter : null;
   }
 }
+
+export class OBB2D {
+  public center: Vec2;
+  public size: Vec2;
+  public rotation: number;
+
+  constructor(center: Vec2, size: Vec2, rotation: number = 0) {
+    this.center = center.clone();
+    this.size = size.clone();
+    this.rotation = rotation;
+  }
+
+
+
+
+  /*   getAxes(): Vec2[] {
+      const axes: Vec2[] = [];
+      for (let i = 0; i < this.vertices.length; i++) {
+        const p1 = this.vertices[i];
+        const p2 = this.vertices[(i + 1) % this.vertices.length];
+        const edge = Vec2.sub(p2, p1);
+        axes.push(new Vec2(-edge.y, edge.x).normalize());
+      }
+      return axes;
+    } */
+}

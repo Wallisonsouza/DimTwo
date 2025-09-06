@@ -1,19 +1,4 @@
-
-import { Mulberry32 } from "@engine/core/algorithms/Mulberry32";
-import type { Component } from "@engine/core/base/Component";
-import { GameEntity } from "@engine/core/base/GameEntity";
-import { System } from "@engine/core/base/System";
-import { Vec2 } from "@engine/core/math/Vec2";
-import { Vec3 } from "@engine/core/math/Vec3";
-import type { Scene } from "@engine/core/scene/scene";
-import { SpriteRender2D } from "@engine/modules/2D/SpriteRender2D";
-import type { ComponentGroup } from "@engine/modules/enums/ComponentGroup";
-import { ComponentType } from "@engine/modules/enums/ComponentType";
-import { BiomeName } from "@game/enums/BiomeName";
-import { getBiomeColor } from "./biome";
-import { GRASS_0_PREFAB, GROUND_PREFAB, OAK_TREE_PREFAB, type Prefab } from "./Prefab";
-import { World, type TerrainCell } from "./Word";
-
+/* 
 export class EasyGetter {
   public static getAllByGroup<T extends Component>(scene: Scene, group: ComponentGroup): T[] {
     return scene.components.getAllByGroup<T>(group);
@@ -82,7 +67,7 @@ const biomeTrees: Record<BiomeName, BiomePrefab[]> = {
       { prefab: BUSHE_3_PREFAB, chance: 0.2, offset: new Vec3(0, 0, 0) },
       { prefab: BUSHE_4_PREFAB, chance: 0.2, offset: new Vec3(0, 0, 0) },
       { prefab: BUSHE_5_PREFAB, chance: 0.2, offset: new Vec3(0, 0, 0) },
-      { prefab: BUSHE_6_PREFAB, chance: 0.2, offset: new Vec3(0, 0, 0) } */
+      { prefab: BUSHE_6_PREFAB, chance: 0.2, offset: new Vec3(0, 0, 0) } 
 
   ],
   [BiomeName.DEEP_WATER]: [],
@@ -133,3 +118,4 @@ function generateTrees(scene: Scene, terrainCells: TerrainCell[], chunkPos: Vec2
   }
 
 }
+ */
