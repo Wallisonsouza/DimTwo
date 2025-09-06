@@ -1,186 +1,168 @@
 import type { Vec3 } from "@engine/core/math/Vec3";
+import { Index } from "./vec";
 
 export class Vec2 {
-  x: number;
-  y: number;
+  public readonly data: Float32Array;
 
-  constructor(x: number = 0, y: number = 0) {
-    this.x = x;
-    this.y = y;
-  }
+  public get x() { return this.data[Index.X]; }
+  public get y() { return this.data[Index.Y]; }
 
-  public static readonly Zero = new Vec2(0.0, 0.0);
+  public set x(v: number) { this.data[Index.X] = v; }
+  public set y(v: number) { this.data[Index.Y] = v; }
 
-  public subInPlace(v: Vec2) {
-    this.x -= v.x;
-    this.y -= v.y;
+  constructor(x = 0, y = 0) {
+    this.data = new Float32Array([x, y]);
   }
 
-  public addInPlace(v: Vec2) {
-    this.x += v.x;
-    this.y += v.y;
-  }
-  public set(x: number, y: number) {
-    this.x = x;
-    this.y = y;
-  }
-  public static fromVec3(v: Vec3) {
-    return new Vec2(v.x, v.y);
-  }
+  public static readonly Zero = new Vec2(0, 0);
 
-  get magnitude(): number {
-    return Math.sqrt(this.x * this.x + this.y * this.y);
-  }
-
-  public static lerp(a: Vec2, b: Vec2, t: number): Vec2 {
-    return new Vec2(
-      a.x + (b.x - a.x) * t,
-      a.y + (b.y - a.y) * t
-    );
-  }
-
-  public copy(other: Vec2) {
-    this.x = other.x;
-    this.y = other.y;
-  }
-
-  public static normalize(v: Vec2, out: Vec2 = new Vec2()): Vec2 {
-    const len = Math.sqrt(v.x * v.x + v.y * v.y);
-    if (len === 0) {
-      out.x = 0;
-      out.y = 0;
-    } else {
-      out.x = v.x / len;
-      out.y = v.y / len;
-    }
-    return out;
-  }
-
-  public static scale(a: Vec2, scalar: number, out: Vec2 = new Vec2()): Vec2 {
-    out.x = a.x * scalar;
-    out.y = a.y * scalar;
-    return out;
-  }
-  normalizeSelf(): Vec2 {
-    const len = Math.sqrt(this.x * this.x + this.y * this.y);
-    if (len > 0) {
-      this.x /= len;
-      this.y /= len;
-    }
+  // --------------------------
+  // Operações in-place
+  // --------------------------
+  public addInPlace(v: Vec2): this {
+    const d = this.data, vd = v.data;
+    d[Index.X] += vd[Index.X];
+    d[Index.Y] += vd[Index.Y];
     return this;
   }
 
-  public static sub(a: Vec2, b: Vec2, out: Vec2 = new Vec2()): Vec2 {
-    out.x = a.x - b.x;
-    out.y = a.y - b.y;
-    return out;
-  }
-
-  public static add(a: Vec2, b: Vec2, out: Vec2 = new Vec2()): Vec2 {
-    out.x = a.x + b.x;
-    out.y = a.y + b.y;
-    return out;
-  }
-
-  public add(v: Vec2): Vec2 {
-    return new Vec2(this.x + v.x, this.y + v.y);
-  }
-  public sub(v: Vec2): Vec2 {
-    return new Vec2(this.x - v.x, this.y - v.y);
-  }
-
-  public mul(v: Vec2): Vec2 {
-    return new Vec2(this.x * v.x, this.y * v.y);
-  }
-
-
-  public scale(scalar: number): Vec2 {
-    return new Vec2(this.x * scalar, this.y * scalar);
-  }
-
-  public negativeInPlace(): this {
-    this.x *= -1;
-    this.y *= -1;
+  public subInPlace(v: Vec2): this {
+    const d = this.data, vd = v.data;
+    d[Index.X] -= vd[Index.X];
+    d[Index.Y] -= vd[Index.Y];
     return this;
   }
 
   public scaleInPlace(scalar: number): this {
-    this.x *= scalar;
-    this.y *= scalar;
-
+    const d = this.data;
+    d[Index.X] *= scalar;
+    d[Index.Y] *= scalar;
     return this;
   }
 
-  public static perpendicular(v: Vec2, out: Vec2): Vec2 {
-    out.x = -v.y;
-    out.y = v.x;
+  public negativeInPlace(): this {
+    const d = this.data;
+    d[Index.X] *= -1;
+    d[Index.Y] *= -1;
+    return this;
+  }
+
+  get magnitude(): number {
+    const d = this.data;
+    return Math.hypot(d[Index.X], d[Index.Y]);
+  }
+
+  public normalizeSelf(): this {
+    const d = this.data;
+    const len = Math.hypot(d[Index.X], d[Index.Y]);
+    if (len > 0) {
+      d[Index.X] /= len;
+      d[Index.Y] /= len;
+    } else {
+      d[Index.X] = d[Index.Y] = 0;
+    }
+    return this;
+  }
+
+  public set(x: number, y: number): this {
+    const d = this.data;
+    d[Index.X] = x;
+    d[Index.Y] = y;
+    return this;
+  }
+
+  public copy(other: Vec2): this {
+    const d = this.data, od = other.data;
+    d[Index.X] = od[Index.X];
+    d[Index.Y] = od[Index.Y];
+    return this;
+  }
+
+  //---------------------------Static---------------------------------------------
+  
+  public static length(v: Vec2) {
+    return v.magnitude;
+  }
+
+  public static add(a: Vec2, b: Vec2, out: Vec2 = new Vec2()): Vec2 {
+    const ad = a.data, bd = b.data, od = out.data;
+    od[Index.X] = ad[Index.X] + bd[Index.X];
+    od[Index.Y] = ad[Index.Y] + bd[Index.Y];
+    return out;
+  }
+
+  public static sub(a: Vec2, b: Vec2, out: Vec2 = new Vec2()): Vec2 {
+    const ad = a.data, bd = b.data, od = out.data;
+    od[Index.X] = ad[Index.X] - bd[Index.X];
+    od[Index.Y] = ad[Index.Y] - bd[Index.Y];
+    return out;
+  }
+
+  public static scale(v: Vec2, scalar: number, out: Vec2 = new Vec2()): Vec2 {
+    const vd = v.data, od = out.data;
+    od[Index.X] = vd[Index.X] * scalar;
+    od[Index.Y] = vd[Index.Y] * scalar;
+    return out;
+  }
+
+  public static normalize(v: Vec2, out: Vec2 = new Vec2()): Vec2 {
+    const vd = v.data, od = out.data;
+    const len = Math.hypot(vd[Index.X], vd[Index.Y]);
+    if (len > 0) {
+      od[Index.X] = vd[Index.X] / len;
+      od[Index.Y] = vd[Index.Y] / len;
+    } else {
+      od[Index.X] = od[Index.Y] = 0;
+    }
+    return out;
+  }
+
+  public static lerp(a: Vec2, b: Vec2, t: number, out: Vec2 = new Vec2()): Vec2 {
+    const ad = a.data, bd = b.data, od = out.data;
+    od[Index.X] = ad[Index.X] + (bd[Index.X] - ad[Index.X]) * t;
+    od[Index.Y] = ad[Index.Y] + (bd[Index.Y] - ad[Index.Y]) * t;
     return out;
   }
 
   public static dot(a: Vec2, b: Vec2): number {
-    return a.x * b.x + a.y * b.y;
-  }
-
-  public static divScalar(a: Vec2, scalar: number, out: Vec2): Vec2 {
-    out.x = a.x / scalar;
-    out.y = a.y / scalar;
-    return out;
-  }
-
-  public static length(v: Vec2): number {
-    return Math.sqrt(v.x * v.x + v.y * v.y);
-  }
-
-  public static lengthSquared(v: Vec2): number {
-    return v.x * v.x + v.y * v.y;
+    const ad = a.data, bd = b.data;
+    return ad[Index.X] * bd[Index.X] + ad[Index.Y] * bd[Index.Y];
   }
 
   public static distance(a: Vec2, b: Vec2): number {
-    const dx = a.x - b.x;
-    const dy = a.y - b.y;
-    return Math.sqrt(dx * dx + dy * dy);
+    const ad = a.data, bd = b.data;
+    const dx = bd[Index.X] - ad[Index.X];
+    const dy = bd[Index.Y] - ad[Index.Y];
+    return Math.hypot(dx, dy);
   }
 
-  public static distanceSquared(a: Vec2, b: Vec2): number {
-    const dx = a.x - b.x;
-    const dy = a.y - b.y;
-    return dx * dx + dy * dy;
-  }
-
-  public static createZero(out: Vec2): Vec2 {
-    out.x = 0;
-    out.y = 0;
+  public static fromVec3(v: Vec3, out: Vec2 = new Vec2()): Vec2 {
+    const vd = v.data, od = out.data;
+    od[Index.X] = vd[Index.X];
+    od[Index.Y] = vd[Index.Y];
     return out;
   }
 
-  public static create(x: number, y: number, out: Vec2): Vec2 {
-    out.x = x;
-    out.y = y;
-    return out;
+  // --------------------------
+  // Clonagem e utilitários
+  // --------------------------
+  public clone(): Vec2 {
+    const d = this.data;
+    return new Vec2(d[Index.X], d[Index.Y]);
+  }
+
+  public toString(): string {
+    const d = this.data;
+    return `Vec2(x: ${d[Index.X].toFixed(2)}, y: ${d[Index.Y].toFixed(2)})`;
   }
 
   public static vec2ArrayTof32Array(vectors: Vec2[], out?: Float32Array): Float32Array {
-    if (!out || out.length < vectors.length * 2) {
-      out = new Float32Array(vectors.length * 2);
-    }
+    if (!out || out.length < vectors.length * 2) out = new Float32Array(vectors.length * 2);
     for (let i = 0; i < vectors.length; i++) {
-      const v = vectors[i];
-      out[i * 2] = v.x;
-      out[i * 2 + 1] = v.y;
+      const v = vectors[i].data;
+      out[i * 2] = v[Index.X];
+      out[i * 2 + 1] = v[Index.Y];
     }
     return out;
-  }
-
-  public static eq(a: Vec2, b: Vec2, tolerance: number = 1e-4): boolean {
-    return Math.abs(a.x - b.x) <= tolerance &&
-      Math.abs(a.y - b.y) <= tolerance;
-  }
-
-  public clone() {
-    return new Vec2(this.x, this.y);
-  }
-
-  public toString() {
-    return `Vec2(x: ${this.x}, y: ${this.y})`
   }
 }

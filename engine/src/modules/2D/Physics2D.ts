@@ -23,7 +23,7 @@ export class Physics2D {
       const point2D = Vec2.fromVec3(hitPoint);
 
       if (b.containsPoint(point2D)) {
-        const distance = rayDir.clone().scale(t).length();
+        const distance = Vec3.scale(rayDir, t, new Vec3(0, 0, 0)).length();
         const normal = this.calculateNormal(b, point2D);
 
         if (!closestHit || distance < closestHit.distance) {

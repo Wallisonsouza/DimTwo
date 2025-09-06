@@ -32,7 +32,7 @@ export class Transform extends Component {
 
   get position(): Vec3 { return this._position; }
   set position(v: Vec3) {
-    this._position.set(v);
+    this._position.setFromOther(v);
   }
 
 
@@ -44,7 +44,7 @@ export class Transform extends Component {
 
   get scale(): Vec3 { return this._scale; }
   set scale(s: Vec3) {
-    this._scale.set(s);
+    this._scale.setFromOther(s);
   }
 
   localPosition: Vec3 = new Vec3(2, 0, 0);

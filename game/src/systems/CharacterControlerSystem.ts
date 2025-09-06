@@ -60,7 +60,7 @@ export class CharacterControlerSystem extends System {
       }
 
       const speed = this.running ? 1.2 : 0.5;
-      rigid.addForce(characterControler.direction.scale(speed), ForceMode.Impulse);
+      rigid.addForce(Vec2.scale(characterControler.direction, speed), ForceMode.Impulse);
 
       if (rigid.linearVelocity.x > speed) rigid.linearVelocity.x = speed;
       if (rigid.linearVelocity.x < -speed) rigid.linearVelocity.x = -speed;
@@ -78,8 +78,9 @@ export class CharacterControlerSystem extends System {
 
       if (input.getKeyDown(KeyCode.Space) && characterControler.jumpCount < 2) {
         animator.setAnimatorState("jump", true);
-        const up = new Vec2(0, 1);
-        rigid.addForce(up.scale(100), ForceMode.Force);
+        const up = new Vec2(0, 1 * 100);
+
+        rigid.addForce(up, ForceMode.Force);
         characterControler.jumpCount += 1;
       }
     }

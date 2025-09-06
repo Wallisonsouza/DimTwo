@@ -1,176 +1,193 @@
+import { Index } from "./vec";
 import { Vec2 } from "./Vec2";
 
 export class Vec3 {
-  public x: number;
-  public y: number;
-  public z: number;
+  public readonly data: Float32Array;
 
-  public toString() {
-    return `Vec3(${this.x.toFixed(2)}, ${this.y.toFixed(2)}, ${this.z.toFixed(2)})`
+  public get x() { return this.data[Index.X]; }
+  public get y() { return this.data[Index.Y]; }
+  public get z() { return this.data[Index.Z]; }
+
+  public set x(v: number) { this.data[Index.X] = v; }
+  public set y(v: number) { this.data[Index.Y] = v; }
+  public set z(v: number) { this.data[Index.Z] = v; }
+
+  constructor(x = 0, y = 0, z = 0) {
+    this.data = new Float32Array([x, y, z]);
   }
 
-  constructor(x: number = 0, y: number = 0, z: number = 0) {
-    this.x = x;
-    this.y = y;
-    this.z = z;
+  public setFromOther(other: Vec3): this {
+    const d = this.data;
+    const o = other.data;
+    d[Index.X] = o[Index.X];
+    d[Index.Y] = o[Index.Y];
+    d[Index.Z] = o[Index.Z];
+    return this;
   }
 
-  get xy() {
-    return new Vec2(this.x, this.y);
+  public set(x: number, y: number, z: number): this {
+    const d = this.data;
+
+    d[Index.X] = x;
+    d[Index.Y] = y;
+    d[Index.Z] = z;
+    return this;
   }
 
-  public static lerp(a: Vec3, b: Vec3, t: number, out: Vec3): Vec3 {
-    out.x = a.x + (b.x - a.x) * t;
-    out.y = a.y + (b.y - a.y) * t;
-    out.z = a.z + (b.z - a.z) * t;
-    return out;
+  public addInPlace(v: Vec3): this {
+    const d = this.data, vd = v.data;
+    d[Index.X] += vd[Index.X];
+    d[Index.Y] += vd[Index.Y];
+    d[Index.Z] += vd[Index.Z];
+    return this;
   }
 
-  static distanceTo(a: Vec3, b: Vec3): number {
-    const dx = b.x - a.x;
-    const dy = b.y - a.y;
-    const dz = b.z - a.z;
-    return Math.sqrt(dx * dx + dy * dy + dz * dz);
-  }
-
-  public static sub(a: Vec3, b: Vec3, out: Vec3 = new Vec3()): Vec3 {
-    out.x = a.x - b.x;
-    out.y = a.y - b.y;
-    out.z = a.z - b.z;
-    return out;
-  }
-
-  public subtractInplace(other: Vec3): this {
-    this.x -= other.x;
-    this.y -= other.y;
-    this.z -= other.z;
+  public subtractInplace(v: Vec3): this {
+    const d = this.data, vd = v.data;
+    d[Index.X] -= vd[Index.X];
+    d[Index.Y] -= vd[Index.Y];
+    d[Index.Z] -= vd[Index.Z];
     return this;
   }
 
   public normalizeInPlace(): this {
-    const length = Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
-    if (length === 0) {
-      this.x = 0;
-      this.y = 0;
-      this.z = 0;
-      return this;
-    }
-    this.x /= length;
-    this.y /= length;
-    this.z /= length;
-    return this;
-  }
-
-
-  public set(x: number | Vec3, y?: number, z?: number): this {
-    if (x instanceof Vec3) {
-      this.x = x.x;
-      this.y = x.y;
-      this.z = x.z;
+    const d = this.data;
+    const len = Math.hypot(d[Index.X], d[Index.Y], d[Index.Z]);
+    if (len > 0) {
+      d[Index.X] /= len;
+      d[Index.Y] /= len;
+      d[Index.Z] /= len;
     } else {
-      this.x = x;
-      this.y = y ?? this.y;
-      this.z = z ?? this.z;
+      d[Index.X] = d[Index.Y] = d[Index.Z] = 0;
     }
     return this;
   }
 
-  equals(v: Vec3): boolean {
-    return this.x === v.x && this.y === v.y && this.z === v.z;
-  }
-
-  public static mult(a: Vec3, b: Vec3, out: Vec3 = new Vec3()): Vec3 {
-    out.x = a.x * b.x;
-    out.y = a.y * b.y;
-    out.z = a.z * b.z;
-    return out;
-  }
-
-  public static scale(a: Vec3, scalar: number, out: Vec3 = new Vec3()): Vec3 {
-    out.x = a.x * scalar;
-    out.y = a.y * scalar;
-    out.z = a.z * scalar;
-    return out;
-  }
-
-  public static cross(out: Vec3, a: Vec3, b: Vec3): Vec3 {
-    out.x = a.y * b.z - a.z * b.y;
-    out.y = a.z * b.x - a.x * b.z;
-    out.z = a.x * b.y - a.y * b.x;
-    return out;
-  }
 
   public static add(a: Vec3, b: Vec3, out: Vec3 = new Vec3()): Vec3 {
-    out.x = a.x + b.x;
-    out.y = a.y + b.y;
-    out.z = a.z + b.z;
-    return out;
-  }
-  public addInPlace(other: Vec3): this {
-    this.x += other.x;
-    this.y += other.y;
-    this.z += other.z;
-    return this;
-  }
-
-  public static fromVec2(v: Vec2) {
-    return new Vec3(v.x, v.y);
-  }
-
-  public static normalize(v: Vec3, out: Vec3 = new Vec3()) {
-    const length = Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
-
-    if (length > 0) {
-      out.x = v.x / length;
-      out.y = v.y / length;
-      out.z = v.z / length;
-    } else {
-      out.x = 0;
-      out.y = 0;
-      out.z = 0;
-    }
-
+    const ad = a.data, bd = b.data, od = out.data;
+    od[Index.X] = ad[Index.X] + bd[Index.X];
+    od[Index.Y] = ad[Index.Y] + bd[Index.Y];
+    od[Index.Z] = ad[Index.Z] + bd[Index.Z];
     return out;
   }
 
-  length(): number {
-    return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
-  }
-
-  public clone() {
-    return new Vec3(this.x, this.y, this.z);
-  }
-
-  public cloneToVec2() {
-    return new Vec2(this.x, this.y);
+  public static mul(a: Vec3, b: Vec3, out: Vec3 = new Vec3()): Vec3 {
+    const ad = a.data, bd = b.data, od = out.data;
+    od[Index.X] = ad[Index.X] * bd[Index.X];
+    od[Index.Y] = ad[Index.Y] * bd[Index.Y];
+    od[Index.Z] = ad[Index.Z] * bd[Index.Z];
+    return out;
   }
 
 
-  public scale(scalar: number) {
-    return new Vec3(this.x * scalar, this.y * scalar, this.z * scalar);
+  public static sub(a: Vec3, b: Vec3, out: Vec3 = new Vec3()): Vec3 {
+    const ad = a.data, bd = b.data, od = out.data;
+    od[Index.X] = ad[Index.X] - bd[Index.X];
+    od[Index.Y] = ad[Index.Y] - bd[Index.Y];
+    od[Index.Z] = ad[Index.Z] - bd[Index.Z];
+    return out;
+  }
+
+  public static scale(v: Vec3, scalar: number, out: Vec3 = new Vec3()): Vec3 {
+    const vd = v.data, od = out.data;
+    od[Index.X] = vd[Index.X] * scalar;
+    od[Index.Y] = vd[Index.Y] * scalar;
+    od[Index.Z] = vd[Index.Z] * scalar;
+    return out;
+  }
+
+  public static lerp(a: Vec3, b: Vec3, t: number, out: Vec3 = new Vec3()): Vec3 {
+    const ad = a.data, bd = b.data, od = out.data;
+    od[Index.X] = ad[Index.X] + (bd[Index.X] - ad[Index.X]) * t;
+    od[Index.Y] = ad[Index.Y] + (bd[Index.Y] - ad[Index.Y]) * t;
+    od[Index.Z] = ad[Index.Z] + (bd[Index.Z] - ad[Index.Z]) * t;
+    return out;
   }
 
   public static dot(a: Vec3, b: Vec3): number {
-    return a.x * b.x + a.y * b.y + a.z * b.z;
+    const ad = a.data, bd = b.data;
+    return ad[Index.X] * bd[Index.X] +
+      ad[Index.Y] * bd[Index.Y] +
+      ad[Index.Z] * bd[Index.Z];
   }
 
-  public static normalizeVec3(v: Vec3): Vec3 {
-    const length = Math.hypot(v.x, v.y, v.z);
-    return length > 0
-      ? new Vec3(v.x / length, v.y / length, v.z / length)
-      : new Vec3(0, 0, 0);
-  }
+  public static cross(out: Vec3, a: Vec3, b: Vec3): Vec3 {
+    const ad = a.data, bd = b.data, od = out.data;
+    const ax = ad[Index.X], ay = ad[Index.Y], az = ad[Index.Z];
+    const bx = bd[Index.X], by = bd[Index.Y], bz = bd[Index.Z];
 
-  public static vec3Tof32Arr(vectors: Vec3[], out?: Float32Array): Float32Array {
-    if (!out || out.length < vectors.length * 3) {
-      out = new Float32Array(vectors.length * 3);
-    }
-    for (let i = 0; i < vectors.length; i++) {
-      const v = vectors[i];
-      out[i * 3] = v.x;
-      out[i * 3 + 1] = v.y;
-      out[i * 3 + 2] = v.z;
-    }
+    od[Index.X] = ay * bz - az * by;
+    od[Index.Y] = az * bx - ax * bz;
+    od[Index.Z] = ax * by - ay * bx;
     return out;
+  }
+
+  public static normalize(v: Vec3, out: Vec3): Vec3 {
+    const vd = v.data;
+    const od = out.data;
+
+    const len = Math.hypot(vd[Index.X], vd[Index.Y], vd[Index.Z]);
+    if (len > 0) {
+      od[Index.X] = vd[Index.X] / len;
+      od[Index.Y] = vd[Index.Y] / len;
+      od[Index.Z] = vd[Index.Z] / len;
+    } else {
+      od[Index.X] = od[Index.Y] = od[Index.Z] = 0;
+    }
+
+    return out;
+  }
+
+
+  public static distance(a: Vec3, b: Vec3): number {
+    const ad = a.data, bd = b.data;
+    const dx = bd[Index.X] - ad[Index.X];
+    const dy = bd[Index.Y] - ad[Index.Y];
+    const dz = bd[Index.Z] - ad[Index.Z];
+    return Math.hypot(dx, dy, dz);
+  }
+
+  public static fromVec2(v: Vec2, out: Vec3 = new Vec3()): Vec3 {
+    const vd = v.data, od = out.data;
+    od[Index.X] = vd[Index.X];
+    od[Index.Y] = vd[Index.Y];
+    od[Index.Z] = 0;
+    return out;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  public length(): number {
+    const d = this.data;
+    return Math.hypot(d[Index.X], d[Index.Y], d[Index.Z]);
+  }
+
+  public clone(): Vec3 {
+    const d = this.data;
+    return new Vec3(d[Index.X], d[Index.Y], d[Index.Z]);
+  }
+
+  public cloneToVec2(): Vec2 {
+    const d = this.data;
+    return new Vec2(d[Index.X], d[Index.Y]);
+  }
+
+  public toString(): string {
+    const d = this.data;
+    return `Vec3(${d[Index.X].toFixed(2)}, ${d[Index.Y].toFixed(2)}, ${d[Index.Z].toFixed(2)})`;
   }
 }

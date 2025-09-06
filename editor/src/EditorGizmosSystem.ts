@@ -80,7 +80,7 @@ export class EditorGizmosSystem extends System {
     for (const collider of this.engine.components.getAllOfType<BoxCollider2D>(ComponentType.BoxCollider2D)) {
 
       const realPos = Vec3.add(collider.transform.position, Vec3.fromVec2(collider.center));
-      const realSize = Vec3.mult(collider.transform.scale, Vec3.fromVec2(collider.size));
+      const realSize = Vec3.mul(collider.transform.scale, Vec3.fromVec2(collider.size));
 
       Gizmos.drawWireQuad(realPos, realSize, collider.transform.rotation);
 
