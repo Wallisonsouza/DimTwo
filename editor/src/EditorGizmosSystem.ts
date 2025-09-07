@@ -81,9 +81,8 @@ export class EditorGizmosSystem extends System {
 
       const realPos = Vec3.add(collider.transform.position, Vec3.fromVec2(collider.center));
       const realSize = Vec3.mul(collider.transform.scale, Vec3.fromVec2(collider.size));
-
       Gizmos.drawWireQuad(realPos, realSize, collider.transform.rotation);
-      Gizmos.drawWireQuad(realPos, realSize);
+
     }
     Gizmos.render(this.engine);
     Gizmos.clear();

@@ -14,6 +14,17 @@ export class Quat {
     this.w = w;
   }
 
+  public multiplyInPlace(other: Quat) {
+    const ax = this.x, ay = this.y, az = this.z, aw = this.w;
+    const bx = other.x, by = other.y, bz = other.z, bw = other.w;
+
+    this.x = aw * bx + ax * bw + ay * bz - az * by;
+    this.y = aw * by - ax * bz + ay * bw + az * bx;
+    this.z = aw * bz + ax * by - ay * bx + az * bw;
+    this.w = aw * bw - ax * bx - ay * by - az * bz;
+
+    return this;
+  }
 
   public static getRotationZFromQuat(q: Quat): number {
     const sinr_cosp = 2 * (q.w * q.z + q.x * q.y);

@@ -26,7 +26,7 @@ export class Transform extends Component {
   constructor(options: TransformOptions = {}) {
     super(ComponentType.Transform, ComponentGroup.Transform, options);
     this._position = options.position ?? new Vec3(0, 0, 0);
-    this._rotation = options.rotation ?? new Quat(0, 0, 0, 0);
+    this._rotation = options.rotation ?? new Quat(0, 0, 0, 1);
     this._scale = options.scale ?? new Vec3(1, 1, 1);
   }
 

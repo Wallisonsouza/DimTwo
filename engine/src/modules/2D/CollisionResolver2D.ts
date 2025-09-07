@@ -29,8 +29,6 @@ export class CollisionResolver2D {
     if (!result) return null;
 
     const { normal, overlap } = result;
-
-    // penetração ao longo da normal
     const penetration = Vec2.scale(normal, overlap);
 
     return {
@@ -39,54 +37,4 @@ export class CollisionResolver2D {
       time: 0
     };
   }
-
-
-
-
-  /*  public static getBoxBoxCollision(
-     engine: Engine,
-     a: BoxCollider2D,
-     b: BoxCollider2D
-   ): CollisionResolution2D | null {
- 
-     const aBounds = a.getBounds();
-     const bBounds = b.getBounds();
- 
-     const aRigid = engine.components.getComponent<RigidBody2D>(a.gameEntity, ComponentType.RigidBody2D);
-     const bRigid = engine.components.getComponent<RigidBody2D>(b.gameEntity, ComponentType.RigidBody2D);
- 
-     const aDelta = aRigid ? Vec2.scale(aRigid.linearVelocity, engine.time.deltaTime) : new Vec2(0, 0);
-     const bDelta = bRigid ? Vec2.scale(bRigid.linearVelocity, engine.time.deltaTime) : new Vec2(0, 0);
- 
-     const t = Bounds2D.timeOfImpact(aBounds, aDelta, bBounds, bDelta);
-     if (t === null) return null;
- 
-     const aStart = a.transform.position.cloneToVec2();
-     const bStart = b.transform.position.cloneToVec2();
-     const aEnd = Vec2.add(aStart, aDelta);
-     const bEnd = Vec2.add(bStart, bDelta);
- 
-     const aBoundsAtContact = new Bounds2D(Vec2.lerp(aStart, aEnd, t), aBounds.size);
-     const bBoundsAtContact = new Bounds2D(Vec2.lerp(bStart, bEnd, t), bBounds.size);
- 
-     const overlapX = Math.min(aBoundsAtContact.max.x, bBoundsAtContact.max.x) -
-       Math.max(aBoundsAtContact.min.x, bBoundsAtContact.min.x);
-     const overlapY = Math.min(aBoundsAtContact.max.y, bBoundsAtContact.max.y) -
-       Math.max(aBoundsAtContact.min.y, bBoundsAtContact.min.y);
- 
-     if (overlapX <= 0 || overlapY <= 0) return null;
- 
-     let penetration: Vec2;
-     let normal: Vec2;
- 
-     if (overlapX < overlapY) {
-       penetration = new Vec2(aBoundsAtContact.min.x < bBoundsAtContact.min.x ? -overlapX : overlapX, 0);
-       normal = new Vec2(Math.sign(penetration.x), 0);
-     } else {
-       penetration = new Vec2(0, aBoundsAtContact.min.y < bBoundsAtContact.min.y ? -overlapY : overlapY);
-       normal = new Vec2(0, Math.sign(penetration.y));
-     }
- 
-     return { penetration, normal, time: t };
-   } */
 }

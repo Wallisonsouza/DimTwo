@@ -40,6 +40,9 @@ export class RigidBody2D extends Component {
   area: number = 1;
   rho: number = 1.225;
 
+
+  centerOfMass: Vec2;
+
   constructor(options: RigidBody2DOptions = {}) {
     super(ComponentType.RigidBody2D, ComponentGroup.RigidBody2D, options);
     this.mass = options.mass ?? 1;
@@ -49,6 +52,7 @@ export class RigidBody2D extends Component {
     this.gravityScale = options.gravityScale ?? 1;
     this.bodyType = options.bodyType ?? BodyType.Dynamic;
     this.useGravity = options.useGravity ?? true;
+    this.centerOfMass = new Vec2(0, 0);
   }
 
 
@@ -74,6 +78,27 @@ export class RigidBody2D extends Component {
       this.linearVelocity.addInPlace(deltaV);
     }
   }
+
+
+  public addTorque(torque: number, mode: ForceMode = ForceMode.Force) {
+    if (this.bodyType === BodyType.Static) return;
+
+    const I = (0.083) * this.mass * (
+      this.transform.scale.x * this.transform.scale.x +
+      this.transform.scale.y * this.transform.scale.y
+    );
+
+    if (mode === ForceMode.Force) {
+      const angularAccel = torque / I;
+      this.angularAcceleration += angularAccel;
+
+
+    } else if (mode === ForceMode.Impulse) {
+      const deltaOmega = torque / I;
+      this.angularVelocity += deltaOmega;
+    }
+  }
+
 
   clone(): RigidBody2D {
     return new RigidBody2D({
