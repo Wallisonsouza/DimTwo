@@ -8,6 +8,7 @@ export interface BoxCollider2DOptions extends Collider2DOptions { }
 class OBB2D {
   public readonly vertices: Vec2[] = [new Vec2(), new Vec2(), new Vec2(), new Vec2()];
   public readonly axes: Vec2[] = [new Vec2(), new Vec2()];
+
   public center: Vec2 = new Vec2();
   public size: Vec2 = new Vec2();
   public rotation: number = 0;
@@ -55,57 +56,74 @@ class OBB2D {
 }
 
 export class BoxCollider2D extends Collider2D {
-  private obb: OBB2D = new OBB2D();
+  private _obb: OBB2D = new OBB2D();
+
+  public get obb() {
+    this._obb.center.set(
+      this.center.x + this.transform.position.x,
+      this.center.y + this.transform.position.y
+    );
+
+    this._obb.size.set(
+      this.size.x * this.transform.scale.x,
+      this.size.y * this.transform.scale.y
+    );
+
+    this._obb.rotation = Quat.getRotationZFromQuat(this.transform.rotation);
+    this._obb.markDirty();
+    return this._obb;
+  }
 
   constructor(options?: BoxCollider2DOptions) {
     super(ComponentType.BoxCollider2D, options);
   }
 
-  private updateOBB() {
-    this.obb.center.set(
-      this.center.x + this.transform.position.x,
-      this.center.y + this.transform.position.y
-    );
+  intersects(other: BoxCollider2D): { axis: Vec2, overlap: number, normal: Vec2 } | null {
+    const aVerts = this.obb.getVertices();
+    const bVerts = other.obb.getVertices();
 
-    this.obb.size.set(
-      this.size.x * this.transform.scale.x,
-      this.size.y * this.transform.scale.y
-    );
+    const axesA = this.obb.getAxes();
+    const axesB = other.obb.getAxes();
 
-    this.obb.rotation = Quat.getRotationZFromQuat(this.transform.rotation);
-    this.obb.markDirty();
-  }
-
-  getVertices(): Vec2[] {
-    this.updateOBB();
-    return this.obb.getVertices();
-  }
-
-  getAxes(): Vec2[] {
-    this.updateOBB();
-    return this.obb.getAxes();
-  }
-
-  intersects(other: Collider2D): boolean {
-    if (!(other instanceof BoxCollider2D)) return false;
-
-    const aVerts = this.getVertices();
-    const bVerts = other.getVertices();
-
-    const axesA = this.getAxes();
-    const axesB = other.getAxes();
+    let minOverlap = Number.POSITIVE_INFINITY;
+    const smallestAxis = new Vec2();
 
     for (let i = 0; i < axesA.length; i++) {
-      if (!this.testAxis(aVerts, bVerts, axesA[i])) return false;
-    }
-    for (let i = 0; i < axesB.length; i++) {
-      if (!this.testAxis(aVerts, bVerts, axesB[i])) return false;
+      const overlap = this.testAxis(aVerts, bVerts, axesA[i]);
+      if (overlap === null) return null;
+      if (overlap < minOverlap) {
+        minOverlap = overlap;
+        Vec2.copy(axesA[i], smallestAxis);
+      }
     }
 
-    return true;
+    for (let i = 0; i < axesB.length; i++) {
+      const overlap = this.testAxis(aVerts, bVerts, axesB[i]);
+      if (overlap === null) return null;
+      if (overlap < minOverlap) {
+        minOverlap = overlap;
+        Vec2.copy(axesB[i], smallestAxis);
+      }
+    }
+
+    const centerA = this.obb.center;
+    const centerB = other.obb.center;
+    const distanceAlongAxis = Vec2.dot(
+      Vec2.sub(centerB, centerA, new Vec2()
+      ), smallestAxis);
+
+    const normal = smallestAxis.clone();
+    if (distanceAlongAxis < 0) normal.scaleInPlace(-1);
+
+    return { axis: smallestAxis, overlap: minOverlap, normal };
   }
 
-  private testAxis(aVerts: Vec2[], bVerts: Vec2[], axis: Vec2): boolean {
+
+
+
+
+
+  private testAxis(aVerts: Vec2[], bVerts: Vec2[], axis: Vec2): number | null {
     let minA = Number.POSITIVE_INFINITY;
     let maxA = Number.NEGATIVE_INFINITY;
     let minB = Number.POSITIVE_INFINITY;
@@ -123,8 +141,10 @@ export class BoxCollider2D extends Collider2D {
       maxB = Math.max(maxB, p);
     }
 
-    return !(maxA < minB || maxB < minA);
+    if (maxA < minB || maxB < minA) return null;
+    return Math.min(maxA, maxB) - Math.max(minA, minB);
   }
+
 
   clone(): BoxCollider2D {
     const clone = new BoxCollider2D();

@@ -81,7 +81,7 @@ export class Collision2DSystem extends System {
     for (const pair of pairs) {
       const a = pair.a;
       const b = pair.b;
-      console.log(a.intersects(b))
+
       const isTrigger = a.isTrigger || b.isTrigger;
 
       if (!this.previousCollisions.has(pair.key)) {

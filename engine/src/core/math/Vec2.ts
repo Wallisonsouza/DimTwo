@@ -78,8 +78,19 @@ export class Vec2 {
     return this;
   }
 
+
   //---------------------------Static---------------------------------------------
-  
+
+  public static copy(self: Vec2, target: Vec2) {
+    const selfData = self.data;
+    const targetData = target.data;
+
+    targetData[Index.X] = selfData[Index.X];
+    targetData[Index.Y] = selfData[Index.Y];
+    
+    return target;
+  }
+
   public static length(v: Vec2) {
     return v.magnitude;
   }

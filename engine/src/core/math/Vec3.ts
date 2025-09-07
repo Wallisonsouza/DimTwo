@@ -63,7 +63,6 @@ export class Vec3 {
     return this;
   }
 
-
   public static add(a: Vec3, b: Vec3, out: Vec3 = new Vec3()): Vec3 {
     const ad = a.data, bd = b.data, od = out.data;
     od[Index.X] = ad[Index.X] + bd[Index.X];

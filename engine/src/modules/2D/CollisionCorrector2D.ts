@@ -40,23 +40,17 @@ export class CollisionCorrector2D {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    const normal = Vec2.normalize(resolution.normal);
-
+    const normal = Vec2.normalize(resolution.normal.scaleInPlace(-1));
     const correction = Vec2.scale(normal, resolution.penetration.magnitude);
+
+
+
+
+
+
+
+
+
     pair.a.transform.position.addInPlace(Vec3.fromVec2(Vec2.scale(correction, aFactor)));
     pair.b.transform.position.addInPlace(Vec3.fromVec2(Vec2.scale(correction, -bFactor)));
 

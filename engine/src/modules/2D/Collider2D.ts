@@ -37,7 +37,7 @@ export abstract class Collider2D extends Component {
     this._bounds = new Bounds2D(this.center, this.size);
   }
 
-  public abstract intersects(other: Collider2D): boolean;
+  public abstract intersects(other: Collider2D): { axis: Vec2, overlap: number } | null;
 
   public getBounds(): Bounds2D {
     const scale = Vec2.fromVec3(this.transform.scale);
