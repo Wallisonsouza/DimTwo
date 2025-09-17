@@ -10,6 +10,10 @@ export class Vec3 extends Vector {
   public static readonly FORWARD = Object.freeze(new Vec3(0, 0, 1));
   public static readonly BACKWARD = Object.freeze(new Vec3(0, 0, -1));
 
+  public toVec2() {
+    return new Vec2(this.data[Index.X], this.data[Index.Y])
+  }
+
   public get xy() {
     return new Vec2(this.data[Index.X], this.data[Index.Y])
   }

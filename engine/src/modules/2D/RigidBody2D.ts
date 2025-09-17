@@ -50,6 +50,7 @@ export class RigidBody2D extends Component {
   isSleeping: boolean = false;
   stillTime: number = 0;
 
+
   _centerOfMass: Vec2;
 
   public getCenterOfMass() {
@@ -62,9 +63,6 @@ export class RigidBody2D extends Component {
       )
     );
   }
-
-  lastLinearVelocity: Vec2 = Vec2.create();
-
 
   constructor(options: RigidBody2DOptions = {}) {
     super(ComponentType.RigidBody2D, ComponentGroup.RigidBody2D, options);
@@ -94,17 +92,20 @@ export class RigidBody2D extends Component {
     this.angularAcceleration += angularAcceleration.x;
   }
 
+  public forces: Vec2 = Vec2.create();
+
   public addForce(force: Vec2, mode: ForceMode = ForceMode.Force) {
     if (this.bodyType === BodyType.Static) return;
 
-    const accel = PhysicsMath2D.forceToAcceleration(force, this.mass);
+
 
     switch (mode) {
       case ForceMode.Force:
-        this.linearAcceleration.addInPlace(accel);
+        this.forces.addInPlace(force);
         break;
 
       case ForceMode.Impulse:
+        const accel = PhysicsMath2D.forceToAcceleration(force, this.mass);
         this.linearVelocity.addInPlace(accel);
         break;
 
@@ -113,27 +114,27 @@ export class RigidBody2D extends Component {
     }
   }
 
-  public addForceAtPoint(force: Vec2, point: Vec2, mode: ForceMode = ForceMode.Force) {
-    if (this.bodyType === BodyType.Static) return;
-
-    const com = Vec2.fromVec3(this.getCenterOfMass());
-    const r = Vec2.sub(point, com);
-
-    // torque escalar 2D
-    const torque = r.x * force.y - r.y * force.x;
-
-    // componente linear do impulso: a força só deve contribuir ao movimento do centro de massa
-    if (mode === ForceMode.Impulse) {
-      // alteração da velocidade linear
-      this.linearVelocity.addInPlace(Vec2.scale(force, 1 / this.mass));
-      // torque → rotação
-      this.angularVelocity += torque / this.getMomentOfInertia();
-    } else {
-      // força contínua
-      this.linearAcceleration.addInPlace(Vec2.scale(force, 1 / this.mass));
-      this.angularAcceleration += torque / this.getMomentOfInertia();
-    }
-  }
+  /*  public addForceAtPoint(force: Vec2, point: Vec2, mode: ForceMode = ForceMode.Force) {
+     if (this.bodyType === BodyType.Static) return;
+ 
+     const com = Vec2.fromVec3(this.getCenterOfMass());
+     const r = Vec2.sub(point, com);
+ 
+     // torque escalar 2D
+     const torque = r.x * force.y - r.y * force.x;
+ 
+     // componente linear do impulso: a força só deve contribuir ao movimento do centro de massa
+     if (mode === ForceMode.Impulse) {
+       // alteração da velocidade linear
+       this.linearVelocity.addInPlace(Vec2.scale(force, 1 / this.mass));
+       // torque → rotação
+       this.angularVelocity += torque / this.getMomentOfInertia();
+     } else {
+       // força contínua
+       this.linearAcceleration.addInPlace(Vec2.scale(force, 1 / this.mass));
+       this.angularAcceleration += torque / this.getMomentOfInertia();
+     }
+   } */
 
 
   public addTorque(torque: number, mode: ForceMode = ForceMode.Force) {

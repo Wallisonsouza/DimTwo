@@ -1,4 +1,4 @@
-import type { System } from "../base/System";
+import type { CollisionEvent2D, System } from "../base/System";
 import { EngineSystem } from "./EngineSystemManager";
 
 export class SystemManager {
@@ -41,10 +41,10 @@ export class SystemManager {
   }
 
 
-  public callCollisionEnterEvents(event: any): void {
+  public callCollisionEnterEvents(event: CollisionEvent2D): void {
     for (const system of this.data.values()) system.onCollisionEnter2D?.(event);
   }
-  public callCollisionStayEvents(event: any): void {
+  public callCollisionStayEvents(event: CollisionEvent2D): void {
     for (const system of this.data.values()) system.onCollisionStay2D?.(event);
   }
   public callCollisionExitEvents(event: any): void {

@@ -1,17 +1,9 @@
 import { System, type CollisionEvent2D } from "@engine/core/base/System";
-import { Index } from "@engine/core/math/vec";
 import { Vec2 } from "@engine/core/math/Vec2";
 import { Vec3 } from "@engine/core/math/Vec3";
-import { ComponentType } from "../enums/ComponentType";
 import { PhysicsMath2D } from "./PhysicsMath2D";
 import { RigidBody2D } from "./RigidBody2D";
 
-function vec2ToVec3InPlace(v: Vec2, out: Vec3) {
-  out.data[Index.X] = v.data[Index.X];
-  out.data[Index.Y] = v.data[Index.Y];
-  out.data[Index.Z] = 0;
-  return out;
-}
 
 export class CollisionCorrector2D extends System {
   /*  private static _PENETRATION_CACHE: Vec2 = new Vec2();
@@ -86,55 +78,39 @@ public static apply(
     const a = collisionEvent2D.a;
     const b = collisionEvent2D.b;
 
+    const matA = a.physicsMaterial;
+    const matB = b.physicsMaterial;
+
+    const aRigid = collisionEvent2D.aRigid;
+    const bRigid = collisionEvent2D.bRigid;
     const contact = collisionEvent2D.contacts[0];
-
-
-    const aRigid = this.engine.components.getComponent<RigidBody2D>(a.gameEntity, ComponentType.RigidBody2D);
-    const bRigid = this.engine.components.getComponent<RigidBody2D>(b.gameEntity, ComponentType.RigidBody2D);
 
     const aMass = aRigid?.mass || 1;
     const bMass = bRigid?.mass || 1;
 
-    const factor = bMass / (aMass + bMass);
-
     a.transform.position.addInPlace(Vec3.fromVec2(Vec2.scale(contact.normal, contact.penetration - 1e-6)));
     this.correctVelocity(aRigid, contact.normal);
-
-
-
-
-    /* 
-        if (!aRigid) return;
-        if (Mathf.abs(contact.penetration) <= 1e-3) return;
-    
-        aRigid.addTorqueAtPoint(new Vec2(1, 1), new Vec2(1, 1), ForceMode.Impulse);
-     */
-
-    const matA = a.physicsMaterial;
-    const matB = b.physicsMaterial;
-
-    if (!aRigid || !bRigid) return;
 
 
     const muStatic = (matA.staticFriction + matB.staticFriction) / 2;
     const muKinetic = (matA.dynamicFriction + matB.dynamicFriction) / 2;
 
 
-    const normalForce = PhysicsMath2D.applyNormalImpulseTwoBodies(
-      aRigid.lastLinearVelocity,
-      aMass,
-      bRigid.lastLinearVelocity,
-      bMass,
-      contact.normal,
-      contact.penetration
-    );
+    if (aRigid && bRigid) {
+      const normalForce = PhysicsMath2D.applyNormalImpulseTwoBodies(
+        aRigid.linearVelocity,
+        aMass,
+        bRigid.linearVelocity,
+        bMass,
+        contact.normal,
+        contact.penetration
+      );
 
-    console.log(normalForce)
+    }
 
 
-
-    const accelFrictionA = PhysicsMath2D.contactFriction(
-      aRigid.lastLinearVelocity,
+    /* const accelFrictionA = PhysicsMath2D.contactFriction(
+      aRigid.linearVelocity,
       contact.normal,
       aMass,
       normalForce.vA.y,
@@ -143,8 +119,7 @@ public static apply(
       this.engine.time.fixedDeltaTime
     );
     aRigid.linearVelocity.subInPlace(Vec2.scale(accelFrictionA, this.engine.time.fixedDeltaTime));
-
-    aRigid.lastLinearVelocity.set(0, 0);
+ */
 
   }
 

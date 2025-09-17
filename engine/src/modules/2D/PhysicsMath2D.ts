@@ -103,7 +103,9 @@ export class PhysicsMath2D {
     const relVel = Vec2.sub(vB, vA);
     const velAlongNormal = Vec2.dot(relVel, normal);
 
-    if (velAlongNormal > 0) return { vA: vA.clone(), vB: vB.clone() };
+    const epsilon = 1e-5;
+    if (velAlongNormal > -epsilon) return { vA: vA.clone(), vB: vB.clone() };
+
 
     const j = -(1 + restitution) * velAlongNormal / (1 / mA + 1 / mB);
 
@@ -131,11 +133,24 @@ export class PhysicsMath2D {
   public static calculateMRUAPosition(
     velocity: Vec2,
     acceleration: Vec2,
-    deltaTime: number
+    deltaTime: number,
+    outPosition: Vec2
   ): Vec2 {
-    return new Vec2(
-      velocity.data[0] * deltaTime + 0.5 * acceleration.data[0] * deltaTime * deltaTime,
-      velocity.data[1] * deltaTime + 0.5 * acceleration.data[1] * deltaTime * deltaTime
-    );
+    outPosition.x = velocity.data[0] * deltaTime + 0.5 * acceleration.data[0] * deltaTime * deltaTime;
+    outPosition.y = velocity.data[1] * deltaTime + 0.5 * acceleration.data[1] * deltaTime * deltaTime;
+    return outPosition;
+  }
+
+
+  public static integrateEulerSemiImplicit(
+    velocity: Vec2,
+    acceleration: Vec2,
+    position: Vec2,
+    deltaTime: number
+  ) {
+
+    velocity.addInPlace(Vec2.scale(acceleration, deltaTime));
+
+    position.addInPlace(Vec2.scale(velocity, deltaTime));
   }
 }

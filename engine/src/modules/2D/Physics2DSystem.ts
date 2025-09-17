@@ -1,6 +1,4 @@
-import { Quat } from "@engine/core/math/quat";
 import { Vec2 } from "@engine/core/math/Vec2";
-import { Vec3 } from "@engine/core/math/Vec3";
 import { EngineConfig } from "@engine/global/EngineConfig";
 import { BodyType, type RigidBody2D } from "@engine/modules/2D/RigidBody2D";
 import { ComponentGroup } from "@engine/modules/enums/ComponentGroup";
@@ -22,11 +20,10 @@ export class PhysicsSystem extends System {
     const rigidbodies = this.engine.components.getAllByGroup<RigidBody2D>(ComponentGroup.RigidBody2D);
 
     for (const rigid of rigidbodies) {
-
-      Sleep.updateSleepState(rigid, fixedDeltaTime);
-
       if (!rigid.enabled || rigid.isSleeping) continue;
       if (rigid.bodyType === BodyType.Static) continue;
+
+      rigid.linearAcceleration.set(0, 0);
 
       // Gravidade
       if (rigid.useGravity) {
@@ -35,28 +32,26 @@ export class PhysicsSystem extends System {
         rigid.linearAcceleration.addInPlace(gravityOffset);
       }
 
-      // Aplicar física linear e angular
+
+      const forcesAccel = PhysicsMath2D.forceToAcceleration(
+        rigid.forces,
+        rigid.mass
+      );
+      rigid.linearAcceleration.addInPlace(forcesAccel);
+      rigid.forces.set(0, 0);
+
       rigid.applyDrag();
 
-      const deltaPos = PhysicsMath2D.calculateMRUAPosition(
+
+      const pos2D = rigid.transform.position.toVec2();
+      PhysicsMath2D.integrateEulerSemiImplicit(
         rigid.linearVelocity,
         rigid.linearAcceleration,
+        pos2D,
         fixedDeltaTime
       );
 
-      rigid.transform.position.addInPlace(Vec3.fromVec2(deltaPos));
-
-      rigid.linearVelocity.addInPlace(Vec2.scale(rigid.linearAcceleration, fixedDeltaTime));
-
-      rigid.lastLinearVelocity.copy(rigid.linearVelocity);
-      rigid.linearAcceleration.set(0, 0);
-
-      rigid.angularVelocity += rigid.angularAcceleration * fixedDeltaTime;
-      rigid.angularAcceleration = 0;
-
-      const halfAngle = 0.5 * rigid.angularVelocity * fixedDeltaTime;
-      const deltaRot = new Quat(0, 0, Math.sin(halfAngle), Math.cos(halfAngle));
-      rigid.transform.rotation.multiplyInPlace(deltaRot);
+      rigid.transform.position.set(pos2D.x, pos2D.y, 0);
     }
   }
 

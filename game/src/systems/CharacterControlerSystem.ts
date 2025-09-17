@@ -62,7 +62,7 @@ export class CharacterControlerSystem extends System {
 
       const speed = this.running ? 1.2 : 0.5;
 
-      rigid.addForce(Vec2.scale(characterControler.direction, speed), ForceMode.Impulse);
+      rigid.addForce(Vec2.scale(characterControler.direction, speed), ForceMode.Force);
 
       if (rigid.linearVelocity.x > speed) rigid.linearVelocity.x = speed;
       if (rigid.linearVelocity.x < -speed) rigid.linearVelocity.x = -speed;

@@ -23,32 +23,18 @@ export class Transform extends Component {
   private _position: Vec3;
   private _rotation: Quat;
   private _scale: Vec3;
-  private _position2D: Vec2;
-  private _scale2D: Vec2;
 
   constructor(options: TransformOptions = {}) {
     super(ComponentType.Transform, ComponentGroup.Transform, options);
     this._position = options.position ?? new Vec3(0, 0, 0);
     this._rotation = options.rotation ?? new Quat(0, 0, 0, 1);
     this._scale = options.scale ?? new Vec3(1, 1, 1);
-
-    this._position2D = Vec2.fromVec3(this._position);
-    this._scale2D = Vec2.fromVec3(this._scale);
   }
 
   get position(): Vec3 { return this._position; }
 
-  
   set position(v: Vec3) {
     this._position.setFromOther(v);
-    this._position2D.set(v.x, v.y);
-  }
-
-  get position2D() {
-    return this._position2D;
-  }
-  get scale2D() {
-    return this._scale2D;
   }
 
   get rotation(): Quat { return this._rotation; }

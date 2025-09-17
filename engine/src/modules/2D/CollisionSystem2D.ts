@@ -1,9 +1,11 @@
 import { SpatialHash } from "../../core/algorithms/SpatialHash";
 import { System } from "../../core/base/System";
 import { ComponentGroup } from "../enums/ComponentGroup";
+import { ComponentType } from "../enums/ComponentType";
 import type { Collider2D } from "./Collider2D";
 import { CollisionPair2D } from "./CollisionPair2D";
 import { CollisionResolver2D } from "./CollisionResolver2D";
+import { RigidBody2D } from "./RigidBody2D";
 import type { Contact2D } from "./SAT";
 
 export class CollisionSystem2D extends System {
@@ -78,10 +80,11 @@ export class CollisionSystem2D extends System {
       const contacts: Contact2D[] = [];
       const collision = CollisionResolver2D.resolve(a, b, contacts);
       a.contacts = contacts;
+
+      const bRigid = this.engine.components.getComponent<RigidBody2D>(a.gameEntity, ComponentType.RigidBody2D);
+      const aRigid = this.engine.components.getComponent<RigidBody2D>(a.gameEntity, ComponentType.RigidBody2D);
+
       if (!collision) { continue }
-
-
-
 
 
 
@@ -99,7 +102,7 @@ export class CollisionSystem2D extends System {
         }
 
         // 1b️⃣ Colisão física nova: dispara evento "CollisionEnter"
-        this.engine.systems.callCollisionEnterEvents({ a, b, contacts });
+        this.engine.systems.callCollisionEnterEvents({ a, b, contacts, aRigid: aRigid, bRigid: bRigid });
       } else {
         // 2️⃣ Colisão existente (já estava ocorrendo no frame anterior)
 
@@ -110,7 +113,7 @@ export class CollisionSystem2D extends System {
         }
 
         // 2b️⃣ Colisão física contínua: dispara evento "CollisionStay"
-        this.engine.systems.callCollisionStayEvents({ a, b, contacts });
+        this.engine.systems.callCollisionStayEvents({ a, b, contacts, aRigid: aRigid, bRigid: bRigid });
       }
 
       // 3️⃣ Marca o par como atualmente colidindo neste frame
