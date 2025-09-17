@@ -1,6 +1,7 @@
 import { GameEntity } from "@engine/core/base/GameEntity";
 import type { Scene } from "@engine/core/scene/scene";
 import { BoxCollider2D } from "@engine/modules/2D/BoxCollider2D";
+import { PhysicsMaterial } from "@engine/modules/2D/PhysicsMaterial";
 import { BodyType, RigidBody2D } from "@engine/modules/2D/RigidBody2D";
 import type { Sprite2D } from "@engine/modules/2D/Sprite2D";
 import { SpriteRender2D } from "@engine/modules/2D/SpriteRender2D";
@@ -22,11 +23,11 @@ export function configureGround(
 
   const boxCollider = new BoxCollider2D({
 
-    /*   physicsMaterial: new PhysicsMaterial({
-        restitution: 0.1,
-        dynamicFriction: 1000,
-        staticFriction: 1000
-      }), */
+    physicsMaterial: new PhysicsMaterial({
+      restitution: 0.1,
+      dynamicFriction: 1000,
+      staticFriction: 1000
+    }),
     ignoreSelfCollisions: true,
 
   });

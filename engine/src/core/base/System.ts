@@ -1,14 +1,11 @@
 import type { Collider2D } from "@engine/modules/2D/Collider2D";
+import type { Contact2D } from "@engine/modules/2D/SAT";
 import type { Engine } from "../../Engine";
-
-
-
-
 
 export interface CollisionEvent2D {
   a: Collider2D,
   b: Collider2D,
-  contacts: Contact2D;
+  contacts: Contact2D[];
 }
 
 export class System {

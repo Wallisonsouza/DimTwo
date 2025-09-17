@@ -1,6 +1,7 @@
 import type { GameEntity } from "@engine/core/base/GameEntity";
 import { System } from "@engine/core/base/System";
 import { Vec3 } from "@engine/core/math/Vec3";
+import type { Hit2D } from "@engine/modules/2D/Hit2D";
 import { Physics2D } from "@engine/modules/2D/Physics2D";
 
 export class EditorTransformSystem extends System {
@@ -18,12 +19,15 @@ export class EditorTransformSystem extends System {
     const mousePos = input.getMousePosition();
     if (!mousePos) return;
 
+
+    let hit: Hit2D | null = null;
+
     if (input.getMouseButtonDown(0)) {
       const ray = camera.screenPointToRay(mousePos);
-      const hit = Physics2D.rayCast2D(ray.origin, ray.direction);
+      hit = Physics2D.rayCast2D(ray.origin, ray.direction);
       if (hit) {
         this.selectedGameEntity = hit.collider.gameEntity;
-        // calcula offset para manter a posição relativa do clique
+
         this.offset.x = this.selectedGameEntity.transform.position.x - hit.point.x;
         this.offset.y = this.selectedGameEntity.transform.position.y - hit.point.y;
       }

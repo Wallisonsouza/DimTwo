@@ -34,7 +34,7 @@ export class SimpleScene extends Scene {
 
 
     const camera = new GameEntity({ name: "Camera", tag: "MainCamera" });
-    player.transform.rotation = Quat.fromEulerAngles(new Vec3(0, 0, -35))
+    /*     player.transform.rotation = Quat.fromEulerAngles(new Vec3(0, 0, -35)) */
 
     const ground = new GameEntity({ name: "Ground", tag: "Ground" });
     ground.transform.scale.x = 10;

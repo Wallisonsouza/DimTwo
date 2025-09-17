@@ -37,6 +37,8 @@ export class Transform extends Component {
   }
 
   get position(): Vec3 { return this._position; }
+
+  
   set position(v: Vec3) {
     this._position.setFromOther(v);
     this._position2D.set(v.x, v.y);
@@ -48,8 +50,6 @@ export class Transform extends Component {
   get scale2D() {
     return this._scale2D;
   }
-
-
 
   get rotation(): Quat { return this._rotation; }
   set rotation(q: Quat) {

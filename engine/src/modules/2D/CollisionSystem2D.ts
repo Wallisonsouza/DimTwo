@@ -17,6 +17,22 @@ export class CollisionSystem2D extends System {
     const colliders = this.engine.components.getAllByGroup<Collider2D>(ComponentGroup.Collider);
     this.prepareSpatialHash(colliders);
     this.runBroadphase();
+
+    // Triggers ou colisões que terminaram
+    for (const [key, pair] of this.previousCollisions) {
+      if (!this.currentCollisions.has(key)) {
+        if (pair.a.isTrigger || pair.b.isTrigger) {
+          this.engine.systems.callTriggerExitEvents({ a: pair.a, b: pair.b });
+          continue;
+        }
+        this.engine.systems.callCollisionExitEvents({ a: pair.a, b: pair.b });
+      }
+    }
+
+    this.previousCollisions = new Map(this.currentCollisions);
+    this.currentCollisions.clear();
+
+
   }
 
   private prepareSpatialHash(colliders: Collider2D[]) {
@@ -52,53 +68,54 @@ export class CollisionSystem2D extends System {
   }
 
   private runBroadphase() {
+
     const pairs = this.getCollisionPairs();
 
     for (const pair of pairs) {
+
       const { a, b } = pair;
 
       const contacts: Contact2D[] = [];
       const collision = CollisionResolver2D.resolve(a, b, contacts);
+      a.contacts = contacts;
+      if (!collision) { continue }
 
-      a.contacts = collision ? contacts : [];
 
+
+
+
+
+      // Determina se algum dos objetos é um "trigger"
+      // Triggers não afetam a física, apenas disparam eventos
       const isTrigger = a.isTrigger || b.isTrigger;
-      const wasColliding = this.previousCollisions.has(pair.key);
 
-      if (!wasColliding) {
+      // 1️⃣ Colisão nova (não existia no frame anterior)
+      if (!this.previousCollisions.has(pair.key)) {
+
         if (isTrigger) {
+          // 1a️⃣ Trigger novo: dispara evento "Enter" e segue para o próximo par
           this.engine.systems.callTriggerEnterEvents({ a, b });
-        } else if (collision) {
-          this.engine.systems.callCollisionEnterEvents({ a, b });
+          continue;
         }
+
+        // 1b️⃣ Colisão física nova: dispara evento "CollisionEnter"
+        this.engine.systems.callCollisionEnterEvents({ a, b, contacts });
       } else {
+        // 2️⃣ Colisão existente (já estava ocorrendo no frame anterior)
+
         if (isTrigger) {
+          // 2a️⃣ Trigger contínuo: dispara evento "Stay"
           this.engine.systems.callTriggerStayEvents({ a, b });
-        } else if (collision) {
-          this.engine.systems.callCollisionStayEvents({ a, b, contacts });
+          continue;
         }
+
+        // 2b️⃣ Colisão física contínua: dispara evento "CollisionStay"
+        this.engine.systems.callCollisionStayEvents({ a, b, contacts });
       }
 
+      // 3️⃣ Marca o par como atualmente colidindo neste frame
       this.currentCollisions.set(pair.key, pair);
     }
-
-    // Opcional: detectar colisões que terminaram (Exit)
-    for (const key of this.previousCollisions.keys()) {
-      if (!this.currentCollisions.has(key)) {
-        const pair = this.previousCollisions.get(key)!;
-        const { a, b } = pair;
-        const isTrigger = a.isTrigger || b.isTrigger;
-        if (isTrigger) {
-          this.engine.systems.callTriggerExitEvents({ a, b });
-        } else {
-          this.engine.systems.callCollisionExitEvents({ a, b });
-        }
-      }
-    }
-
-    // Prepara para o próximo frame
-    this.previousCollisions = new Map(this.currentCollisions);
-    this.currentCollisions.clear();
   }
 
 }

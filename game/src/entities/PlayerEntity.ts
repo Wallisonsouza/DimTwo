@@ -25,7 +25,7 @@ export function configurePlayer(scene: Scene, entity: GameEntity) {
   });
 
   const rigidBody = new RigidBody2D({
-    useGravity: false
+    useGravity: true
   })
 
   const boxCollider = new BoxCollider2D({

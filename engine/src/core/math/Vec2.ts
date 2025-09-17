@@ -81,6 +81,11 @@ export class Vec2 extends Vector {
     return this;
   }
 
+  static crossScalarVec2(omega: number, vec: Vec2): Vec2 {
+    return new Vec2(-omega * vec.y, omega * vec.x);
+  }
+
+
   public copy(other: Vec2): this {
     const d = this.data, od = other.data;
     d[Index.X] = od[Index.X];
@@ -162,6 +167,10 @@ export class Vec2 extends Vector {
     return ad[Index.X] * bd[Index.Y] - ad[Index.Y] * bd[Index.X];
   }
 
+  public static lenSq(v: Vec2): number {
+    const data = v.data;
+    return data[Index.X] * data[Index.X] + data[Index.Y] * data[Index.Y];
+  }
 
   public static distance(a: Vec2, b: Vec2): number {
     const ad = a.data, bd = b.data;

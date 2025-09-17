@@ -85,6 +85,14 @@ export class SAT {
   }
 
 
+  public static computePolygonCenter(polygon: Vec2[]): Vec2 {
+    const center = new Vec2(0, 0);
+    for (const v of polygon) {
+      center.addInPlace(v);
+    }
+    center.scaleInPlace(1 / polygon.length);
+    return center;
+  }
 
   public static computeContacts(
     aPolygon: Vec2[],
@@ -103,6 +111,13 @@ export class SAT {
       if (!SAT.testAxis(bAxes[i], aPolygon, bPolygon, mtvNormal, mtvPenetration)) return false;
     }
 
+    const centerA = SAT.computePolygonCenter(aPolygon);
+    const centerB = SAT.computePolygonCenter(bPolygon);
+
+    if (Vec2.dot(Vec2.sub(centerB, centerA, new Vec2()), mtvNormal) > 0) {
+      mtvNormal.scaleInPlace(-1);
+    }
+
     for (const v of aPolygon) {
       if (SAT.containsPoint(bPolygon, bAxes, v)) {
         outContacts.push({
@@ -117,7 +132,7 @@ export class SAT {
       if (SAT.containsPoint(aPolygon, aAxes, v)) {
         outContacts.push({
           point: v.clone(),
-          normal: mtvNormal.clone().scaleInPlace(-1),
+          normal: mtvNormal.clone(),
           penetration: mtvPenetration.value
         });
       }
