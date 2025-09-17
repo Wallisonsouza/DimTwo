@@ -1,11 +1,6 @@
-import { Vec2 } from "@engine/core/math/Vec2";
-import { SAT } from "./SAT";
+/* import { Vec2 } from "@engine/core/math/Vec2";
+import { SAT, type Contact2D } from "./SAT";
 
-export interface Contact2D {
-  point: Vec2;
-  normal: Vec2;
-  distance: Vec2;
-}
 
 export class OBB2D {
   public readonly vertices: Vec2[] = [new Vec2(), new Vec2(), new Vec2(), new Vec2()];
@@ -84,41 +79,41 @@ export class OBB2D {
     this._centerDiff.copy(other.center).subInPlace(this.center);
     if (Vec2.dot(this._centerDiff, mtvNormal) < 0) mtvNormal.negativeInPlace();
 
-    /* const mtvVec = Vec2.scale(mtvNormal, minPenetration.value, new Vec2());
+    const mtvVec = Vec2.scale(mtvNormal, minPenetration.value, new Vec2());
 
     // Detecta contatos
-   const contacts: Contact2D[] = [];
+    const contacts: Contact2D[] = [];
 
     // 1) Vértices de this dentro de other
-   for (const v of this.vertices) {
-     if (other.containsPoint(v)) {
-       contacts.push({ point: v.clone(), normal: mtvNormal.clone(), distance: mtvVec.clone() });
-     }
-   }
+    for (const v of this.vertices) {
+      if (other.containsPoint(v)) {
+        contacts.push({ point: v.clone(), normal: mtvNormal.clone(), distance: mtvVec.clone() });
+      }
+    }
 
-   // 2) Vértices de other dentro de this
-   for (const v of other.vertices) {
-     if (this.containsPoint(v)) {
-       contacts.push({ point: v.clone(), normal: mtvNormal.clone(), distance: mtvVec.clone() });
-     }
-   }
-  
-       // 3) Interseções de arestas
-       for (let i = 0; i < 4; i++) {
-         const a1 = this.vertices[i];
-         const a2 = this.vertices[(i + 1) % 4];
-         for (let j = 0; j < 4; j++) {
-           const b1 = other.vertices[j];
-           const b2 = other.vertices[(j + 1) % 4];
-   
-           const intersection = OBB2D.segmentIntersection(a1, a2, b1, b2);
-           if (intersection) {
-             contacts.push({ point: intersection, normal: mtvNormal.clone(), distance: mtvVec.clone() });
-           }
-         }
-       } 
+    // 2) Vértices de other dentro de this
+    for (const v of other.vertices) {
+      if (this.containsPoint(v)) {
+        contacts.push({ point: v.clone(), normal: mtvNormal.clone(), distance: mtvVec.clone() });
+      }
+    }
 
-    return contacts.length > 0 ? contacts : null;*/
+    // 3) Interseções de arestas
+    for (let i = 0; i < this.vertices.length; i++) {
+      const a1 = this.vertices[i];
+      const a2 = this.vertices[(i + 1) % 4];
+      for (let j = 0; j < other.vertices.length; j++) {
+        const b1 = other.vertices[j];
+        const b2 = other.vertices[(j + 1) % 4];
+
+        const intersection = OBB2D.segmentIntersection(a1, a2, b1, b2);
+        if (intersection) {
+          contacts.push({ point: intersection, normal: mtvNormal.clone(), distance: mtvVec.clone() });
+        }
+      }
+    }
+
+    return contacts.length > 0 ? contacts : null;
   }
 
 
@@ -150,7 +145,8 @@ export class OBB2D {
     this.update();
     for (let i = 0; i < 2; i++) {
       const axis = this.axes[i];
-      this.project(axis, this._projThis);
+      SAT.project(this.vertices, axis, this._projThis);
+
       const proj = Vec2.dot(point, axis);
       if (proj < this._projThis.x || proj > this._projThis.y) return false;
     }
@@ -161,3 +157,4 @@ export class OBB2D {
   getAxes(): Vec2[] { this.update(); return this.axes; }
 }
 
+ */

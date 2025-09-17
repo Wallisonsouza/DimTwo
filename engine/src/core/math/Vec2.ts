@@ -53,6 +53,9 @@ export class Vec2 extends Vector {
     return out;
   }
 
+  public eq(v: Vec2) {
+    return this.x === v.x && this.y === v.y;
+  }
 
   get magnitude(): number {
     const d = this.data;

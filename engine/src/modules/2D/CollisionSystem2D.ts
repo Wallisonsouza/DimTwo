@@ -3,8 +3,10 @@ import { System } from "../../core/base/System";
 import { ComponentGroup } from "../enums/ComponentGroup";
 import type { Collider2D } from "./Collider2D";
 import { CollisionPair2D } from "./CollisionPair2D";
+import { CollisionResolver2D } from "./CollisionResolver2D";
+import type { Contact2D } from "./SAT";
 
-export class Collision2DSystem extends System {
+export class CollisionSystem2D extends System {
   private spatialHash = new SpatialHash<Collider2D>(64);
   private checked: Set<number> = new Set();
 
@@ -15,22 +17,6 @@ export class Collision2DSystem extends System {
     const colliders = this.engine.components.getAllByGroup<Collider2D>(ComponentGroup.Collider);
     this.prepareSpatialHash(colliders);
     this.runBroadphase();
-
-    // Triggers ou colisões que terminaram
-    for (const [key, pair] of this.previousCollisions) {
-      if (!this.currentCollisions.has(key)) {
-        if (pair.a.isTrigger || pair.b.isTrigger) {
-          this.engine.systems.callTriggerExitEvents({ a: pair.a, b: pair.b });
-          continue;
-        }
-        this.engine.systems.callCollisionExitEvents({ a: pair.a, b: pair.b });
-      }
-    }
-
-    this.previousCollisions = new Map(this.currentCollisions);
-    this.currentCollisions.clear();
-
-
   }
 
   private prepareSpatialHash(colliders: Collider2D[]) {
@@ -66,51 +52,53 @@ export class Collision2DSystem extends System {
   }
 
   private runBroadphase() {
-
     const pairs = this.getCollisionPairs();
 
     for (const pair of pairs) {
-
       const { a, b } = pair;
 
-      // Verifica se os objetos realmente estão colidindo
-      /*   const intersection = a.intersects(b);
-        if (!intersection) {
-          // Se não houver interseção, pula para o próximo par
-          continue;
-        } */
+      const contacts: Contact2D[] = [];
+      const collision = CollisionResolver2D.resolve(a, b, contacts);
 
-      // Determina se algum dos objetos é um "trigger"
-      // Triggers não afetam a física, apenas disparam eventos
+      a.contacts = collision ? contacts : [];
+
       const isTrigger = a.isTrigger || b.isTrigger;
+      const wasColliding = this.previousCollisions.has(pair.key);
 
-      // 1️⃣ Colisão nova (não existia no frame anterior)
-      if (!this.previousCollisions.has(pair.key)) {
-
+      if (!wasColliding) {
         if (isTrigger) {
-          // 1a️⃣ Trigger novo: dispara evento "Enter" e segue para o próximo par
           this.engine.systems.callTriggerEnterEvents({ a, b });
-          continue;
+        } else if (collision) {
+          this.engine.systems.callCollisionEnterEvents({ a, b });
         }
-
-        // 1b️⃣ Colisão física nova: dispara evento "CollisionEnter"
-        this.engine.systems.callCollisionEnterEvents({ a, b });
       } else {
-        // 2️⃣ Colisão existente (já estava ocorrendo no frame anterior)
-
         if (isTrigger) {
-          // 2a️⃣ Trigger contínuo: dispara evento "Stay"
           this.engine.systems.callTriggerStayEvents({ a, b });
-          continue;
+        } else if (collision) {
+          this.engine.systems.callCollisionStayEvents({ a, b, contacts });
         }
-
-        // 2b️⃣ Colisão física contínua: dispara evento "CollisionStay"
-        this.engine.systems.callCollisionStayEvents({ a, b });
       }
 
-      // 3️⃣ Marca o par como atualmente colidindo neste frame
       this.currentCollisions.set(pair.key, pair);
     }
+
+    // Opcional: detectar colisões que terminaram (Exit)
+    for (const key of this.previousCollisions.keys()) {
+      if (!this.currentCollisions.has(key)) {
+        const pair = this.previousCollisions.get(key)!;
+        const { a, b } = pair;
+        const isTrigger = a.isTrigger || b.isTrigger;
+        if (isTrigger) {
+          this.engine.systems.callTriggerExitEvents({ a, b });
+        } else {
+          this.engine.systems.callCollisionExitEvents({ a, b });
+        }
+      }
+    }
+
+    // Prepara para o próximo frame
+    this.previousCollisions = new Map(this.currentCollisions);
+    this.currentCollisions.clear();
   }
 
 }

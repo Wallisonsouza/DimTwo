@@ -5,6 +5,7 @@ import { ComponentGroup } from "../enums/ComponentGroup";
 import { ComponentType } from "../enums/ComponentType";
 import { Bounds2D } from "./Bounds2D";
 import { PhysicsMaterial } from "./PhysicsMaterial";
+import type { Contact2D } from "./SAT";
 
 export interface Collider2DOptions {
   center?: Vec2;
@@ -17,7 +18,7 @@ export interface Collider2DOptions {
 
 export abstract class Collider2D extends Component {
   isColliding: boolean;
-  public contacts: Vec2[] = [];
+  public contacts: Contact2D[] = [];
   center: Vec2;
   size: Vec2;
   isTrigger: boolean;
@@ -27,6 +28,18 @@ export abstract class Collider2D extends Component {
 
   private _boundingBox: Bounds2D;
 
+  public get boundingBox() {
+    const scale = Vec2.fromVec3(this.transform.scale);
+    const correctedScale = new Vec2(Math.abs(scale.x), Math.abs(scale.y));
+
+    this._boundingBox.updateWithOffset(
+      this.center,
+      this.size,
+      Vec2.fromVec3(this.transform.position),
+      correctedScale
+    );
+    return this._boundingBox;
+  }
 
   constructor(type: ComponentType, options?: Collider2DOptions) {
     super(type, ComponentGroup.Collider, {});
@@ -50,18 +63,6 @@ export abstract class Collider2D extends Component {
     target.collisionLayer = this.collisionLayer;
     target.ignoreSelfCollisions = this.ignoreSelfCollisions;
   }
+  abstract intersects(other: Collider2D): any;
 
-
-  public get boundingBox() {
-    const scale = Vec2.fromVec3(this.transform.scale);
-    const correctedScale = new Vec2(Math.abs(scale.x), Math.abs(scale.y));
-
-    this._boundingBox.updateWithOffset(
-      this.center,
-      this.size,
-      Vec2.fromVec3(this.transform.position),
-      correctedScale
-    );
-    return this._boundingBox;
-  }
 }

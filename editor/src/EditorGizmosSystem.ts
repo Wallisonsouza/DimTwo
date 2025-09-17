@@ -1,7 +1,6 @@
 import { System } from "@engine/core/base/System";
 import { Color } from "@engine/core/math/Color";
 import { Quat } from "@engine/core/math/quat";
-import { Vec2 } from "@engine/core/math/Vec2";
 import { Vec3 } from "@engine/core/math/Vec3";
 import type { Engine } from "@engine/Engine";
 import { ResourcesManager } from "@engine/global/ResourcesManager";
@@ -99,30 +98,23 @@ export class EditorGizmosSystem extends System {
 
   onDrawGizmos(): void {
     for (const collider of this.engine.components.getAllOfType<BoxCollider2D>(ComponentType.BoxCollider2D)) {
-      const halfSize = Vec2.scale(collider.size, 0.5);
-      const offset = collider.center;
-
-      const vertices: Vec2[] = [
-        Vec2.add(offset, new Vec2(-halfSize.x, -halfSize.y)),
-        Vec2.add(offset, new Vec2(halfSize.x, -halfSize.y)),
-        Vec2.add(offset, new Vec2(halfSize.x, halfSize.y)),
-        Vec2.add(offset, new Vec2(-halfSize.x, halfSize.y)),
-      ];
-
-      const worldVertices: Vec3[] = vertices.map(
-        v => collider.transform.transformPointToWorldSpace(Vec3.fromVec2(v))
-      );
-
       Gizmos.color = Color.Green;
 
+      const Vertice = collider.getVerticesTransformedToWorld();
+
       for (let i = 0; i < 4; i++) {
-        Gizmos.drawWireCircle(worldVertices[i], 0.1);
+        Gizmos.drawWireCircle(Vec3.fromVec2(Vertice[i]), 0.1);
         Gizmos.render(this.engine);
-        for (const point of collider.contacts) {
-          Gizmos.drawFillCircle(Vec3.fromVec2(point), 0.1);
-          Gizmos.render(this.engine);
-        }
+
       }
+
+
+      for (const contact of collider.contacts) {
+        Gizmos.color = Color.Blue;
+        Gizmos.drawFillCircle(Vec3.fromVec2(contact.point), 0.3)
+        Gizmos.render(this.engine);
+      }
+
 
       Gizmos.color = Color.Red;
       Gizmos.render(this.engine);
