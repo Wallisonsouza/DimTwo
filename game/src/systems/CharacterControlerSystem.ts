@@ -1,9 +1,10 @@
 
-import { System, type CollisionEvent } from "@engine/core/base/System";
+import { System, type CollisionEvent2D } from "@engine/core/base/System";
 import { ComponentType } from "@engine/modules/enums/ComponentType";
 
 import { KeyCode } from "@engine/core/input/KeyCode";
 import { Vec2 } from "@engine/core/math/Vec2";
+import { Vec3 } from "@engine/core/math/Vec3";
 import { ForceMode, RigidBody2D } from "@engine/modules/2D/RigidBody2D";
 import type { SpriteRender2D } from "@engine/modules/2D/SpriteRender2D";
 import type { Animator } from "@engine/modules/shared/animator/Animator";
@@ -78,15 +79,13 @@ export class CharacterControlerSystem extends System {
 
       if (input.getKeyDown(KeyCode.Space) && characterControler.jumpCount < 2) {
         animator.setAnimatorState("jump", true);
-        const up = new Vec2(0, 1 * 100);
-
-        rigid.addForce(up, ForceMode.Force);
+        rigid.addForceAtPoint(new Vec2(0, 1).scaleInPlace(10), new Vec2(1, 0), ForceMode.Impulse)
         characterControler.jumpCount += 1;
       }
     }
   }
 
-  onCollisionEnter(collisionEvent: CollisionEvent): void {
+  onCollisionEnter2D(collisionEvent: CollisionEvent2D): void {
     const characterControlerA = this.engine.components.getComponent<CharacterControler2D>(
       collisionEvent.a.gameEntity,
       ComponentType.CharacterController
@@ -108,3 +107,11 @@ export class CharacterControlerSystem extends System {
 
   }
 }
+
+
+
+const a = new Vec2(2, 2);
+const b = new Vec3(2, 3, 4);
+
+
+Vec3.add(Vec3.fromVec2(a), b)

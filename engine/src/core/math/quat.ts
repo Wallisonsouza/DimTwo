@@ -1,5 +1,5 @@
 import { Mathf } from "./Mathf";
-import type { Vec3 } from "./Vec3";
+import { Vec3 } from "./Vec3";
 
 export class Quat {
   x: number;
@@ -24,6 +24,26 @@ export class Quat {
     this.w = aw * bw - ax * bx - ay * by - az * bz;
 
     return this;
+  }
+
+  public static rotateVec3ByQuat(q: Quat, v: Vec3, out: Vec3 = new Vec3()): Vec3 {
+    const qVec = new Vec3(q.x, q.y, q.z);
+
+    // t = 2 * cross(qVec, v)
+    const t = Vec3.cross(qVec, v, new Vec3());
+    t.x *= 2;
+    t.y *= 2;
+    t.z *= 2;
+
+    // cross(qVec, t)
+    const c = Vec3.cross(qVec, t, new Vec3());
+
+    // out = v + q.w * t + c
+    out.x = v.x + q.w * t.x + c.x;
+    out.y = v.y + q.w * t.y + c.y;
+    out.z = v.z + q.w * t.z + c.z;
+
+    return out;
   }
 
   public static getRotationZFromQuat(q: Quat): number {

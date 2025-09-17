@@ -45,7 +45,11 @@ const resources: EngineResource[] = [
   { name: "grass", type: "texture", path: "grass_image" },
   { name: "fillQuad", type: "mesh", path: "fillQuad" },
   { name: "wireQuad", type: "mesh", path: "wireQuad" },
+
   { name: "wireCircle", type: "mesh", path: "wireCircle" },
+  { name: "fillCircle", type: "mesh", path: "fillCircle" },
+
+  { name: "wireLine", type: "mesh", path: "wireLine" },
   { name: "KnightIdle", type: "texture", path: "KnightIdle" },
   { name: "KnightWalk", type: "texture", path: "KnightWalk" },
   { name: "KnightRun", type: "texture", path: "KnightRun" },

@@ -86,5 +86,51 @@ export class Circle {
     return new Mesh(name, vertices, indices, normals, uvs);
   }
 
+  public static createFillCircleMesh(name: string, radius: number, divisions: number): Mesh {
+    const vertices: Vec3[] = [];
+    const indices: number[] = [];
+    const uvs: Vec2[] = [];
+    const normals: Vec3[] = [];
+
+
+    vertices.push(new Vec3(0, 0, 0));
+    uvs.push(new Vec2(0.5, 0.5));
+    normals.push(new Vec3(0, 0, 1));
+
+    const angleStep = (Math.PI * 2) / divisions;
+
+    for (let i = 0; i < divisions; i++) {
+      const angle = i * angleStep;
+      const x = Math.cos(angle) * radius;
+      const y = Math.sin(angle) * radius;
+      vertices.push(new Vec3(x, y, 0));
+      uvs.push(new Vec2((x / radius + 1) * 0.5, (y / radius + 1) * 0.5));
+      normals.push(new Vec3(0, 0, 1));
+    }
+
+    for (let i = 1; i <= divisions; i++) {
+      const next = i % divisions + 1;
+      indices.push(0, i, next);
+    }
+
+    return new Mesh(name, vertices, indices, normals, uvs);
+  }
 }
 
+export class Line {
+  public static createWireLineMesh(name: string): Mesh {
+    const vertices: Vec3[] = [
+      new Vec3(0, 0, 0),
+      new Vec3(1, 0, 0),
+    ];
+
+    const indices: number[] = [
+      0, 1,
+    ];
+
+    const normals: Vec3[] = [];
+    const uvs: Vec2[] = [];
+
+    return new Mesh(name, vertices, indices, normals, uvs);
+  }
+}

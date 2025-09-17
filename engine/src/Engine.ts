@@ -10,7 +10,6 @@ import Time from "./core/time/Time";
 import type { MeshBuffer } from "./core/webgl/MeshBuffer";
 import type { TextureBuffer } from "./core/webgl/TextureBuffer";
 import { EngineWindow } from "./core/window/EngineWindow";
-import { Debug } from "./exception /Debug";
 import { SceneNotFoundException } from "./exception /SceneNotFoundException";
 import { PerspectiveCamera } from "./modules/3D/PerspesctiveCamera";
 import type { Camera } from "./modules/shared/camera/Camera";
@@ -127,7 +126,7 @@ export class Engine extends SceneAbstraction {
     const key = error?.message || error?.toString();
     if (!this.loggedErrors.has(key)) {
       this.loggedErrors.add(key);
-      Debug.error(`Erro inesperado em ${context}`, error);
+      console.error(`Erro inesperado em ${context}`, error);
     }
   }
 

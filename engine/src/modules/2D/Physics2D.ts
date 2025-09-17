@@ -1,6 +1,7 @@
 import { Vec2 } from "@engine/core/math/Vec2";
 import { Vec3 } from "@engine/core/math/Vec3";
-import type { Collider2D } from "./Collider2D";
+import { BoxCollider2D } from "./BoxCollider2D";
+import { Collider2D } from "./Collider2D";
 import { Hit2D } from "./Hit2D";
 import { Plane } from "./Plane";
 
@@ -11,7 +12,7 @@ export class Physics2D {
     let closestHit: Hit2D | null = null;
 
     for (const col of this.colliders) {
-      const b = col.getBounds();
+      const b = col.boundingBox;
 
       const plane = new Plane(new Vec3(0, 0, 1), new Vec3(0, 0, col.transform.position.z));
 
@@ -47,4 +48,40 @@ export class Physics2D {
     if (minDist === bottom) return new Vec2(0, -1);
     return new Vec2(0, 1);
   }
+
+  public static computePenetration(
+    a: BoxCollider2D,
+    b: BoxCollider2D,
+    outDir: Vec2,
+    outDist: { value: number }
+  ): boolean {
+
+    const verticesA = a.getVerticesTransformedToWorld();
+    const verticesB = b.getVerticesTransformedToWorld();
+
+    const axes: Vec2[] = [
+      a.transform.rightVector.xy,
+      a.transform.upVector.xy,
+      b.transform.rightVector.xy,
+      b.transform.upVector.xy
+    ];
+
+    const penetration = { value: Number.POSITIVE_INFINITY };
+    const normal = new Vec2();
+
+    for (const axis of axes) {
+
+    }
+
+    // Garante direção A -> B
+    const delta = Vec2.sub(a.transform.position.xy, b.transform.position.xy);
+    if (Vec2.dot(delta, normal) < 0) normal.scaleInPlace(-1);
+
+    // Atualiza saídas
+    outDir.copy(normal);
+    outDist.value = penetration.value;
+
+    return true;
+  }
+
 }

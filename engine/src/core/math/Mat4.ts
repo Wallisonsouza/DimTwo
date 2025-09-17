@@ -1,4 +1,5 @@
-import type { Vec3 } from "./Vec3";
+import { Vec2 } from "./Vec2";
+import { Vec3 } from "./Vec3";
 import { Vec4 } from "./Vec4";
 import { Quat } from "./quat";
 
@@ -289,6 +290,31 @@ export class Mat4 {
       e[2] * x + e[6] * y + e[10] * z + e[14] * w,
       e[3] * x + e[7] * y + e[11] * z + e[15] * w
     );
+  }
+
+  public static multiplyVec3(m: Mat4, v: Vec3, out: Vec3 = new Vec3()): Vec3 {
+    const e = m.data;
+    const x = v.x, y = v.y, z = v.z;
+
+    const w = 1;
+
+    out.x = e[0] * x + e[4] * y + e[8] * z + e[12] * w;
+    out.y = e[1] * x + e[5] * y + e[9] * z + e[13] * w;
+    out.z = e[2] * x + e[6] * y + e[10] * z + e[14] * w;
+
+    return out;
+  }
+
+  public static multiplyVec2(m: Mat4, v: Vec2, out: Vec2 = new Vec2()): Vec2 {
+    const e = m.data;
+    const x = v.x, y = v.y;
+    const z = 0;
+    const w = 1;
+
+    out.x = e[0] * x + e[4] * y + e[8] * z + e[12] * w;
+    out.y = e[1] * x + e[5] * y + e[9] * z + e[13] * w;
+
+    return out;
   }
 
   public static invert(input: Mat4, output: Mat4): Mat4 | null {

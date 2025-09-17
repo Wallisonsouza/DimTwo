@@ -1,19 +1,21 @@
-import { Index } from "./vec";
+import { Index, Vector } from "./vec";
 import { Vec2 } from "./Vec2";
 
-export class Vec3 {
-  public readonly data: Float32Array;
+export class Vec3 extends Vector {
 
-  public get x() { return this.data[Index.X]; }
-  public get y() { return this.data[Index.Y]; }
-  public get z() { return this.data[Index.Z]; }
+  public static readonly UP = Object.freeze(new Vec3(0, 1, 0));
+  public static readonly DOWN = Object.freeze(new Vec3(0, -1, 0));
+  public static readonly LEFT = Object.freeze(new Vec3(-1, 0, 0));
+  public static readonly RIGHT = Object.freeze(new Vec3(1, 0, 0));
+  public static readonly FORWARD = Object.freeze(new Vec3(0, 0, 1));
+  public static readonly BACKWARD = Object.freeze(new Vec3(0, 0, -1));
 
-  public set x(v: number) { this.data[Index.X] = v; }
-  public set y(v: number) { this.data[Index.Y] = v; }
-  public set z(v: number) { this.data[Index.Z] = v; }
+  public get xy() {
+    return new Vec2(this.data[Index.X], this.data[Index.Y])
+  }
 
   constructor(x = 0, y = 0, z = 0) {
-    this.data = new Float32Array([x, y, z]);
+    super(x, y, z)
   }
 
   public setFromOther(other: Vec3): this {
@@ -42,7 +44,7 @@ export class Vec3 {
     return this;
   }
 
-  public subtractInplace(v: Vec3): this {
+  public subInPlace(v: Vec3): this {
     const d = this.data, vd = v.data;
     d[Index.X] -= vd[Index.X];
     d[Index.Y] -= vd[Index.Y];

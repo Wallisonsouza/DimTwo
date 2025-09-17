@@ -17,13 +17,16 @@ export interface Collider2DOptions {
 
 export abstract class Collider2D extends Component {
   isColliding: boolean;
+  public contacts: Vec2[] = [];
   center: Vec2;
   size: Vec2;
   isTrigger: boolean;
   collisionLayer: number;
   ignoreSelfCollisions: boolean;
   public physicsMaterial: PhysicsMaterial;
-  private _bounds: Bounds2D;
+
+  private _boundingBox: Bounds2D;
+
 
   constructor(type: ComponentType, options?: Collider2DOptions) {
     super(type, ComponentGroup.Collider, {});
@@ -34,23 +37,10 @@ export abstract class Collider2D extends Component {
     this.collisionLayer = options?.collisionLayer ?? CollisionLayer.Default;
     this.ignoreSelfCollisions = options?.ignoreSelfCollisions ?? true;
     this.physicsMaterial = options?.physicsMaterial ?? new PhysicsMaterial();
-    this._bounds = new Bounds2D(this.center, this.size);
+    this._boundingBox = new Bounds2D(this.center, this.size);
   }
 
-  public abstract intersects(other: Collider2D): { axis: Vec2, overlap: number } | null;
-
-  public getBounds(): Bounds2D {
-    const scale = Vec2.fromVec3(this.transform.scale);
-    const correctedScale = new Vec2(Math.abs(scale.x), Math.abs(scale.y));
-
-    this._bounds.updateWithOffset(
-      this.center,
-      this.size,
-      Vec2.fromVec3(this.transform.position),
-      correctedScale
-    );
-    return this._bounds;
-  }
+  /* public abstract intersects(other: Collider2D): Contact2D[] | null; */
 
   public copyBase(target: Collider2D) {
     target.isColliding = this.isColliding;
@@ -59,5 +49,19 @@ export abstract class Collider2D extends Component {
     target.isTrigger = this.isTrigger;
     target.collisionLayer = this.collisionLayer;
     target.ignoreSelfCollisions = this.ignoreSelfCollisions;
+  }
+
+
+  public get boundingBox() {
+    const scale = Vec2.fromVec3(this.transform.scale);
+    const correctedScale = new Vec2(Math.abs(scale.x), Math.abs(scale.y));
+
+    this._boundingBox.updateWithOffset(
+      this.center,
+      this.size,
+      Vec2.fromVec3(this.transform.position),
+      correctedScale
+    );
+    return this._boundingBox;
   }
 }

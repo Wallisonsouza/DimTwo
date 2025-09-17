@@ -1,19 +1,17 @@
 import type { Vec3 } from "@engine/core/math/Vec3";
-import { Index } from "./vec";
+import { Index, Vector } from "./vec";
 
-export class Vec2 {
-  public readonly data: Float32Array;
-
-  public get x() { return this.data[Index.X]; }
-  public get y() { return this.data[Index.Y]; }
-
-  public set x(v: number) { this.data[Index.X] = v; }
-  public set y(v: number) { this.data[Index.Y] = v; }
+export class Vec2 extends Vector {
 
   constructor(x = 0, y = 0) {
-    this.data = new Float32Array([x, y]);
+    super(x, y)
   }
 
+  public static create() {
+    return new Vec2(0, 0);
+  }
+
+  public static readonly Down: Vec2 = new Vec2(0, -1);
   public static readonly Zero = new Vec2(0, 0);
 
   // --------------------------
@@ -46,6 +44,15 @@ export class Vec2 {
     d[Index.Y] *= -1;
     return this;
   }
+
+  public static negative(v: Vec2, out: Vec2): Vec2 {
+    const vd = v.data;
+    const od = out.data;
+    od[Index.X] = -vd[Index.X];
+    od[Index.Y] = -vd[Index.Y];
+    return out;
+  }
+
 
   get magnitude(): number {
     const d = this.data;
@@ -87,7 +94,7 @@ export class Vec2 {
 
     targetData[Index.X] = selfData[Index.X];
     targetData[Index.Y] = selfData[Index.Y];
-    
+
     return target;
   }
 
@@ -99,6 +106,13 @@ export class Vec2 {
     const ad = a.data, bd = b.data, od = out.data;
     od[Index.X] = ad[Index.X] + bd[Index.X];
     od[Index.Y] = ad[Index.Y] + bd[Index.Y];
+    return out;
+  }
+
+  public static mul(a: Vec2, b: Vec2, out: Vec2 = new Vec2()): Vec2 {
+    const ad = a.data, bd = b.data, od = out.data;
+    od[Index.X] = ad[Index.X] * bd[Index.X];
+    od[Index.Y] = ad[Index.Y] * bd[Index.Y];
     return out;
   }
 
@@ -139,6 +153,12 @@ export class Vec2 {
     const ad = a.data, bd = b.data;
     return ad[Index.X] * bd[Index.X] + ad[Index.Y] * bd[Index.Y];
   }
+
+  public static cross(a: Vec2, b: Vec2): number {
+    const ad = a.data, bd = b.data;
+    return ad[Index.X] * bd[Index.Y] - ad[Index.Y] * bd[Index.X];
+  }
+
 
   public static distance(a: Vec2, b: Vec2): number {
     const ad = a.data, bd = b.data;

@@ -1,4 +1,5 @@
 import { Vec2 } from "@engine/core/math/Vec2";
+import type { Vec3 } from "@engine/core/math/Vec3";
 
 export enum FrictionCombine {
   Average,
@@ -8,6 +9,11 @@ export enum FrictionCombine {
 
 export class PhysicsMath2D {
   public static readonly EPSILON = 1e-6;
+
+  public static weightForce(mass: number, gravityAcceleration: Vec2): Vec2 {
+    return Vec2.scale(gravityAcceleration, mass);
+  }
+
 
   public static forceToAcceleration(force: Vec2, mass: number): Vec2 {
     if (mass === 0) throw new Error("Massa não pode ser zero");
@@ -21,6 +27,12 @@ export class PhysicsMath2D {
     const velocityDir = Vec2.normalize(velocity, new Vec2());
     const dragMagnitude = 0.5 * rho * area * dragCoef * speed * speed;
     return Vec2.scale(velocityDir, -dragMagnitude, new Vec2());
+  }
+
+  public static rectangleInertia(size: Vec3, mass: number) {
+    const w = size.x;
+    const h = size.y;
+    return (mass * (w * w + h * h)) / 12;
   }
 
   public static kineticFriction(
@@ -82,18 +94,25 @@ export class PhysicsMath2D {
     ];
   }
 
-  public static springAcceleration(
-    penetration: number,
+  public static applyNormalImpulseTwoBodies(
+    vA: Vec2, mA: number,
+    vB: Vec2, mB: number,
     normal: Vec2,
-    velocity: Vec2,
-    mass: number,
-    k: number,
-    damping: number
-  ): Vec2 {
-    const springForce = Vec2.scale(normal, k * penetration, new Vec2());
-    const dampingForce = Vec2.scale(velocity, -damping, new Vec2());
-    const totalForce = Vec2.add(springForce, dampingForce, new Vec2());
-    return PhysicsMath2D.forceToAcceleration(totalForce, mass);
+    restitution: number
+  ): { vA: Vec2; vB: Vec2 } {
+    const relVel = Vec2.sub(vB, vA);
+    const velAlongNormal = Vec2.dot(relVel, normal);
+
+    if (velAlongNormal > 0) return { vA: vA.clone(), vB: vB.clone() };
+
+    const j = -(1 + restitution) * velAlongNormal / (1 / mA + 1 / mB);
+
+    const impulse = Vec2.scale(normal, j);
+
+    return {
+      vA: Vec2.sub(vA, Vec2.scale(impulse, 1 / mA)),
+      vB: Vec2.add(vB, Vec2.scale(impulse, 1 / mB)),
+    };
   }
 
   public static getCombinedFriction(

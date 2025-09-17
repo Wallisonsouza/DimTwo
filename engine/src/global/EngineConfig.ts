@@ -3,7 +3,7 @@ import { Vec2 } from "@engine/core/math/Vec2";
 export const EngineConfig = {
   PHYSICS: {
     enabled: true,
-    gravity: new Vec2(0, -9.81),
+    gravity: new Vec2(0, 9.81),
     fixedTimeStep: 1 / 60,
     allowSleep: true,
     maxSubSteps: 5,

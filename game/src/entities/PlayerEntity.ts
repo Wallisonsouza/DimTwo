@@ -9,6 +9,8 @@ import { PLAYER_ANIMATOR_CONTROLLER } from "../animations/player.animator.contro
 import { PLAYER_SPRITE } from "../sprites/PlayerSprite";
 import { CharacterControler2D } from "../systems/character.controller.types";
 
+
+
 export function configurePlayer(scene: Scene, entity: GameEntity) {
   const controller = new CharacterControler2D();
 
@@ -27,7 +29,7 @@ export function configurePlayer(scene: Scene, entity: GameEntity) {
   })
 
   const boxCollider = new BoxCollider2D({
-    size: new Vec2(0.5, 0.5)
+    size: new Vec2(1, 1)
   });
 
   scene.addComponent(entity, controller);

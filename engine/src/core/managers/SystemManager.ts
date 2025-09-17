@@ -42,10 +42,10 @@ export class SystemManager {
 
 
   public callCollisionEnterEvents(event: any): void {
-    for (const system of this.data.values()) system.onCollisionEnter?.(event);
+    for (const system of this.data.values()) system.onCollisionEnter2D?.(event);
   }
   public callCollisionStayEvents(event: any): void {
-    for (const system of this.data.values()) system.onCollisionStay?.(event);
+    for (const system of this.data.values()) system.onCollisionStay2D?.(event);
   }
   public callCollisionExitEvents(event: any): void {
     for (const system of this.data.values()) system.onCollisionExit?.(event);

@@ -140,8 +140,8 @@ export class PerspectiveCamera extends Camera {
       farClip
     ).perspectiveDivide();
 
-    const origin = this.transform.transformPointToWorldSpace(nearWorld);
-    const direction = farWorld.clone().subtractInplace(origin).normalizeInPlace();
+    const origin = this.transform.transformPointToWorldSpace(nearWorld) as Vec3;
+    const direction = farWorld.clone().subInPlace(origin).normalizeInPlace();
 
     return new Ray(origin, direction);
   }
