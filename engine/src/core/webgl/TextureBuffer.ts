@@ -1,5 +1,5 @@
 export interface TextureBuffer {
-    width: number;
-    height: number;
-    gpuData: WebGLTexture;
+  width: number;
+  height: number;
+  gpuData: WebGLTexture;
 }

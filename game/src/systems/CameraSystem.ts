@@ -1,32 +1,30 @@
 import type { GameEntity } from "@engine/core/base/GameEntity";
 import { System } from "@engine/core/base/System";
+import { Vec3 } from "@engine/core/math/Vec3";
+import { Time } from "@engine/core/time/Time";
 
 export class CameraSystem extends System {
 
   player: GameEntity | null = null;
   camera: GameEntity | null = null;
-  cameraZ: number = 0;
+  cameraZ: number = 20;
 
   start(): void {
     this.player = this.engine.entities.getByTag("Player");
     this.camera = this.engine.entities.getByTag("MainCamera");
-    this.cameraZ = this.camera?.transform.position.z || 0;
+
   }
   update() {
+
     if (!this.camera || !this.player) return;
-    this.camera.transform.position = this.player.transform.position;
-    this.camera.transform.position.z = this.cameraZ;
+
+    const target = this.player.transform.position.clone();
+    target.z = this.cameraZ;
+
+    this.camera.transform.position = Vec3.lerp(
+      this.camera.transform.position,
+      target,
+      Time.deltaTime
+    )
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-

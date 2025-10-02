@@ -1,136 +1,153 @@
+import type { Vec2 } from "@engine/core/math/Vec2";
 import type { Vec3 } from "@engine/core/math/Vec3";
 import type { TextureBuffer } from "@engine/core/webgl/TextureBuffer";
 import { WebGL } from "../core/webgl/WebGL";
+import type { ShaderSystem } from "./ShaderSystem";
+
+
+export class ContextLink {
+  private static _context: WebGL2RenderingContext | null = null;
+
+  public static setContext(gl: WebGL2RenderingContext) {
+    this._context = gl;
+  }
+
+  public static getContext(): WebGL2RenderingContext {
+    if (!this._context) {
+      throw new Error("WebGL context not set. Chame ContextLink.setContext(gl) primeiro.");
+    }
+    return this._context;
+  }
+}
+
+export type ShaderOptions = {
+  name: string;
+  system?: ShaderSystem | null;
+  vert: string;
+  frag: string;
+};
 
 export class Shader {
-  private gl: WebGL2RenderingContext;
   name: string;
   program: WebGLProgram;
-  vertexSource: string;
-  fragmentSource: string;
   attributes: Map<string, GLint>;
   uniforms: Map<string, WebGLUniformLocation>;
-  systemName: string | null = null;
+  system: ShaderSystem | null = null;
 
-  constructor(gl: WebGL2RenderingContext, name: string, vertexSource: string, fragmentSource: string) {
-    this.gl = gl;
-    const vertexShader = WebGL.compileShader(gl, gl.VERTEX_SHADER, vertexSource);
-    const fragmentShader = WebGL.compileShader(gl, gl.FRAGMENT_SHADER, fragmentSource);
+  private static shaders: Map<string, Shader> = new Map();
 
+  // --- Registro estático ---
+  static get(name: string): Shader | undefined {
+    return this.shaders.get(name);
+  }
+
+  static getAll(): Shader[] {
+    return Array.from(this.shaders.values());
+  }
+
+  private static add(shader: Shader) {
+    if (this.shaders.has(shader.name)) {
+      console.warn(`Shader "${shader.name}" já existe. Substituindo.`);
+    }
+    this.shaders.set(shader.name, shader);
+  }
+
+  constructor(options: ShaderOptions) {
+    const { name, vert: vertexSource, frag: fragmentSource, system = null } = options;
+    const gl = ContextLink.getContext();
+
+    const vertexShader = WebGL.compileShader(gl, name, gl.VERTEX_SHADER, vertexSource);
+    const fragmentShader = WebGL.compileShader(gl, name, gl.FRAGMENT_SHADER, fragmentSource);
     const program = WebGL.createProgram(gl, vertexShader, fragmentShader);
 
-    const attributes = WebGL.getAttributes(gl, program);
-    const uniforms = WebGL.getUniforms(gl, program);
+    this.attributes = WebGL.getAttributes(gl, program);
+    this.uniforms = WebGL.getUniforms(gl, program);
+    this.program = program;
+    this.name = name;
+    this.system = system;
 
     gl.deleteShader(vertexShader);
     gl.deleteShader(fragmentShader);
 
-    this.vertexSource = vertexSource;
-    this.fragmentSource = fragmentSource;
-    this.attributes = attributes;
-    this.uniforms = uniforms;
-    this.program = program;
-    this.name = name;
-
+    Shader.add(this);
   }
 
-  public warnIfUniformNotFound(type: string, name: string) {
+  private warnIfUniformNotFound(type: string, name: string) {
     console.warn(`Uniform:${type} '${name}' not found in shader program '${this.name}'.`);
   }
 
-  public getUniform(name: string): WebGLUniformLocation | null {
+  private getUniform(name: string): WebGLUniformLocation | null {
     return this.uniforms.get(name) ?? null;
   }
 
-  public getAttribute(name: string): GLint | null {
-    return this.attributes.get(name) ?? null;
+  private getGL(): WebGL2RenderingContext {
+    return ContextLink.getContext();
   }
 
+  // ---- setters ----
   public setMat4(name: string, matrix: Float32Array) {
-    const gl = this.gl;
+    const gl = this.getGL();
     const location = this.getUniform(name);
-    if (!location) {
-      this.warnIfUniformNotFound("mat4", name);
-      return;
-    }
+    if (!location) return this.warnIfUniformNotFound("mat4", name);
     gl.uniformMatrix4fv(location, false, matrix);
   }
 
   public set4F(name: string, x: number, y: number, z: number, w: number) {
-    const gl = this.gl;
+    const gl = this.getGL();
     const location = this.getUniform(name);
-    if (!location) {
-      this.warnIfUniformNotFound("4f", name);
-      return;
-    }
+    if (!location) return this.warnIfUniformNotFound("4f", name);
     gl.uniform4f(location, x, y, z, w);
   }
 
-  public shader_set_uniform_3f(name: string, x: number, y: number, z: number) {
-    const gl = this.gl;
+  public set3F(name: string, x: number, y: number, z: number) {
+    const gl = this.getGL();
     const location = this.getUniform(name);
-    if (!location) {
-      this.warnIfUniformNotFound("3f", name);
-      return;
-    }
+    if (!location) return this.warnIfUniformNotFound("3f", name);
     gl.uniform3f(location, x, y, z);
   }
 
   public setVec3(name: string, v: Vec3) {
-    const gl = this.gl;
+    const gl = this.getGL();
     const location = this.getUniform(name);
-    if (!location) {
-      this.warnIfUniformNotFound("3f", name);
-      return;
-    }
+    if (!location) return this.warnIfUniformNotFound("vec3", name);
     gl.uniform3fv(location, v.data);
   }
 
-  public set2F(name: string, x: number, y: number) {
-    const gl = this.gl;
+  public setVec2(name: string, v: Vec2) {
+    const gl = this.getGL();
     const location = this.getUniform(name);
-    if (!location) {
-      this.warnIfUniformNotFound("2f", name);
-      return;
-    }
+    if (!location) return this.warnIfUniformNotFound("vec2", name);
+    gl.uniform2fv(location, v.data);
+  }
+
+  public set2F(name: string, x: number, y: number) {
+    const gl = this.getGL();
+    const location = this.getUniform(name);
+    if (!location) return this.warnIfUniformNotFound("2f", name);
     gl.uniform2f(location, x, y);
   }
 
-  public shader_set_uniform_1f(name: string, x: number) {
-    const gl = this.gl;
+  public setFloat(name: string, x: number) {
+    const gl = this.getGL();
     const location = this.getUniform(name);
-    if (!location) {
-      this.warnIfUniformNotFound("1f", name);
-      return;
-    }
+    if (!location) return this.warnIfUniformNotFound("float", name);
     gl.uniform1f(location, x);
   }
 
-  public shader_set_uniform_1i(name: string, x: number) {
-    const gl = this.gl;
+  public set1I(name: string, x: number) {
+    const gl = this.getGL();
     const location = this.getUniform(name);
-    if (!location) {
-      this.warnIfUniformNotFound("1i", name);
-      return;
-    }
+    if (!location) return this.warnIfUniformNotFound("int", name);
     gl.uniform1i(location, x);
   }
 
-  public setTexture(
-    name: string,
-    texture: TextureBuffer,
-    unit: number = 0
-  ) {
-    const gl = this.gl;
-    const glTexture = texture.gpuData;
+  public setTexture(name: string, texture: TextureBuffer, unit: number = 0) {
+    const gl = this.getGL();
     gl.activeTexture(gl.TEXTURE0 + unit);
-    gl.bindTexture(gl.TEXTURE_2D, glTexture);
+    gl.bindTexture(gl.TEXTURE_2D, texture.gpuData);
 
     const location = this.getUniform(name);
-    if (!location) {
-      this.warnIfUniformNotFound("texture", name);
-      return;
-    }
+    if (!location) return this.warnIfUniformNotFound("sampler2D", name);
     gl.uniform1i(location, unit);
   }
 }

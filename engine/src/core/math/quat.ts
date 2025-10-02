@@ -14,6 +14,18 @@ export class Quat {
     this.w = w;
   }
 
+  public static multiply(self: Quat, other: Quat, out: Quat) {
+    const ax = self.x, ay = self.y, az = self.z, aw = self.w;
+    const bx = other.x, by = other.y, bz = other.z, bw = other.w;
+
+    out.x = aw * bx + ax * bw + ay * bz - az * by;
+    out.y = aw * by - ax * bz + ay * bw + az * bx;
+    out.z = aw * bz + ax * by - ay * bx + az * bw;
+    out.w = aw * bw - ax * bx - ay * by - az * bz;
+
+    return out;
+  }
+
   public multiplyInPlace(other: Quat) {
     const ax = this.x, ay = this.y, az = this.z, aw = this.w;
     const bx = other.x, by = other.y, bz = other.z, bw = other.w;
@@ -76,6 +88,48 @@ export class Quat {
 
     return q;
   }
+
+  public static fromEuler(x: number, y: number, z: number, q: Quat = new Quat()): Quat {
+    const rollRad = Mathf.degToRad(x) * 0.5;
+    const pitchRad = Mathf.degToRad(y) * 0.5;
+    const yawRad = Mathf.degToRad(z) * 0.5;
+
+    const sinRoll = Mathf.sin(rollRad);
+    const cosRoll = Mathf.cos(rollRad);
+    const sinPitch = Mathf.sin(pitchRad);
+    const cosPitch = Mathf.cos(pitchRad);
+    const sinYaw = Mathf.sin(yawRad);
+    const cosYaw = Mathf.cos(yawRad);
+
+    q.w = cosRoll * cosPitch * cosYaw + sinRoll * sinPitch * sinYaw;
+    q.x = cosPitch * sinRoll * cosYaw - cosRoll * sinPitch * sinYaw;
+    q.y = cosRoll * sinPitch * cosYaw + sinRoll * cosPitch * sinYaw;
+    q.z = cosRoll * cosPitch * sinYaw - sinRoll * sinPitch * cosYaw;
+
+    return q;
+  }
+
+  public static fromRad(x: number, y: number, z: number, q: Quat = new Quat()): Quat {
+    const rollRad = x * 0.5;
+    const pitchRad = y * 0.5;
+    const yawRad = z * 0.5;
+
+    const sinRoll = Mathf.sin(rollRad);
+    const cosRoll = Mathf.cos(rollRad);
+    const sinPitch = Mathf.sin(pitchRad);
+    const cosPitch = Mathf.cos(pitchRad);
+    const sinYaw = Mathf.sin(yawRad);
+    const cosYaw = Mathf.cos(yawRad);
+
+    q.w = cosRoll * cosPitch * cosYaw + sinRoll * sinPitch * sinYaw;
+    q.x = cosPitch * sinRoll * cosYaw - cosRoll * sinPitch * sinYaw;
+    q.y = cosRoll * sinPitch * cosYaw + sinRoll * cosPitch * sinYaw;
+    q.z = cosRoll * cosPitch * sinYaw - sinRoll * sinPitch * cosYaw;
+
+    return q;
+  }
+
+
 
   equals(q: Quat): boolean {
     return this.x === q.x && this.y === q.y && this.z === q.z && this.w === q.w;

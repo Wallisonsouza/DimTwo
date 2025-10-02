@@ -4,10 +4,12 @@ export class Mathf {
   public static readonly sin = Math.sin;
   public static readonly cos = Math.cos;
   public static readonly abs = Math.abs;
+  public static readonly max = Math.max;
 
+  public static PI_2 = Math.PI * 2;
 
   public static readonly _PI_180 = Math.PI / 180;
-  public static readonly _180_PI = Math.PI / 180;
+  public static readonly _180_PI = 180 / Math.PI;
 
   public static degToRad(deg: number): number {
     return deg * (Mathf._PI_180);

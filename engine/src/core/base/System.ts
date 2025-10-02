@@ -1,13 +1,10 @@
 import type { Collider2D } from "@engine/modules/2D/Collider2D";
-import type { RigidBody2D } from "@engine/modules/2D/RigidBody2D";
 import type { Contact2D } from "@engine/modules/2D/SAT";
 import type { Engine } from "../../Engine";
 
 export interface CollisionEvent2D {
   a: Collider2D,
   b: Collider2D,
-  aRigid: RigidBody2D | null,
-  bRigid: RigidBody2D | null
   contacts: Contact2D[];
 }
 
@@ -28,10 +25,10 @@ export class System {
   }
 
   start?(): void;
-  update?(dt: number): void;
-  fixedUpdate?(fdt: number): void;
-  lateUpdate?(dt: number): void;
-  render?(dt: number): void;
+  update?(): void;
+  fixedUpdate?(): void;
+  lateUpdate?(): void;
+  render?(): void;
   onDrawGizmos?(): void;
 
 

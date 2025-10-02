@@ -7,7 +7,7 @@ import { Plane } from "./Plane";
 export class Physics2D {
   public static colliders: Collider2D[] = [];
 
-  public static rayCast2D(rayOrigin: Vec3, rayDir: Vec3, maxDistance: number = Number.MAX_VALUE): Hit2D | null {
+  public static rayCast2DInPlane(rayOrigin: Vec3, rayDir: Vec3, maxDistance: number = Number.MAX_VALUE): Hit2D | null {
     let closestHit: Hit2D | null = null;
 
     for (const col of this.colliders) {
@@ -34,6 +34,26 @@ export class Physics2D {
 
     return closestHit;
   }
+
+
+
+  public static rayCast2D(rayOrigin: Vec2, rayDir: Vec2, maxDistance: number = Number.MAX_VALUE) {
+    for (const col of this.colliders) {
+
+      if (col.gameEntity.tag === "Player") continue;
+
+      const hitPoint = col.intersectRay(rayOrigin, rayDir, maxDistance);
+
+      if (!hitPoint) continue;
+
+      hitPoint.collider = col;
+      hitPoint.entity = col.gameEntity;
+      return hitPoint;
+    }
+
+    return null;
+  }
+
 
   private static calculateNormal(bounds: { min: Vec2; max: Vec2 }, point: Vec2): Vec2 {
     const left = Math.abs(point.x - bounds.min.x);

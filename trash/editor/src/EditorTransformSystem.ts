@@ -1,4 +1,4 @@
-import type { GameEntity } from "@engine/core/base/GameEntity";
+/* import type { GameEntity } from "@engine/core/base/GameEntity";
 import { System } from "@engine/core/base/System";
 import { Vec3 } from "@engine/core/math/Vec3";
 import type { Hit2D } from "@engine/modules/2D/Hit2D";
@@ -24,7 +24,7 @@ export class EditorTransformSystem extends System {
 
     if (input.getMouseButtonDown(0)) {
       const ray = camera.screenPointToRay(mousePos);
-      hit = Physics2D.rayCast2D(ray.origin, ray.direction);
+      hit = Physics2D.rayCast2DInPlane(ray.origin, ray.direction);
       if (hit) {
         this.selectedGameEntity = hit.collider.gameEntity;
 
@@ -52,3 +52,4 @@ export class EditorTransformSystem extends System {
     }
   }
 }
+ */

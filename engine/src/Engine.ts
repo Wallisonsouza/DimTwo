@@ -1,19 +1,16 @@
-import { Input } from "@engine/core/input/ElementInput";
+import { Input } from "@engine/core/input/Input";
 import type { System } from "./core/base/System";
 import type { EngineSystem } from "./core/managers/EngineSystemManager";
 import { SceneManager } from "./core/managers/SceneManager";
 import { SimpleManager } from "./core/managers/SimpleManager";
 import { SystemManager } from "./core/managers/SystemManager";
-import type { Mat4 } from "./core/math/Mat4";
 import type { Scene } from "./core/scene/scene";
-import Time from "./core/time/Time";
-import type { MeshBuffer } from "./core/webgl/MeshBuffer";
+import { Time } from "./core/time/Time";
 import type { TextureBuffer } from "./core/webgl/TextureBuffer";
 import { EngineWindow } from "./core/window/EngineWindow";
 import { SceneNotFoundException } from "./exception /SceneNotFoundException";
 import { PerspectiveCamera } from "./modules/3D/PerspesctiveCamera";
 import type { Camera } from "./modules/shared/camera/Camera";
-import { Shader } from "./Rendering/Shader";
 
 abstract class SceneAbstraction {
   private _internalScene: Scene | null = null;
@@ -66,12 +63,8 @@ abstract class SceneAbstraction {
 
 export class Engine extends SceneAbstraction {
   public readonly engineWindow: EngineWindow;
-  public readonly time: Time;
   public readonly input: Input;
 
-  public readonly shaders = new SimpleManager<Shader>("Shader Manager");
-  public readonly matrices = new SimpleManager<Mat4>("Matrix Manager");
-  public readonly meshBuffers = new SimpleManager<MeshBuffer>("Mesh Buffer Manager");
   public readonly textureBuffers = new SimpleManager<TextureBuffer>("Texture Buffer Manager");
   public readonly systems = new SystemManager();
 
@@ -81,22 +74,21 @@ export class Engine extends SceneAbstraction {
     super();
     this.engineWindow = engineWindow;
     this.input = new Input(engineWindow.container);
-    this.time = new Time();
 
     this.registerTimeEvents();
   }
 
   private registerTimeEvents(): void {
-    this.time.on("start", () => this.systems.callStart());
-    this.time.on("fixedUpdate", () => this.systems.callFixedUpdate(this.time.fixedDeltaTime));
-    this.time.on("update", () => this.safeUpdate());
-    this.time.on("render", () => this.safeRender());
+    Time.on("start", () => this.systems.callStart());
+    Time.on("fixedUpdate", () => this.safeFixedUpdate());
+    Time.on("update", () => this.safeUpdate());
+    Time.on("render", () => this.safeRender());
   }
 
   private safeUpdate(): void {
     try {
-      this.systems.callUpdate(this.time.deltaTime);
-      this.systems.callLateUpdate(this.time.deltaTime);
+      this.systems.callUpdate();
+      this.systems.callLateUpdate();
       this.input.clear();
     } catch (e: any) {
       this.logErrorOnce("update", e);
@@ -115,10 +107,18 @@ export class Engine extends SceneAbstraction {
       context.clearColor(color.r, color.g, color.b, color.a);
       context.clear(context.COLOR_BUFFER_BIT | context.DEPTH_BUFFER_BIT);
 
-      this.systems.callRender(this.time.deltaTime);
+      this.systems.callRender();
       this.systems.callDrawGizmos();
     } catch (e: any) {
       this.logErrorOnce("render", e);
+    }
+  }
+
+  private safeFixedUpdate(): void {
+    try {
+      this.systems.callFixedUpdate();
+    } catch (e: any) {
+      this.logErrorOnce("fixedUpdate", e);
     }
   }
 

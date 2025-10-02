@@ -4,7 +4,7 @@ import { ComponentType } from "@engine/modules/enums/ComponentType";
 
 import { KeyCode } from "@engine/core/input/KeyCode";
 import { Vec2 } from "@engine/core/math/Vec2";
-import { Vec3 } from "@engine/core/math/Vec3";
+import { Physics2D } from "@engine/modules/2D/Physics2D";
 import { ForceMode, RigidBody2D } from "@engine/modules/2D/RigidBody2D";
 import type { SpriteRender2D } from "@engine/modules/2D/SpriteRender2D";
 import type { Animator } from "@engine/modules/shared/animator/Animator";
@@ -13,15 +13,50 @@ import { CharacterControler2D } from "./character.controller.types";
 export class CharacterControlerSystem extends System {
   private running: boolean = false;
 
-  update(dt: number) {
+  update() {
     const input = this.engine.input;
+
+    const camera = this.engine.getActivedCamera();
+    if (!camera) return;
+
+    const mousePos = input.getMousePosition();
+    if (!mousePos) return;
+
+
 
     const components = this.engine.components;
     const characterControlers = components.getAllOfType<CharacterControler2D>(
       ComponentType.CharacterController
     );
 
+
+
+
     for (const characterControler of characterControlers) {
+
+
+
+      if (input.getMouseButtonDown(0)) {
+        const hit = Physics2D.rayCast2D(
+          characterControler.transform.position.xy,
+          characterControler.transform.rightVector.xy,
+          0.5
+        );
+
+        if (hit && hit.distance < 0.4) {
+
+          setTimeout(() => {
+            const entity = hit.collider.gameEntity;
+            const rb = this.engine.components.getComponent<RigidBody2D>(entity, ComponentType.RigidBody2D);
+
+            if (!rb) return;
+
+            rb.addForce(Vec2.scale(characterControler.transform.rightVector.xy, 100),)
+          }, 300);
+
+        }
+      }
+
 
       characterControler.direction.x = 0;
       characterControler.direction.y = 0;
@@ -34,53 +69,64 @@ export class CharacterControlerSystem extends System {
       const animator = this.engine.components.getComponent<Animator>(
         characterControler.gameEntity,
         ComponentType.Animator
+
       );
+
 
       const spriteRender = this.engine.components.getComponent<SpriteRender2D>(
         characterControler.gameEntity,
         ComponentType.SpriteRender
       );
-      if (!rigid || !animator || !spriteRender) continue;
+      if (!rigid || !spriteRender) continue;
 
-      if (animator.locked) return;
+
 
       this.running = input.getKey(KeyCode.ShiftLeft);
 
       if (input.getKey(KeyCode.KeyA)) {
-        animator.setAnimatorState(this.running ? "run" : "walk");
+
+        if (animator && !animator.locked) {
+          animator.setAnimatorState(this.running ? "run" : "walk");
+        }
+
         spriteRender.flipHorizontal = true;
         characterControler.direction.x -= 1;
         spriteRender.transform.scale.x = -1;
       }
 
       if (input.getKey(KeyCode.KeyD)) {
-        animator.setAnimatorState(this.running ? "run" : "walk");
+        if (animator && !animator.locked) {
+          animator.setAnimatorState(this.running ? "run" : "walk");
+        }
+
         spriteRender.flipHorizontal = false;
         characterControler.direction.x += 1;
         spriteRender.transform.scale.x = 1;
       }
 
-      const speed = this.running ? 1.2 : 0.5;
+      const speed = this.running ? 1 : 0.4;
 
-      rigid.addForce(Vec2.scale(characterControler.direction, speed), ForceMode.Force);
+      rigid.addForce(Vec2.scale(characterControler.direction, 4), ForceMode.Force);
 
       if (rigid.linearVelocity.x > speed) rigid.linearVelocity.x = speed;
       if (rigid.linearVelocity.x < -speed) rigid.linearVelocity.x = -speed;
 
       if (characterControler.direction.x === 0) {
-        animator.setAnimatorState("idle");
+        /* animator.setAnimatorState("idle"); */
       }
 
       if (input.getMouseButtonDown(0)) {
-        animator.setAnimatorState("attack1", true);
+        /* animator.setAnimatorState("attack1", true); */
       }
       if (input.getMouseButtonDown(2)) {
-        animator.setAnimatorState("defend", true);
+        /* animator.setAnimatorState("defend", true); */
       }
 
       if (input.getKeyDown(KeyCode.Space) && characterControler.jumpCount < 2) {
-        animator.setAnimatorState("jump", true);
+        /*  animator.setAnimatorState("jump", true); */
         characterControler.jumpCount += 1;
+        rigid.addForce(Vec2.scale(Vec2.Up, 200), ForceMode.Force);
+
       }
     }
   }
@@ -107,11 +153,3 @@ export class CharacterControlerSystem extends System {
 
   }
 }
-
-
-
-const a = new Vec2(2, 2);
-const b = new Vec3(2, 3, 4);
-
-
-Vec3.add(Vec3.fromVec2(a), b)

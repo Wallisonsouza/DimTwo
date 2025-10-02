@@ -11,7 +11,9 @@ export class Vec2 extends Vector {
     return new Vec2(0, 0);
   }
 
+
   public static readonly Down: Vec2 = new Vec2(0, -1);
+  public static readonly Up: Vec2 = new Vec2(0, 1);
   public static readonly Zero = new Vec2(0, 0);
 
   // --------------------------
@@ -24,12 +26,52 @@ export class Vec2 extends Vector {
     return this;
   }
 
+
   public subInPlace(v: Vec2): this {
     const d = this.data, vd = v.data;
     d[Index.X] -= vd[Index.X];
     d[Index.Y] -= vd[Index.Y];
     return this;
   }
+
+
+  public perpendicular(out: Vec2 = Vec2.create()): Vec2 {
+    const d = this.data;
+    out.data[Index.X] = -d[Index.Y];
+    out.data[Index.Y] = d[Index.X];
+    return out;
+  }
+
+
+  public sub(other: Vec2, out: Vec2 = Vec2.create()): Vec2 {
+    const d = this.data;
+    const od = other.data;
+
+    out.data[Index.X] = d[Index.X] - od[Index.X];
+    out.data[Index.Y] = d[Index.Y] - od[Index.Y];
+
+    return out;
+  }
+
+  public add(other: Vec2, out: Vec2 = Vec2.create()): Vec2 {
+    const d = this.data;
+    const od = other.data;
+
+    out.data[Index.X] = d[Index.X] + od[Index.X];
+    out.data[Index.Y] = d[Index.Y] + od[Index.Y];
+
+    return out;
+  }
+
+  public cross(other: Vec2): number {
+    const d = this.data;
+    const od = other.data;
+    return d[Index.X] * od[Index.Y] - d[Index.Y] * od[Index.X];
+  }
+
+
+
+
 
   public scaleInPlace(scalar: number): this {
     const d = this.data;
@@ -38,6 +80,14 @@ export class Vec2 extends Vector {
     return this;
   }
 
+  public scale(scalar: number, out: Vec2 = Vec2.create()): Vec2 {
+    const d = this.data;
+    out.data[Index.X] = d[Index.X] * scalar;
+    out.data[Index.Y] = d[Index.Y] * scalar;
+    return out;
+  }
+
+
   public negativeInPlace(): this {
     const d = this.data;
     d[Index.X] *= -1;
@@ -45,7 +95,8 @@ export class Vec2 extends Vector {
     return this;
   }
 
-  public static negative(v: Vec2, out: Vec2): Vec2 {
+
+  public static negative(v: Vec2, out: Vec2 = Vec2.create()): Vec2 {
     const vd = v.data;
     const od = out.data;
     od[Index.X] = -vd[Index.X];
@@ -62,7 +113,7 @@ export class Vec2 extends Vector {
     return Math.hypot(d[Index.X], d[Index.Y]);
   }
 
-  public normalizeSelf(): this {
+  public normalizeInPlace(): this {
     const d = this.data;
     const len = Math.hypot(d[Index.X], d[Index.Y]);
     if (len > 0) {
@@ -72,6 +123,19 @@ export class Vec2 extends Vector {
       d[Index.X] = d[Index.Y] = 0;
     }
     return this;
+  }
+
+  public normalize(out: Vec2 = Vec2.create()): Vec2 {
+    const d = this.data;
+    const len = Math.hypot(d[Index.X], d[Index.Y]);
+    if (len > 0) {
+      out.data[Index.X] = d[Index.X] / len;
+      out.data[Index.Y] = d[Index.Y] / len;
+    } else {
+      out.data[Index.X] = 0;
+      out.data[Index.Y] = 0;
+    }
+    return out;
   }
 
   public set(x: number, y: number): this {
@@ -93,6 +157,11 @@ export class Vec2 extends Vector {
     return this;
   }
 
+
+  public length(): number {
+    const d = this.data;
+    return Math.hypot(d[Index.X], d[Index.Y]);
+  }
 
   //---------------------------Static---------------------------------------------
 
@@ -162,6 +231,11 @@ export class Vec2 extends Vector {
     return ad[Index.X] * bd[Index.X] + ad[Index.Y] * bd[Index.Y];
   }
 
+  public dot(other: Vec2): number {
+    const ad = this.data, bd = other.data;
+    return ad[Index.X] * bd[Index.X] + ad[Index.Y] * bd[Index.Y];
+  }
+
   public static cross(a: Vec2, b: Vec2): number {
     const ad = a.data, bd = b.data;
     return ad[Index.X] * bd[Index.Y] - ad[Index.Y] * bd[Index.X];
@@ -196,7 +270,7 @@ export class Vec2 extends Vector {
 
   public toString(): string {
     const d = this.data;
-    return `Vec2(x: ${d[Index.X].toFixed(2)}, y: ${d[Index.Y].toFixed(2)})`;
+    return `Vec2(x: ${d[Index.X].toFixed(3)}, y: ${d[Index.Y].toFixed(3)})`;
   }
 
   public static vec2ArrayTof32Array(vectors: Vec2[], out?: Float32Array): Float32Array {

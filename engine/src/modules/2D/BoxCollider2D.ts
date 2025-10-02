@@ -2,11 +2,16 @@ import { Mat4 } from "@engine/core/math/Mat4";
 import { Vec2 } from "@engine/core/math/Vec2";
 import { ComponentType } from "../enums/ComponentType";
 import { Collider2D, type Collider2DOptions } from "./Collider2D";
+
+import { RayCast2D, type RaycastHit2D } from "./RayCast2D";
 import { SAT } from "./SAT";
 
 export interface BoxCollider2DOptions extends Collider2DOptions { }
 
 export class BoxCollider2D extends Collider2D {
+  intersects(other: Collider2D) {
+    throw new Error("Method not implemented.");
+  }
 
   private readonly localVertices: Vec2[] = [
     Vec2.create(), Vec2.create(), Vec2.create(), Vec2.create()
@@ -41,8 +46,8 @@ export class BoxCollider2D extends Collider2D {
     Mat4.multiplyVec2(worldMatrix, this.localVertices[2], this.worldVertices[2]);
     Mat4.multiplyVec2(worldMatrix, this.localVertices[3], this.worldVertices[3]);
 
-    this.axes[0].copy(Vec2.sub(this.worldVertices[1], this.worldVertices[0], this.axes[0])).normalizeSelf();
-    this.axes[1].copy(Vec2.sub(this.worldVertices[3], this.worldVertices[0], this.axes[1])).normalizeSelf();
+    this.axes[0].copy(Vec2.sub(this.worldVertices[1], this.worldVertices[0], this.axes[0])).normalizeInPlace();
+    this.axes[1].copy(Vec2.sub(this.worldVertices[3], this.worldVertices[0], this.axes[1])).normalizeInPlace();
 
     return this.worldVertices;
   }
@@ -53,16 +58,10 @@ export class BoxCollider2D extends Collider2D {
     return clone;
   }
 
-  intersects(other: BoxCollider2D): boolean {
-    const aVertices = this.getVerticesTransformedToWorld();
-    const bVertices = other.getVerticesTransformedToWorld();
-
-    const hasSATIntesection = SAT.intersects(
-      aVertices, bVertices,
-      this.axes, other.axes
-    )
-
-    return hasSATIntesection;
+  intersectRay(origin: Vec2, direction: Vec2, maxDistance: number = Number.POSITIVE_INFINITY): RaycastHit2D | null {
+    const poly = this.getVerticesTransformedToWorld();
+    const hit = RayCast2D.rayCastOnPolygon(origin, direction, poly, maxDistance);
+    return hit;
   }
 
   containsPoint(point: Vec2): boolean {

@@ -1,8 +1,8 @@
-export enum Uniforms {
-    View = "uView",
-    Model = "uModel",
-    Projection = "uProjection",
-    Texture = "uTexture",
-    Color = "uColor",
-    ViewProjection = "U_VIEW_PROJECTION_MATRIX"
+export enum Uniform {
+  View = "uView",
+  ModelMatrix = "ENGINE_MODEL_MATRIX",
+  Projection = "uProjection",
+  Texture = "uTexture",
+  Color = "ENGINE_COLOR",
+  ViewProjectionMatrix = "ENGINE_VIEW_PROJECTION_MATRIX"
 }

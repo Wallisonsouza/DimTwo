@@ -4,12 +4,13 @@ import type { RigidBody2D } from "./RigidBody2D";
 export class Sleep {
   static sleepLinearThreshold: number = 0.01;
   static sleepAngularThreshold: number = 0.01;
-  static timeToSleep = 1.0;
+  static timeToSleep = 1;
 
   static updateSleepState(rigid: RigidBody2D, deltaTime: number) {
     const linVel2 = Vec2.lenSq(rigid.linearVelocity);
     const angVel = Math.abs(rigid.angularVelocity);
 
+    console.log(linVel2, angVel)
     if (linVel2 < this.sleepLinearThreshold ** 2 && angVel < this.sleepAngularThreshold) {
       rigid.stillTime += deltaTime;
       if (rigid.stillTime >= this.timeToSleep) {
@@ -32,7 +33,10 @@ export class Sleep {
 
   static wakeIfNeeded(rigid: RigidBody2D, epsilon: number = 1e-4) {
     const speedSq = Vec2.lenSq(rigid.linearVelocity);
-    if (speedSq > 1e-4 || Math.abs(rigid.angularVelocity) > epsilon) {
+    const movingLinear = speedSq > epsilon * epsilon;
+    const movingAngular = Math.abs(rigid.angularVelocity) > epsilon;
+
+    if (movingLinear || movingAngular) {
       Sleep.wakeUpRigidBodyImediate(rigid);
     }
   }

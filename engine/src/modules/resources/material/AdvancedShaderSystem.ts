@@ -1,5 +1,5 @@
 import type { Transform } from "@engine/modules/3D/Transform";
-import { Uniforms } from "@engine/modules/enums/Uniforms";
+import { Uniform } from "@engine/modules/enums/Uniforms";
 import type { Scene } from "../../../core/scene/scene";
 import type { Engine } from "../../../Engine";
 import type { Shader } from "../../../Rendering/Shader";
@@ -8,10 +8,6 @@ import type { SpriteRender2D } from "../../2D/SpriteRender2D";
 import { ComponentType } from "../../enums/ComponentType";
 
 export class AdvancedShaderSystem extends ShaderSystem {
-  global(engine: Engine, scene: Scene, shader: Shader) {
-    const camera = engine.getActivedCamera();
-    shader.setMat4(Uniforms.ViewProjection, camera.getViewProjectionMatrix().data);
-  }
 
   local(engine: Engine, transform: Transform, scene: Scene, shader: Shader) {
 
@@ -25,8 +21,8 @@ export class AdvancedShaderSystem extends ShaderSystem {
 
     const modelMatrix = transform.getWorldMatrix();
 
-    shader.setMat4(Uniforms.Model, modelMatrix.data);
-    shader.set4F(Uniforms.Color, spriteRender.color.r, spriteRender.color.g, spriteRender.color.b, spriteRender.color.a);
+    shader.setMat4(Uniform.ModelMatrix, modelMatrix.data);
+    shader.set4F(Uniform.Color, spriteRender.color.r, spriteRender.color.g, spriteRender.color.b, spriteRender.color.a);
 
 
     if (!spriteRender.sprite || !spriteRender.sprite.textureID) return;
@@ -34,7 +30,7 @@ export class AdvancedShaderSystem extends ShaderSystem {
 
     if (!texture) return;
 
-    shader.setTexture(Uniforms.Texture, texture, 0);
+    shader.setTexture(Uniform.Texture, texture, 0);
 
     const uvScaleX = spriteRender.sprite.size.x / texture.width;
     const uvScaleY = spriteRender.sprite.size.y / texture.height;

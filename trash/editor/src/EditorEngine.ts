@@ -1,18 +1,52 @@
-import { Engine } from "../../engine/src/Engine";
-import { Camera } from "../../engine/src/modules/components/render/Camera";
-import { Transform } from "../../engine/src/modules/components/spatial/Transform";
-import { EditorLayout } from "../layout/EditorLayout";
+/* import { GameEntity } from "@engine/core/base/GameEntity";
+import { EngineSystem } from "@engine/core/managers/EngineSystemManager";
+import { EngineWindow } from "@engine/core/window/EngineWindow";
+import { Engine } from "@engine/Engine";
+import { PerspectiveCamera } from "@engine/modules/3D/PerspesctiveCamera";
+import { RenderSystem } from "@engine/modules/shared/render/RenderSystem";
+import { EditorFreeCameraSystem } from "./EditorFreeCameraSystem";
+import { EditorGizmosSystem } from "./EditorGizmosSystem";
+import { EditorTransformSystem } from "./EditorTransformSystem";
 
-export class Editor extends Engine {
+export class EditorEngine extends Engine {
+  constructor() {
 
-    public camera: Camera;
-    public cameraTransform: Transform;
+    const editorWindow = new EngineWindow();
 
-    constructor() {
-        super();
-        this.display = new EditorLayout(this);
-        this.camera = new Camera();
-        this.cameraTransform = new Transform();
-        this.cameraTransform.position.z = 5;
-    }
-}
+    super(editorWindow);
+
+    const editorCamera = new GameEntity({
+      name: "editor_camera",
+      tag: "EditorCamera",
+    });
+
+    editorCamera.transform.position.z = 10;
+    const cameraComponent = new PerspectiveCamera({
+      entity: editorCamera
+
+    });
+
+    this.forceActiveCamera = cameraComponent;
+
+    this.enableSystem(
+      EngineSystem.RenderSystem,
+      new RenderSystem()
+    );
+
+    this.enableSystem(
+      EngineSystem.EditorGizmosSystem,
+      new EditorGizmosSystem()
+    );
+
+    this.enableSystem(
+      EngineSystem.EditorTransformSystem,
+      new EditorTransformSystem()
+    );
+
+    this.enableSystem(
+      EngineSystem.EditorFreeCameraSystem,
+      new EditorFreeCameraSystem()
+    );
+
+  }
+} */

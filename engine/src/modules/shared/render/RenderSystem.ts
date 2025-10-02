@@ -1,9 +1,9 @@
+import { MeshBuffer } from "@engine/core/webgl/MeshBuffer";
+import { Shader } from "@engine/Rendering/Shader";
 import type { Render } from "../../../core/base/Render";
 import { System } from "../../../core/base/System";
 import type { Scene } from "../../../core/scene/scene";
 import type { Engine } from "../../../Engine";
-import { ResourcesManager } from "../../../global/ResourcesManager";
-import type { Material } from "../../../Rendering/Material";
 import { ComponentGroup } from "../../enums/ComponentGroup";
 
 export class RenderSystem extends System {
@@ -18,39 +18,55 @@ export class RenderSystem extends System {
     opaque: boolean
   ) {
 
+    const shaders = Shader.getAll();
+
+    for (let i = 0; i < shaders.length; i++) {
+      const shader = shaders[i];
+
+      if (!shader.system) continue;
+
+      const system = shader.system;
+      if (!system) continue;
+
+      const camera = engine.getActivedCamera();
+      system.global(engine, camera, scene, shader);
+
+    }
+
 
     for (const render of renders) {
       if (!render.enabled) continue;
 
-      const material = ResourcesManager.MaterialManager.get(render.material) as Material;
-      if (!material || !material.shaderName) continue;
+      const material = render.material;
+      const shader = material?.shader;
+
+      if (!material || !shader) continue;
+
 
       if (opaque && (render.color.a < 1 || material.transparent)) {
         this.transparentsCache.push(render);
         continue;
       }
 
-      const shader = engine.shaders.get(material.shaderName);
-      if (!shader || !shader.systemName) continue;
+      if (!shader.system) continue;
 
       context.useProgram(shader.program);
 
-      const shaderSystem = ResourcesManager.ShaderSystemManager.get(shader.systemName);
+      const shaderSystem = shader.system;
       if (!shaderSystem) continue;
 
-      shaderSystem.global?.(engine, scene, shader);
 
-      shaderSystem.local?.(engine, render.transform, scene, shader);
+      shaderSystem.local?.(engine, render.transform, scene, shader, material);
 
-      if (!render.meshName) continue;
-      const mesh = ResourcesManager.MeshManager.get(render.meshName);
+
+      const mesh = render.mesh;
       if (!mesh) continue;
 
-      const vao = engine.meshBuffers.get(mesh.name);
-      if (!vao) continue;
+      const buffer = MeshBuffer.get(mesh.name);
+      if (!buffer) continue;
 
-      context.bindVertexArray(vao.vao);
-      context.drawElements(context.TRIANGLES, vao.indexCount, context.UNSIGNED_SHORT, 0);
+      context.bindVertexArray(buffer.vao);
+      context.drawElements(context.TRIANGLES, buffer.indexCount, context.UNSIGNED_SHORT, 0);
       context.bindVertexArray(null);
 
 

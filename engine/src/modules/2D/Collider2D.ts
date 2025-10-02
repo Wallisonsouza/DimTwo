@@ -5,6 +5,7 @@ import { ComponentGroup } from "../enums/ComponentGroup";
 import { ComponentType } from "../enums/ComponentType";
 import { Bounds2D } from "./Bounds2D";
 import { PhysicsMaterial } from "./PhysicsMaterial";
+import type { RaycastHit2D } from "./RayCast2D";
 import type { Contact2D } from "./SAT";
 
 export interface Collider2DOptions {
@@ -64,5 +65,5 @@ export abstract class Collider2D extends Component {
     target.ignoreSelfCollisions = this.ignoreSelfCollisions;
   }
   abstract intersects(other: Collider2D): any;
-
+  abstract intersectRay(origin: Vec2, direction: Vec2, maxDistance: number): RaycastHit2D | null;
 }

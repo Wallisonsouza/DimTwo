@@ -1,3 +1,4 @@
+import type { Vec2 } from "../math/Vec2";
 import { Vec3 } from "../math/Vec3";
 
 export class EngineWindow {
@@ -11,6 +12,8 @@ export class EngineWindow {
   public width = 0;
   public height = 0;
   public auto: boolean = true;
+
+
 
   public get aspectRatio() {
     return this.height === 0 ? 1 : this.width / this.height;

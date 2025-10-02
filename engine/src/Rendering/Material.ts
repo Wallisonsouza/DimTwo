@@ -1,20 +1,42 @@
-import { ResourcesManager } from "../global/ResourcesManager";
+import { Color } from "@engine/core/math/Color";
+import type { Shader } from "./Shader";
 
 export interface MaterialOptions {
-    name: string;
-    shaderName?: string;
-    transparent?: boolean;
+  name: string;
+  shader?: Shader;
+  transparent?: boolean;
+  color?: Color;
 }
 
 export class Material {
-    name: string;
-    shaderName: string | null;
-    transparent: boolean;
+  name: string;
+  shader: Shader | null;
+  transparent: boolean;
+  color: Color;
 
-    constructor(options: MaterialOptions) {
-        this.name = options.name;
-        this.shaderName = options.shaderName ?? null;
-        this.transparent = options.transparent ?? false;
-        ResourcesManager.MaterialManager.add(this.name, this);
+  private static materials: Map<string, Material> = new Map();
+
+  static get(name: string): Material | undefined {
+    return this.materials.get(name);
+  }
+
+  static getAll(): Material[] {
+    return Array.from(this.materials.values());
+  }
+
+  private static add(material: Material) {
+    if (this.materials.has(material.name)) {
+      console.warn(`Material "${material.name}" already exists. Overwriting.`);
     }
+    this.materials.set(material.name, material);
+  }
+
+  constructor(options: MaterialOptions) {
+    this.name = options.name;
+    this.shader = options.shader ?? null;
+    this.transparent = options.transparent ?? false;
+    this.color = options.color || Color.White;
+
+    Material.add(this);
+  }
 }

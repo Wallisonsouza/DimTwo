@@ -9,7 +9,7 @@ uniform vec2 uUVOffset;
 uniform vec2 uUVScale;
 uniform vec4 uColor;
 
-void main() {
-    vec4 textureColor = texture(uTexture, vUV * uUVScale + uUVOffset);
-    outColor = uColor * textureColor;
+void main() { 
+  vec4 textureColor = texture(uTexture, vUV * uUVScale + uUVOffset);
+  outColor = uColor * textureColor;
 }

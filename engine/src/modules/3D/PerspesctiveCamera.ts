@@ -87,7 +87,7 @@ export class PerspectiveCamera extends Camera {
       clip
     ).perspectiveDivide();
 
-    out.set(world.x, world.y, world.z);
+    out.setFromNumber(world.x, world.y, world.z);
     return out;
   }
 

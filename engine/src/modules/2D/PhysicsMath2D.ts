@@ -94,28 +94,36 @@ export class PhysicsMath2D {
     ];
   }
 
-  public static applyNormalImpulseTwoBodies(
-    vA: Vec2, mA: number,
-    vB: Vec2, mB: number,
+  static computeImpulse(
+    ra: Vec2, rb: Vec2,
+    velA: Vec2, velB: Vec2,
     normal: Vec2,
-    restitution: number
-  ): { vA: Vec2; vB: Vec2 } {
-    const relVel = Vec2.sub(vB, vA);
-    const velAlongNormal = Vec2.dot(relVel, normal);
+    massA: number, massB: number,
+    inertiaA: number, inertiaB: number,
+    restitution: number,
+    friction: number
+  ): Vec2 | null {
 
-    const epsilon = 1e-5;
-    if (velAlongNormal > -epsilon) return { vA: vA.clone(), vB: vB.clone() };
+    const relativeVel = velB.sub(velA);
+    const velAlongNormal = relativeVel.dot(normal);
 
+    if (velAlongNormal >= 0) return null;
 
-    const j = -(1 + restitution) * velAlongNormal / (1 / mA + 1 / mB);
+    const denom = (1 / massA) + (1 / massB) +
+      ra.perpendicular().dot(normal) ** 2 / inertiaA +
+      rb.perpendicular().dot(normal) ** 2 / inertiaB;
 
-    const impulse = Vec2.scale(normal, j);
+    const impulseNormal = -(1 + restitution) * velAlongNormal / denom;
 
-    return {
-      vA: Vec2.sub(vA, Vec2.scale(impulse, 1 / mA)),
-      vB: Vec2.add(vB, Vec2.scale(impulse, 1 / mB)),
-    };
+    // tangente ao plano
+    const tangent = normal.perpendicular();
+    const velAlongTangent = relativeVel.dot(tangent);
+    const impulseTangent = -velAlongTangent / denom * friction;
+
+    return normal.scale(impulseNormal).add(tangent.scale(impulseTangent));
   }
+
+
 
   public static getCombinedFriction(
     frictionA: number,

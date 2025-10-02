@@ -3,6 +3,12 @@ import { Vec2 } from "./Vec2";
 
 export class Vec3 extends Vector {
 
+  public static random(min: number = 0, max: number = 1): Vec3 {
+    const rand = () => Math.random() * (max - min) + min;
+    return new Vec3(rand(), rand(), rand());
+  }
+
+
   public static readonly UP = Object.freeze(new Vec3(0, 1, 0));
   public static readonly DOWN = Object.freeze(new Vec3(0, -1, 0));
   public static readonly LEFT = Object.freeze(new Vec3(-1, 0, 0));
@@ -22,7 +28,7 @@ export class Vec3 extends Vector {
     super(x, y, z)
   }
 
-  public setFromOther(other: Vec3): this {
+  public set(other: Vec3): this {
     const d = this.data;
     const o = other.data;
     d[Index.X] = o[Index.X];
@@ -31,7 +37,7 @@ export class Vec3 extends Vector {
     return this;
   }
 
-  public set(x: number, y: number, z: number): this {
+  public setFromNumber(x: number, y: number, z: number): this {
     const d = this.data;
 
     d[Index.X] = x;
@@ -46,6 +52,14 @@ export class Vec3 extends Vector {
     d[Index.Y] += vd[Index.Y];
     d[Index.Z] += vd[Index.Z];
     return this;
+  }
+
+  public static add(a: Vec3, b: Vec3, out: Vec3 = new Vec3()): Vec3 {
+    const ad = a.data, bd = b.data, od = out.data;
+    od[Index.X] = ad[Index.X] + bd[Index.X];
+    od[Index.Y] = ad[Index.Y] + bd[Index.Y];
+    od[Index.Z] = ad[Index.Z] + bd[Index.Z];
+    return out;
   }
 
   public subInPlace(v: Vec3): this {
@@ -69,11 +83,11 @@ export class Vec3 extends Vector {
     return this;
   }
 
-  public static add(a: Vec3, b: Vec3, out: Vec3 = new Vec3()): Vec3 {
-    const ad = a.data, bd = b.data, od = out.data;
-    od[Index.X] = ad[Index.X] + bd[Index.X];
-    od[Index.Y] = ad[Index.Y] + bd[Index.Y];
-    od[Index.Z] = ad[Index.Z] + bd[Index.Z];
+  public add(other: Vec3, out: Vec3 = new Vec3()): Vec3 {
+    const d = this.data, od = out.data, odOther = other.data;
+    od[Index.X] = d[Index.X] + odOther[Index.X];
+    od[Index.Y] = d[Index.Y] + odOther[Index.Y];
+    od[Index.Z] = d[Index.Z] + odOther[Index.Z];
     return out;
   }
 

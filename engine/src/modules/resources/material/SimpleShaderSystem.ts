@@ -1,31 +1,24 @@
-
+import type { Scene } from "@engine/core/scene/scene";
+import type { Engine } from "@engine/Engine";
+import type { Transform } from "@engine/modules/3D/Transform";
+import { Uniform } from "@engine/modules/enums/Uniforms";
+import type { Material } from "@engine/Rendering/Material";
+import type { Shader } from "@engine/Rendering/Shader";
 import { ShaderSystem } from "../../../Rendering/ShaderSystem";
 
 export class SimpleShaderSystem extends ShaderSystem {
 
-  /*  global(engine: Engine, scene: Scene, shader: Shader) {
-     const camera = engine.getActivedCamera();
-     shader.setMat4(Uniforms.ViewProjection, camera.getViewProjectionMatrix().data);
-   }
- 
-   local(_: Engine, transform: Transform, scene: Scene, shader: Shader) {
- 
-     const spriteRender = scene.components.getComponent<SpriteRender2D>(
-       transform.gameEntity, ComponentType.SpriteRender);
-     if (!spriteRender) return;
- 
- 
-     const modelMatrix = transform.getWorldMatrix();
- 
-     Mat4.compose(modelMatrix, transform.position, transform.rotation, transform.scale);
-     shader.setMat4("uModel", modelMatrix.data);
- 
-     shader.set4F(
-       "uColor",
-       spriteRender.color.r,
-       spriteRender.color.g,
-       spriteRender.color.b,
-       spriteRender.color.a,
-     );
-   } */
+  local(_: Engine, transform: Transform, scene: Scene, shader: Shader, material: Material) {
+    const modelMatrix = transform.getWorldMatrix();
+    shader.setMat4(Uniform.ModelMatrix, modelMatrix.data);
+
+    const color = material.color;
+    shader.set4F(
+      Uniform.Color,
+      color.r,
+      color.g,
+      color.b,
+      color.a,
+    );
+  }
 }

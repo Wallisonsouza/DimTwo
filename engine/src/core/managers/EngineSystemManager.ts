@@ -1,4 +1,3 @@
-
 export enum EngineSystem {
   RenderSystem,
   EditorRenderSystem,

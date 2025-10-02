@@ -1,4 +1,4 @@
-import { System } from "@engine/core/base/System";
+/* import { System } from "@engine/core/base/System";
 import { KeyCode } from "@engine/core/input/KeyCode";
 import { Vec3 } from "@engine/core/math/Vec3";
 import type { Camera } from "@engine/modules/shared/camera/Camera";
@@ -19,7 +19,7 @@ export class EditorFreeCameraSystem extends System {
     if (!this.camera) return;
 
     const transform = this.camera.transform;
-    this.moveDir.set(0, 0, 0);
+    this.moveDir.setFromNumber(0, 0, 0);
 
     if (input.getKey(KeyCode.KeyW)) this.moveDir.y += 1;
     if (input.getKey(KeyCode.KeyS)) this.moveDir.y -= 1;
@@ -43,3 +43,4 @@ export class EditorFreeCameraSystem extends System {
 
   }
 }
+ */

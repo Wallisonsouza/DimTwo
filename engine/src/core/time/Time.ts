@@ -2,42 +2,40 @@ import { EventEmitter, type EventCallback } from "../events/EventEmitter";
 
 export type TimeEvent = 'start' | 'stop' | 'update' | 'fixedUpdate' | 'lateUpdate' | 'render';
 
-export default class Time {
-  private events = new EventEmitter();
+export class Time {
+  private static events = new EventEmitter();
 
-  public accumulator = 0;
-  private isRunning = false;
-  private isPaused = false;
-  private readonly maxFrameSkip = 5;
+  public static accumulator = 0;
+  private static isRunning = false;
+  private static isPaused = false;
+  private static readonly maxFrameSkip = 5;
 
-  private frameCount = 0;
-  private lastFpsTime = 0;
-  private animationFrameId?: number;
-  private initialized = false;
+  private static frameCount = 0;
+  private static lastFpsTime = 0;
+  private static animationFrameId?: number;
+  private static initialized = false;
 
-  private _deltaTime = 0;
-  public get deltaTime() {
+  private static _deltaTime = 0;
+  public static get deltaTime() {
     return this._deltaTime;
   }
 
-  private _time = 0;
-  public readonly fixedDeltaTime = 1 / 50;
+  private static _time = 0;
+  public static readonly fixedDeltaTime = 1 / 50;
 
-  public timeScale = 1;
-  public realtimeSinceStartup = 0;
-  public fps = 0;
+  public static timeScale = 1;
+  public static realtimeSinceStartup = 0;
+  public static fps = 0;
 
-  constructor() { }
-
-  public on(event: TimeEvent, callback: EventCallback) {
+  public static on(event: TimeEvent, callback: EventCallback) {
     this.events.on(event, callback);
   }
 
-  public off(event: TimeEvent, callback: EventCallback) {
+  public static off(event: TimeEvent, callback: EventCallback) {
     this.events.off(event, callback);
   }
 
-  public offAll(event?: TimeEvent) {
+  public static offAll(event?: TimeEvent) {
     if (event) {
       this.events.clear(event);
     } else {
@@ -45,7 +43,7 @@ export default class Time {
     }
   }
 
-  public play(): void {
+  public static play(): void {
     if (this.isRunning || this.initialized) return;
 
     this.events.emit('start');
@@ -59,7 +57,7 @@ export default class Time {
     this.loop();
   }
 
-  public stop(): void {
+  public static stop(): void {
     this.isRunning = false;
     this.initialized = false;
     if (this.animationFrameId) {
@@ -70,23 +68,23 @@ export default class Time {
     this.events.emit("stop");
   }
 
-  public pause(): void {
+  public static pause(): void {
     this.isPaused = true;
   }
 
-  public resume(): void {
+  public static resume(): void {
     if (!this.isRunning || !this.isPaused) return;
     this.isPaused = false;
     this._time = performance.now();
     this.loop();
   }
 
-  public step(): void {
+  public static step(): void {
     if (!this.isPaused) return;
     this.processFrame();
   }
 
-  private loop(): void {
+  private static loop(): void {
     if (!this.isRunning) return;
 
     if (!this.isPaused) {
@@ -96,7 +94,7 @@ export default class Time {
     this.animationFrameId = requestAnimationFrame(() => this.loop());
   }
 
-  private processFrame(): void {
+  private static processFrame(): void {
     const now = performance.now();
     const realDelta = (now - this._time) / 1000;
 
@@ -105,14 +103,16 @@ export default class Time {
     this.realtimeSinceStartup += realDelta;
 
     this.accumulator += this._deltaTime;
-    let steps = 0;
 
     if (this.initialized) {
-      while (this.accumulator >= this.fixedDeltaTime && steps < this.maxFrameSkip) {
+      // Quantos fixed steps executar
+      const steps = Math.min(Math.floor(this.accumulator / this.fixedDeltaTime), this.maxFrameSkip);
+
+      for (let i = 0; i < steps; i++) {
         this.events.emit('fixedUpdate');
-        this.accumulator -= this.fixedDeltaTime;
-        steps++;
       }
+
+      this.accumulator -= steps * this.fixedDeltaTime;
 
       this.events.emit('update');
       this.events.emit('lateUpdate');
@@ -122,7 +122,8 @@ export default class Time {
     this.calculateFPS(now);
   }
 
-  private calculateFPS(now: number): void {
+
+  private static calculateFPS(now: number): void {
     this.frameCount++;
     if (now - this.lastFpsTime >= 1000) {
       this.fps = this.frameCount;

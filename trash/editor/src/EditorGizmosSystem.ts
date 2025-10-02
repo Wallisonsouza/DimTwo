@@ -1,4 +1,4 @@
-import { System } from "@engine/core/base/System";
+/* import { System } from "@engine/core/base/System";
 import { Color } from "@engine/core/math/Color";
 import { Quat } from "@engine/core/math/quat";
 import { Vec3 } from "@engine/core/math/Vec3";
@@ -78,7 +78,9 @@ export class Gizmos {
     if (!shaderSystem) return;
 
     gl.useProgram(shader.program);
-    shaderSystem.global?.(engine, scene, shader);
+
+    const camera = engine.getActivedCamera();
+    shaderSystem.global?.(engine, camera, scene, shader);
 
     for (const geo of Gizmos.geometries) {
       const vao = engine.meshBuffers.get(geo.mesh);
@@ -108,6 +110,8 @@ export class EditorGizmosSystem extends System {
 
       }
 
+      Gizmos.drawWireQuad(collider.transform.position, collider.transform.scale, collider.transform.rotation)
+
 
       for (const contact of collider.contacts) {
         Gizmos.color = Color.Blue;
@@ -123,7 +127,7 @@ export class EditorGizmosSystem extends System {
 
     Gizmos.color = Color.Yellow;
     for (const rigid of this.engine.components.getAllOfType<RigidBody2D>(ComponentType.RigidBody2D)) {
-      Gizmos.drawFillCircle(rigid.getCenterOfMass(), 0.2);
+      Gizmos.drawFillCircle(Vec3.fromVec2(rigid.getCenterOfMass()), 0.2);
     }
     Gizmos.render(this.engine);
 
@@ -131,3 +135,4 @@ export class EditorGizmosSystem extends System {
   }
 
 }
+ */

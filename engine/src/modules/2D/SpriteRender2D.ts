@@ -5,7 +5,6 @@ import type { Sprite2D } from "./Sprite2D.ts";
 
 export interface SpriteRender2DOptions extends RenderOptions {
   sprite?: Sprite2D | null;
-  material?: string;
   layer?: number;
   flipHorizontal?: boolean;
   flipVertical?: boolean;

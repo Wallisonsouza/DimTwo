@@ -7,7 +7,6 @@ import { Vec4 } from "@engine/core/math/Vec4";
 import { ComponentGroup } from "@engine/modules/enums/ComponentGroup";
 import { ComponentType } from "@engine/modules/enums/ComponentType";
 
-
 export interface TransformOptions extends ComponentOptions {
   position?: Vec3;
   rotation?: Quat;
@@ -15,8 +14,8 @@ export interface TransformOptions extends ComponentOptions {
 }
 
 export class Transform extends Component {
+
   private readonly _tempWorld: Mat4 = Mat4.create();
-  public worldDirty = true;
 
   public parent: Transform | null = null;
 
@@ -24,30 +23,23 @@ export class Transform extends Component {
   private _rotation: Quat;
   private _scale: Vec3;
 
-  constructor(options: TransformOptions = {}) {
-    super(ComponentType.Transform, ComponentGroup.Transform, options);
-    this._position = options.position ?? new Vec3(0, 0, 0);
-    this._rotation = options.rotation ?? new Quat(0, 0, 0, 1);
-    this._scale = options.scale ?? new Vec3(1, 1, 1);
-  }
-
   get position(): Vec3 { return this._position; }
-
-  set position(v: Vec3) {
-    this._position.setFromOther(v);
-  }
+  set position(v: Vec3) { this._position.set(v); }
 
   get rotation(): Quat { return this._rotation; }
-  set rotation(q: Quat) {
-    this._rotation.set(q);
-  }
+  set rotation(q: Quat) { this._rotation.set(q); }
 
   get scale(): Vec3 { return this._scale; }
-  set scale(s: Vec3) {
-    this._scale.setFromOther(s);
+  set scale(s: Vec3) { this._scale.set(s); }
+
+  constructor(options: TransformOptions = {}) {
+    super(ComponentType.Transform, ComponentGroup.Transform, options);
+
+    this._position = options.position || new Vec3(0, 0, 0);
+    this._rotation = options.rotation || new Quat(0, 0, 0, 1);
+    this._scale = options.scale || new Vec3(1, 1, 1);
   }
 
-  localPosition: Vec3 = new Vec3(2, 0, 0);
 
   public getWorldMatrix(): Mat4 {
 
@@ -70,24 +62,16 @@ export class Transform extends Component {
     return this._tempWorld;
   }
 
-
-
-  public get downVector() {
-    return Mat4.multiplyVec3(this._tempWorld, Vec3.DOWN);
-  }
-  public get upVector() {
-    return Mat4.multiplyVec3(this._tempWorld, Vec3.UP);
-  }
-
-  public get forwardVector() {
-    return Mat4.multiplyVec3(this._tempWorld, Vec3.FORWARD);
-  }
-
-
   public get rightVector() {
-    return Mat4.multiplyVec3(this._tempWorld, Vec3.RIGHT);
+    return this.transformVectorToWorldSpace(Vec3.RIGHT);
   }
 
+
+  public transformVectorToWorldSpace(vec: Vec3 | Vec2): Vec3 {
+    const tempVec4 = new Vec4(vec.x, vec.y, vec.z ?? 0, 0.0);
+    const worldSpace = Mat4.multiplyVec4(this._tempWorld, tempVec4);
+    return new Vec3(worldSpace.x, worldSpace.y, worldSpace.z);
+  }
 
   public transformPointToWorldSpace(point: Vec3 | Vec2): Vec3 {
     const tempVec4 = new Vec4(point.x, point.y, point.z ?? 0, 1.0);
@@ -106,3 +90,5 @@ export class Transform extends Component {
     return t;
   }
 }
+
+

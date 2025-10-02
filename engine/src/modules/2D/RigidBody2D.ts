@@ -1,7 +1,6 @@
 import { type ComponentOptions, Component } from "@engine/core/base/Component";
 import { Mat4 } from "@engine/core/math/Mat4";
 import { Vec2 } from "@engine/core/math/Vec2";
-import { Vec3 } from "@engine/core/math/Vec3";
 import { ComponentGroup } from "@engine/modules/enums/ComponentGroup";
 import { ComponentType } from "@engine/modules/enums/ComponentType";
 import { PhysicsMath2D } from "./PhysicsMath2D";
@@ -26,8 +25,16 @@ export interface RigidBody2DOptions extends ComponentOptions {
   gravityScale?: number;
   bodyType?: BodyType;
   useGravity?: boolean;
+  freezePosition?: boolean;
+  freezeRotation?: boolean;
+  centerOfMass?: Vec2;
 }
 
+
+export enum Space {
+  World,
+  Local
+}
 
 
 
@@ -46,22 +53,23 @@ export class RigidBody2D extends Component {
   angularDrag: number = 1;
   area: number = 1;
   rho: number = 1.225;
-  inertia: number = 1;
   isSleeping: boolean = false;
   stillTime: number = 0;
+  rotationAngle: number = 0;
+  public forces: Vec2 = Vec2.create();
 
 
+  freezePosition: boolean;
+  freezeRotation: boolean;
   _centerOfMass: Vec2;
 
-  public getCenterOfMass() {
-    return Mat4.multiplyVec3(
-      this.transform.getWorldMatrix(),
-      Vec3.fromVec2(
-        Vec2.scale(this._centerOfMass,
-          0.5
-        )
-      )
-    );
+  public getCenterOfMass(space: Space = Space.World): Vec2 {
+    if (space === Space.World) {
+      const worldMatrix = this.transform.getWorldMatrix();
+      return Mat4.multiplyVec2(worldMatrix, this._centerOfMass);
+    } else {
+      return this._centerOfMass.clone();
+    }
   }
 
   constructor(options: RigidBody2DOptions = {}) {
@@ -73,31 +81,26 @@ export class RigidBody2D extends Component {
     this.gravityScale = options.gravityScale ?? 1;
     this.bodyType = options.bodyType ?? BodyType.Dynamic;
     this.useGravity = options.useGravity ?? true;
-    this._centerOfMass = new Vec2(0.0, 0);
+    this._centerOfMass = options.centerOfMass || Vec2.create();
+
+    this.freezePosition = options.freezePosition || false;
+    this.freezeRotation = options.freezeRotation || false;
   }
 
+  public getPointVelocity(point: Vec2, out: Vec2 = Vec2.create(), space: Space = Space.World): Vec2 {
+    const centerOfMass = this.getCenterOfMass(space);
+    const r = point.sub(centerOfMass);
 
-  applyDrag() {
-    if (this.bodyType === BodyType.Static) return;
-    const speed = this.linearVelocity.magnitude;
-    if (speed < 0) return;
+    const angularVel = r.perpendicular().scale(this.angularVelocity);
 
-    const dragForce = PhysicsMath2D.drag(this.linearVelocity, this.rho, this.area, this.drag);
-    const acceleration = PhysicsMath2D.forceToAcceleration(dragForce, this.mass);
-    this.linearAcceleration.addInPlace(acceleration);
+    return out.copy(this.linearVelocity).add(angularVel);
 
-
-    const angularDragForce = PhysicsMath2D.drag(new Vec2(this.angularVelocity, this.angularVelocity), this.rho, this.area, this.angularDrag);
-    const angularAcceleration = PhysicsMath2D.forceToAcceleration(angularDragForce, this.mass);
-    this.angularAcceleration += angularAcceleration.x;
   }
-
-  public forces: Vec2 = Vec2.create();
 
   public addForce(force: Vec2, mode: ForceMode = ForceMode.Force) {
     if (this.bodyType === BodyType.Static) return;
 
-
+    const accel = PhysicsMath2D.forceToAcceleration(force, this.mass);
 
     switch (mode) {
       case ForceMode.Force:
@@ -105,7 +108,7 @@ export class RigidBody2D extends Component {
         break;
 
       case ForceMode.Impulse:
-        const accel = PhysicsMath2D.forceToAcceleration(force, this.mass);
+
         this.linearVelocity.addInPlace(accel);
         break;
 
@@ -114,68 +117,23 @@ export class RigidBody2D extends Component {
     }
   }
 
-  /*  public addForceAtPoint(force: Vec2, point: Vec2, mode: ForceMode = ForceMode.Force) {
-     if (this.bodyType === BodyType.Static) return;
- 
-     const com = Vec2.fromVec3(this.getCenterOfMass());
-     const r = Vec2.sub(point, com);
- 
-     // torque escalar 2D
-     const torque = r.x * force.y - r.y * force.x;
- 
-     // componente linear do impulso: a força só deve contribuir ao movimento do centro de massa
-     if (mode === ForceMode.Impulse) {
-       // alteração da velocidade linear
-       this.linearVelocity.addInPlace(Vec2.scale(force, 1 / this.mass));
-       // torque → rotação
-       this.angularVelocity += torque / this.getMomentOfInertia();
-     } else {
-       // força contínua
-       this.linearAcceleration.addInPlace(Vec2.scale(force, 1 / this.mass));
-       this.angularAcceleration += torque / this.getMomentOfInertia();
-     }
-   } */
-
-
   public addTorque(torque: number, mode: ForceMode = ForceMode.Force) {
     if (this.bodyType === BodyType.Static) return;
 
-    const accel = torque / this.mass;
+    const I = this.getMomentOfInertia();
 
     switch (mode) {
       case ForceMode.Force:
-        this.angularAcceleration += accel;
+        this.angularAcceleration += torque / I;
         break;
 
       case ForceMode.Impulse:
-        this.angularVelocity += accel;
+        this.angularVelocity += torque / I;
         break;
 
       default:
         break;
     }
-  }
-
-  public addTorqueAtPoint(force: Vec2, point: Vec2, mode: ForceMode = ForceMode.Force) {
-    if (this.bodyType === BodyType.Static) return;
-
-    const r = Vec2.sub(point, this.getCenterOfMass().xy);
-
-    const torque = Vec2.cross(r, force);
-
-    if (mode === ForceMode.Impulse) {
-      this.angularVelocity += torque / this.getMomentOfInertia();
-    } else {
-      this.angularAcceleration += torque / this.getMomentOfInertia();
-    }
-  }
-
-  public getVelocityAtPoint(point: Vec2): Vec2 {
-    const r = Vec2.sub(point, Vec2.fromVec3(this.getCenterOfMass()));
-
-    console.log(this.linearVelocity.toString())
-    const angularVel = new Vec2(-this.angularVelocity * r.y, this.angularVelocity * r.x);
-    return Vec2.add(this.linearVelocity, angularVel);
   }
 
   getMomentOfInertia(): number {
@@ -196,4 +154,5 @@ export class RigidBody2D extends Component {
       useGravity: this.useGravity
     });
   }
+
 }

@@ -1,4 +1,4 @@
-import { System } from "@engine/core/base/System";
+/* import { System } from "@engine/core/base/System";
 import { KeyCode } from "@engine/core/input/KeyCode";
 import { Vec3 } from "@engine/core/math/Vec3";
 import type { Camera } from "@engine/modules/shared/camera/Camera";
@@ -43,3 +43,4 @@ export class EditorFreeCamera2DSystem extends System {
 
   }
 }
+ */

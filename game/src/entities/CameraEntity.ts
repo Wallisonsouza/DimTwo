@@ -5,5 +5,5 @@ import { PerspectiveCamera } from "@engine/modules/3D/PerspesctiveCamera";
 export function configureCamera(scene: Scene, entity: GameEntity) {
   const camera = new PerspectiveCamera();
   scene.addComponent(entity, camera);
-  camera.transform.position.z = 5;
+
 }
