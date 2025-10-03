@@ -34,7 +34,7 @@ export function configurePlayer(scene: Scene, entity: GameEntity) {
     mesh: Mesh.get("fillQuad"),
     layer: 0,
     sprite: quadSprite,
-    material: Material.get("asteroid")
+    material: Material.get("planet")
   });
 
   /*  const rigidBody = new RigidBody2D({

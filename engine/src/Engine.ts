@@ -114,7 +114,12 @@ export class Engine extends SceneAbstraction {
     }
   }
 
+
+  debug = document.querySelector("#debug")!;
+
   private safeFixedUpdate(): void {
+
+    this.debug.textContent = Time.fps.toString();
     try {
       this.systems.callFixedUpdate();
     } catch (e: any) {

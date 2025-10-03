@@ -29,6 +29,9 @@ export class BoxCollider2D extends Collider2D {
     super(ComponentType.BoxCollider2D, options);
   }
 
+  axesSubCache1: Vec2 = Vec2.create();
+
+
   public getVerticesTransformedToWorld(): Vec2[] {
     const half = Vec2.scale(this.size, 0.5);
     const offset = this.center;
@@ -46,8 +49,11 @@ export class BoxCollider2D extends Collider2D {
     Mat4.multiplyVec2(worldMatrix, this.localVertices[2], this.worldVertices[2]);
     Mat4.multiplyVec2(worldMatrix, this.localVertices[3], this.worldVertices[3]);
 
-    this.axes[0].copy(Vec2.sub(this.worldVertices[1], this.worldVertices[0], this.axes[0])).normalizeInPlace();
-    this.axes[1].copy(Vec2.sub(this.worldVertices[3], this.worldVertices[0], this.axes[1])).normalizeInPlace();
+    Vec2.sub(this.worldVertices[1], this.worldVertices[0], this.axes[0]);
+    this.axes[0].normalizeInPlace();
+
+    Vec2.sub(this.worldVertices[3], this.worldVertices[0], this.axes[1]);
+    this.axes[1].normalizeInPlace();
 
     return this.worldVertices;
   }
@@ -76,4 +82,3 @@ export class BoxCollider2D extends Collider2D {
     return hasSATIntesection;
   }
 }
-

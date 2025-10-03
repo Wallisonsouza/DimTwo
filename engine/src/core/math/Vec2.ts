@@ -163,6 +163,11 @@ export class Vec2 extends Vector {
     return Math.hypot(d[Index.X], d[Index.Y]);
   }
 
+  public lengthSq(): number {
+    const d = this.data;
+    return d[Index.X] * d[Index.X] + d[Index.Y] * d[Index.Y];
+  }
+
   //---------------------------Static---------------------------------------------
 
   public static copy(self: Vec2, target: Vec2) {
@@ -191,6 +196,13 @@ export class Vec2 extends Vector {
     od[Index.X] = ad[Index.X] * bd[Index.X];
     od[Index.Y] = ad[Index.Y] * bd[Index.Y];
     return out;
+  }
+
+  public mulInPlace(other: Vec2): this {
+    const d = other.data;
+    this.data[Index.X] *= d[Index.X];
+    this.data[Index.Y] *= d[Index.Y];
+    return this;
   }
 
   public static sub(a: Vec2, b: Vec2, out: Vec2 = new Vec2()): Vec2 {

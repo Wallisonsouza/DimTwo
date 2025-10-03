@@ -1,12 +1,13 @@
+
+import { QuadTreeNode, type QuadTreeItem } from "@engine/core/algorithms/QuadTree";
 import { Mathf } from "@engine/core/math/Mathf";
-import { Quat } from "@engine/core/math/quat";
 import { Vec2 } from "@engine/core/math/Vec2";
 import { Vec3 } from "@engine/core/math/Vec3";
-import { EngineConfig } from "@engine/global/EngineConfig";
-import { SpatialHash } from "../../core/algorithms/SpatialHash";
+import { Time } from "@engine/core/time/Time";
 import { System } from "../../core/base/System";
 import { ComponentGroup } from "../enums/ComponentGroup";
 import { ComponentType } from "../enums/ComponentType";
+import type { Bounds2D } from "./Bounds2D";
 import type { Collider2D } from "./Collider2D";
 import { CollisionPair2D } from "./CollisionPair2D";
 import { CollisionResolver2D } from "./CollisionResolver2D";
@@ -16,67 +17,26 @@ import type { Contact2D } from "./SAT";
 
 export class CollisionSystem2D extends System {
 
-
-  private spatialHash = new SpatialHash<Collider2D>(64);
+  private quadTree: QuadTreeNode<Collider2D>;
   private checked: Set<number> = new Set();
 
   private previousCollisions: Map<number, CollisionPair2D> = new Map();
   private currentCollisions: Map<number, CollisionPair2D> = new Map();
 
+  private vACache: Vec2 = Vec2.create();
+  private vBCache: Vec2 = Vec2.create();
+
+  constructor() {
+    super();
+    // Limites iniciais do mundo 2D, ajustar conforme o seu jogo
+    this.quadTree = new QuadTreeNode(new Vec2(-1000, -1000), new Vec2(1000, 1000), 4);
+  }
+
   fixedUpdate() {
     const colliders = this.engine.components.getAllByGroup<Collider2D>(ComponentGroup.Collider);
-    this.prepareSpatialHash(colliders);
+    this.prepareQuadTree(colliders);
     this.collectCollisionPairs();
-
-    const rigidbodies = this.engine.components.getAllByGroup<RigidBody2D>(ComponentGroup.RigidBody2D);
-    const gravityVector = Vec2.mul(Vec2.Down, EngineConfig.PHYSICS.gravity);
-
-    // --- Integração de movimento ---
-    for (const rigid of rigidbodies) {
-      if (!rigid.enabled || rigid.isSleeping) continue;
-
-      if (rigid.useGravity) {
-        const gravityOffset = Vec2.scale(gravityVector, rigid.gravityScale);
-        rigid.linearAcceleration.addInPlace(gravityOffset);
-      }
-
-      // converte as forças em aceleração
-      const forcesAccel = PhysicsMath2D.forceToAcceleration(rigid.forces, rigid.mass);
-      rigid.linearAcceleration.addInPlace(forcesAccel);
-
-      // ---- Linear ----
-      const pos2D = rigid.transform.position.toVec2();
-      if (!rigid.freezePosition) {
-        PhysicsMath2D.integrateEulerSemiImplicit(
-          rigid.linearVelocity,
-          rigid.linearAcceleration,
-          pos2D,
-          this.engine.time.fixedDeltaTime
-        );
-        rigid.transform.position.set(pos2D.x, pos2D.y, 0);
-      } else {
-        rigid.linearVelocity.set(0, 0);
-      }
-
-      // ---- Angular ----
-      if (!rigid.freezeRotation) {
-        rigid.angularVelocity += rigid.angularAcceleration * this.engine.time.fixedDeltaTime;
-        const deltaRot = Quat.fromRad(0, 0, rigid.angularVelocity * this.engine.time.fixedDeltaTime);
-        Quat.multiply(rigid.transform.rotation, deltaRot, rigid.transform.rotation);
-      } else {
-        rigid.angularVelocity = 0;
-      }
-
-      // reset forças e acelerações
-      rigid.forces.set(0, 0);
-      rigid.linearAcceleration.set(0, 0);
-      rigid.angularAcceleration = 0;
-    }
-
-    // --- Solver global (estilo Unity/Box2D) ---
     this.solveAllCollisions();
-
-
 
     // --- Eventos Stay ---
     for (const pair of this.currentCollisions.values()) {
@@ -109,56 +69,70 @@ export class CollisionSystem2D extends System {
     this.currentCollisions.clear();
   }
 
-  private prepareSpatialHash(colliders: Collider2D[]) {
-    this.spatialHash.clear();
+  private prepareQuadTree(colliders: Collider2D[]) {
+    this.quadTree.clear();
     this.checked.clear();
+
     for (const collider of colliders) {
       if (!collider.enabled) continue;
-      const bounds = collider.boundingBox;
-      this.spatialHash.insert(bounds.min, bounds.max, collider);
+      const item: QuadTreeItem<Collider2D> = {
+        min: collider.boundingBox.min,
+        max: collider.boundingBox.max,
+        data: collider,
+      };
+      this.quadTree.insert(item);
     }
   }
 
   private collectCollisionPairs() {
-    for (const bucket of this.spatialHash.getBuckets()) {
-      for (let i = 0; i < bucket.length; i++) {
-        const a = bucket[i];
-        const aRigid = this.engine.components.getComponent<RigidBody2D>(a.gameEntity, ComponentType.RigidBody2D);
-        if (!aRigid) continue;
+    const colliders = this.engine.components.getAllByGroup<Collider2D>(ComponentGroup.Collider);
 
-        for (let j = i + 1; j < bucket.length; j++) {
-          const b = bucket[j];
-          const bRigid = this.engine.components.getComponent<RigidBody2D>(b.gameEntity, ComponentType.RigidBody2D);
-          if (!bRigid) continue;
+    for (const a of colliders) {
+      if (!a.enabled) continue;
 
-          const pair = new CollisionPair2D(a, b, aRigid, bRigid);
-          if (this.checked.has(pair.key)) continue;
-          this.checked.add(pair.key);
+      const aRigid = this.engine.components.getComponent<RigidBody2D>(a.gameEntity, ComponentType.RigidBody2D);
+      if (!aRigid) continue;
 
-          const contacts: Contact2D[] = [];
-          const t = this.engine.time.fixedDeltaTime;
-          const vA = aRigid.linearVelocity.scale(t);
-          const vB = bRigid.linearVelocity.scale(t);
-          const collided = CollisionResolver2D.resolve(a, b, vA, vB, contacts);
+      // Query candidatos à colisão via QuadTree
+      const candidates = this.quadTree.query(a.boundingBox.min, a.boundingBox.max);
 
-          if (!collided) continue;
+      for (const candidate of candidates) {
+        const b = candidate.data;
+        if (a === b) continue;
 
-          pair.contacts = contacts;
-          pair.isTrigger = a.isTrigger || b.isTrigger;
-          a.contacts = contacts;
-          b.contacts = contacts;
+        if (!aabbOverlap(a.boundingBox, b.boundingBox)) continue;
 
+        const bRigid = this.engine.components.getComponent<RigidBody2D>(b.gameEntity, ComponentType.RigidBody2D);
+        if (!bRigid) continue;
 
-          if (!this.previousCollisions.has(pair.key)) {
-            if (pair.isTrigger) {
-              this.engine.systems.callTriggerEnterEvents({ a, b });
-            } else {
-              this.engine.systems.callCollisionEnterEvents({ a, b, contacts });
-            }
+        const pair = new CollisionPair2D(a, b, aRigid, bRigid);
+        if (this.checked.has(pair.key)) continue;
+        this.checked.add(pair.key);
+
+        const contacts: Contact2D[] = [];
+        const t = Time.fixedDeltaTime;
+
+        // Use caches separados para não sobrescrever
+        this.vACache.copy(aRigid.linearVelocity).scaleInPlace(t);
+        this.vBCache.copy(bRigid.linearVelocity).scaleInPlace(t);
+
+        const collided = CollisionResolver2D.resolve(a, b, this.vACache, this.vBCache, contacts);
+        if (!collided) continue;
+
+        pair.contacts = contacts;
+        pair.isTrigger = a.isTrigger || b.isTrigger;
+        a.contacts = contacts;
+        b.contacts = contacts;
+
+        if (!this.previousCollisions.has(pair.key)) {
+          if (pair.isTrigger) {
+            this.engine.systems.callTriggerEnterEvents({ a, b });
+          } else {
+            this.engine.systems.callCollisionEnterEvents({ a, b, contacts });
           }
-
-          this.currentCollisions.set(pair.key, pair);
         }
+
+        this.currentCollisions.set(pair.key, pair);
       }
     }
   }
@@ -168,21 +142,17 @@ export class CollisionSystem2D extends System {
 
     // --- Velocity solver ---
     for (let i = 0; i < velocityIterations; i++) {
-
       for (let i = 0; i < pairs.length; i++) {
         const pair = pairs[i];
-
         if (!pair.contacts) continue;
         this.applyVelocitySolver(pair);
       }
-
     }
 
     // --- Position solver ---
     for (let i = 0; i < positionIterations; i++) {
       for (let i = 0; i < pairs.length; i++) {
         const pair = pairs[i];
-
         if (!pair.contacts) continue;
         this.applyPositionSolver(pair);
       }
@@ -261,3 +231,14 @@ export class CollisionSystem2D extends System {
     }
   }
 }
+
+
+function aabbOverlap(a: Bounds2D, b: Bounds2D) {
+  return (
+    a.min.x <= b.max.x &&
+    a.max.x >= b.min.x &&
+    a.min.y <= b.max.y &&
+    a.max.y >= b.min.y
+  );
+}
+

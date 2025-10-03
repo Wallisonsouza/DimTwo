@@ -1,3 +1,4 @@
+import { Id } from "@engine/core/base/Id";
 import { Color } from "@engine/core/math/Color";
 import type { Shader } from "./Shader";
 
@@ -13,6 +14,7 @@ export class Material {
   shader: Shader | null;
   transparent: boolean;
   color: Color;
+  id: Id = new Id();
 
   private static materials: Map<string, Material> = new Map();
 

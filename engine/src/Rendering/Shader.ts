@@ -87,6 +87,7 @@ export class Shader {
   // ---- setters ----
   public setMat4(name: string, matrix: Float32Array) {
     const gl = this.getGL();
+    gl.useProgram(this.program);
     const location = this.getUniform(name);
     if (!location) return this.warnIfUniformNotFound("mat4", name);
     gl.uniformMatrix4fv(location, false, matrix);
@@ -94,6 +95,7 @@ export class Shader {
 
   public set4F(name: string, x: number, y: number, z: number, w: number) {
     const gl = this.getGL();
+    gl.useProgram(this.program);
     const location = this.getUniform(name);
     if (!location) return this.warnIfUniformNotFound("4f", name);
     gl.uniform4f(location, x, y, z, w);
@@ -101,6 +103,7 @@ export class Shader {
 
   public set3F(name: string, x: number, y: number, z: number) {
     const gl = this.getGL();
+    gl.useProgram(this.program);
     const location = this.getUniform(name);
     if (!location) return this.warnIfUniformNotFound("3f", name);
     gl.uniform3f(location, x, y, z);
@@ -108,6 +111,7 @@ export class Shader {
 
   public setVec3(name: string, v: Vec3) {
     const gl = this.getGL();
+    gl.useProgram(this.program);
     const location = this.getUniform(name);
     if (!location) return this.warnIfUniformNotFound("vec3", name);
     gl.uniform3fv(location, v.data);
@@ -115,6 +119,7 @@ export class Shader {
 
   public setVec2(name: string, v: Vec2) {
     const gl = this.getGL();
+    gl.useProgram(this.program);
     const location = this.getUniform(name);
     if (!location) return this.warnIfUniformNotFound("vec2", name);
     gl.uniform2fv(location, v.data);
@@ -122,6 +127,7 @@ export class Shader {
 
   public set2F(name: string, x: number, y: number) {
     const gl = this.getGL();
+    gl.useProgram(this.program);
     const location = this.getUniform(name);
     if (!location) return this.warnIfUniformNotFound("2f", name);
     gl.uniform2f(location, x, y);
@@ -129,6 +135,7 @@ export class Shader {
 
   public setFloat(name: string, x: number) {
     const gl = this.getGL();
+    gl.useProgram(this.program);
     const location = this.getUniform(name);
     if (!location) return this.warnIfUniformNotFound("float", name);
     gl.uniform1f(location, x);
@@ -136,6 +143,7 @@ export class Shader {
 
   public set1I(name: string, x: number) {
     const gl = this.getGL();
+    gl.useProgram(this.program);
     const location = this.getUniform(name);
     if (!location) return this.warnIfUniformNotFound("int", name);
     gl.uniform1i(location, x);
@@ -143,6 +151,7 @@ export class Shader {
 
   public setTexture(name: string, texture: TextureBuffer, unit: number = 0) {
     const gl = this.getGL();
+    gl.useProgram(this.program);
     gl.activeTexture(gl.TEXTURE0 + unit);
     gl.bindTexture(gl.TEXTURE_2D, texture.gpuData);
 

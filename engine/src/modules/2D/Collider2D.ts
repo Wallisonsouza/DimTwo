@@ -54,8 +54,6 @@ export abstract class Collider2D extends Component {
     this._boundingBox = new Bounds2D(this.center, this.size);
   }
 
-  /* public abstract intersects(other: Collider2D): Contact2D[] | null; */
-
   public copyBase(target: Collider2D) {
     target.isColliding = this.isColliding;
     target.center = this.center.clone();

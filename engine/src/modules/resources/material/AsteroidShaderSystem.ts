@@ -12,6 +12,5 @@ export class AsteroidShaderSystem extends ShaderSystem {
     const modelMatrix = transform.getWorldMatrix();
     shader.setMat4(Uniform.ModelMatrix, modelMatrix.data);
     shader.setFloat("ENGINE_TIME", Time.realtimeSinceStartup);
-
   }
 }

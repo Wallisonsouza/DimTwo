@@ -105,4 +105,11 @@ export class MeshBuffer {
 
     MeshBuffer.buffers.delete(this.name);
   }
+
+  updateVertices(mesh: Mesh) {
+    const gl = ContextLink.getContext();
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo);
+    gl.bufferData(gl.ARRAY_BUFFER, mesh.verticesData, gl.STATIC_DRAW);
+    gl.bindBuffer(gl.ARRAY_BUFFER, null);
+  }
 }

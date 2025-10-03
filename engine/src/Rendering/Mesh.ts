@@ -124,4 +124,16 @@ export class Mesh {
       this.uvsData[i * 2 + 1] = uv[1];
     }
   }
+
+  public clone(): Mesh {
+    const vertices = this.getVertices().map(v => new Vec3(v.x, v.y, v.z));
+    const normals = this.getNormals().map(n => new Vec3(n.x, n.y, n.z));
+    const uvs = this.getUVs().map(uv => new Vec2(uv.x, uv.y));
+    const indices = Array.from(this.indices);
+
+    // Criamos uma nova mesh com um nome temporário (ou pode gerar único)
+    const cloneMesh = new Mesh(this.name + "_clone", vertices, indices, normals, uvs);
+
+    return cloneMesh;
+  }
 }

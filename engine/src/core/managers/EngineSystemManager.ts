@@ -6,6 +6,7 @@ export enum EngineSystem {
   AnimatorSystem,
   PhysicsSystem,
   ColliderSystem,
+  teste,
   CharacterControlerSystem,
   CharacterControlerAnimationSystem,
   EditorGizmosSystem,

@@ -6,6 +6,7 @@ import type { Scene } from "../../../core/scene/scene";
 import type { Engine } from "../../../Engine";
 import { ComponentGroup } from "../../enums/ComponentGroup";
 
+
 export class RenderSystem extends System {
 
   private transparentsCache: Render[] = [];
@@ -48,8 +49,6 @@ export class RenderSystem extends System {
         continue;
       }
 
-      if (!shader.system) continue;
-
       context.useProgram(shader.program);
 
       const shaderSystem = shader.system;
@@ -90,17 +89,24 @@ export class RenderSystem extends System {
     this.renderObjects(context, engine, scene, renders, true);
 
     if (this.transparentsCache.length > 0) {
-      this.transparentsCache.sort((a, b) => a.layer - b.layer);
-
-      context.enable(context.BLEND);
-      context.blendFunc(context.SRC_ALPHA, context.ONE_MINUS_SRC_ALPHA);
-      context.depthMask(false);
-      context.disable(context.DEPTH_TEST);
-
-      this.renderObjects(context, engine, scene, this.transparentsCache, false);
-
-      context.depthMask(true);
-      this.transparentsCache.length = 0;
+      /*   const camera = engine.getActivedCamera();
+  
+        this.transparentsCache.sort((a, b) => {
+          const distA = Vec3.distance(camera.transform.position, a.transform.position);
+          const distB = Vec3.distance(camera.transform.position, b.transform.position);
+          return distA - distB;
+        });
+  
+        context.enable(context.DEPTH_TEST);
+        context.depthMask(false);
+        context.enable(context.BLEND);
+        context.blendFunc(context.SRC_ALPHA, context.ONE_MINUS_SRC_ALPHA);
+  
+        this.renderObjects(context, engine, scene, this.transparentsCache, false);
+  
+        context.depthMask(true);
+        context.disable(context.BLEND);
+        this.transparentsCache.length = 0; */
     }
 
 
