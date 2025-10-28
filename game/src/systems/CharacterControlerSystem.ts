@@ -9,27 +9,27 @@ import { ForceMode, RigidBody2D } from "@engine/modules/2D/RigidBody2D";
 import type { SpriteRender2D } from "@engine/modules/2D/SpriteRender2D";
 import type { Animator } from "@engine/modules/shared/animator/Animator";
 import { CharacterControler2D } from "./character.controller.types";
+import { Camera } from "@engine/modules/shared/camera/Camera";
+import { Component } from "@engine/core/base/Component";
 
 export class CharacterControlerSystem extends System {
   private running: boolean = false;
 
+
+
+  //camera manager
+  //camera
+
   update() {
     const input = this.engine.input;
 
-    const camera = this.engine.getActivedCamera();
+    const camera = Camera.getActivedCamera();
     if (!camera) return;
 
     const mousePos = input.getMousePosition();
     if (!mousePos) return;
 
-
-
-    const components = this.engine.components;
-    const characterControlers = components.getAllOfType<CharacterControler2D>(
-      ComponentType.CharacterController
-    );
-
-
+    const characterControlers = Component.getAllComponentsByType<CharacterControler2D>(ComponentType.CharacterController);
 
 
     for (const characterControler of characterControlers) {
@@ -47,7 +47,7 @@ export class CharacterControlerSystem extends System {
 
           setTimeout(() => {
             const entity = hit.collider.gameEntity;
-            const rb = this.engine.components.getComponent<RigidBody2D>(entity, ComponentType.RigidBody2D);
+            const rb = Component.getComponentByType<RigidBody2D>(entity, ComponentType.RigidBody2D);
 
             if (!rb) return;
 
@@ -61,19 +61,16 @@ export class CharacterControlerSystem extends System {
       characterControler.direction.x = 0;
       characterControler.direction.y = 0;
 
-      const rigid = this.engine.components.getComponent<RigidBody2D>(
-        characterControler.gameEntity,
-        ComponentType.RigidBody2D
-      );
+      const rigid = Component.getComponentByType<RigidBody2D>(characterControler.gameEntity, ComponentType.RigidBody2D);
 
-      const animator = this.engine.components.getComponent<Animator>(
+      const animator = Component.getComponentByType<Animator>(
         characterControler.gameEntity,
         ComponentType.Animator
 
       );
 
 
-      const spriteRender = this.engine.components.getComponent<SpriteRender2D>(
+      const spriteRender = Component.getComponentByType<SpriteRender2D>(
         characterControler.gameEntity,
         ComponentType.SpriteRender
       );
@@ -132,12 +129,12 @@ export class CharacterControlerSystem extends System {
   }
 
   onCollisionEnter2D(collisionEvent: CollisionEvent2D): void {
-    const characterControlerA = this.engine.components.getComponent<CharacterControler2D>(
+    const characterControlerA = Component.getComponentByType<CharacterControler2D>(
       collisionEvent.a.gameEntity,
       ComponentType.CharacterController
     );
 
-    const characterControlerB = this.engine.components.getComponent<CharacterControler2D>(
+    const characterControlerB = Component.getComponentByType<CharacterControler2D>(
       collisionEvent.b.gameEntity,
       ComponentType.CharacterController
     );

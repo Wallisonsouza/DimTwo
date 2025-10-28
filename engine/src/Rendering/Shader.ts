@@ -3,6 +3,7 @@ import type { Vec3 } from "@engine/core/math/Vec3";
 import type { TextureBuffer } from "@engine/core/webgl/TextureBuffer";
 import { WebGL } from "../core/webgl/WebGL";
 import type { ShaderSystem } from "./ShaderSystem";
+import { UniformNotFoundException } from "@engine/exception/shader_exceptions";
 
 
 export class ContextLink {
@@ -26,6 +27,24 @@ export type ShaderOptions = {
   vert: string;
   frag: string;
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 export class Shader {
   name: string;
@@ -72,10 +91,6 @@ export class Shader {
     Shader.add(this);
   }
 
-  private warnIfUniformNotFound(type: string, name: string) {
-    console.warn(`Uniform:${type} '${name}' not found in shader program '${this.name}'.`);
-  }
-
   private getUniform(name: string): WebGLUniformLocation | null {
     return this.uniforms.get(name) ?? null;
   }
@@ -84,79 +99,94 @@ export class Shader {
     return ContextLink.getContext();
   }
 
+  private throwUniformNotFound(type: string, name: string): never {
+    throw new UniformNotFoundException(
+      `Uniform (${type}) "${name}" não encontrado no shader "${this.name}"`
+    );
+  }
+
   // ---- setters ----
   public setMat4(name: string, matrix: Float32Array) {
+    const location = this.getUniform(name);
+    if (!location) this.throwUniformNotFound("mat4", name);
+
     const gl = this.getGL();
     gl.useProgram(this.program);
-    const location = this.getUniform(name);
-    if (!location) return this.warnIfUniformNotFound("mat4", name);
     gl.uniformMatrix4fv(location, false, matrix);
   }
 
   public set4F(name: string, x: number, y: number, z: number, w: number) {
+    const location = this.getUniform(name);
+    if (!location) this.throwUniformNotFound("vec4", name);
+
     const gl = this.getGL();
     gl.useProgram(this.program);
-    const location = this.getUniform(name);
-    if (!location) return this.warnIfUniformNotFound("4f", name);
     gl.uniform4f(location, x, y, z, w);
   }
 
   public set3F(name: string, x: number, y: number, z: number) {
+    const location = this.getUniform(name);
+    if (!location) this.throwUniformNotFound("vec3", name);
+
     const gl = this.getGL();
     gl.useProgram(this.program);
-    const location = this.getUniform(name);
-    if (!location) return this.warnIfUniformNotFound("3f", name);
     gl.uniform3f(location, x, y, z);
   }
 
   public setVec3(name: string, v: Vec3) {
+    const location = this.getUniform(name);
+    if (!location) this.throwUniformNotFound("vec3", name);
+
     const gl = this.getGL();
     gl.useProgram(this.program);
-    const location = this.getUniform(name);
-    if (!location) return this.warnIfUniformNotFound("vec3", name);
     gl.uniform3fv(location, v.data);
   }
 
   public setVec2(name: string, v: Vec2) {
+    const location = this.getUniform(name);
+    if (!location) this.throwUniformNotFound("vec2", name);
+
     const gl = this.getGL();
     gl.useProgram(this.program);
-    const location = this.getUniform(name);
-    if (!location) return this.warnIfUniformNotFound("vec2", name);
     gl.uniform2fv(location, v.data);
   }
 
   public set2F(name: string, x: number, y: number) {
+    const location = this.getUniform(name);
+    if (!location) this.throwUniformNotFound("vec2", name);
+
     const gl = this.getGL();
     gl.useProgram(this.program);
-    const location = this.getUniform(name);
-    if (!location) return this.warnIfUniformNotFound("2f", name);
     gl.uniform2f(location, x, y);
   }
 
   public setFloat(name: string, x: number) {
+    const location = this.getUniform(name);
+    if (!location) this.throwUniformNotFound("float", name);
+
     const gl = this.getGL();
     gl.useProgram(this.program);
-    const location = this.getUniform(name);
-    if (!location) return this.warnIfUniformNotFound("float", name);
     gl.uniform1f(location, x);
   }
 
   public set1I(name: string, x: number) {
+    const location = this.getUniform(name);
+    if (!location) this.throwUniformNotFound("int", name);
+
     const gl = this.getGL();
     gl.useProgram(this.program);
-    const location = this.getUniform(name);
-    if (!location) return this.warnIfUniformNotFound("int", name);
     gl.uniform1i(location, x);
   }
 
   public setTexture(name: string, texture: TextureBuffer, unit: number = 0) {
+    const location = this.getUniform(name);
+    if (!location) this.throwUniformNotFound("sampler2D", name);
+
     const gl = this.getGL();
     gl.useProgram(this.program);
     gl.activeTexture(gl.TEXTURE0 + unit);
     gl.bindTexture(gl.TEXTURE_2D, texture.gpuData);
-
-    const location = this.getUniform(name);
-    if (!location) return this.warnIfUniformNotFound("sampler2D", name);
     gl.uniform1i(location, unit);
   }
+
 }

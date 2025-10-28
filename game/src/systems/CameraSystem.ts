@@ -1,4 +1,4 @@
-import type { GameEntity } from "@engine/core/base/GameEntity";
+import { GameEntity } from "@engine/core/base/GameEntity";
 import { System } from "@engine/core/base/System";
 import { Vec3 } from "@engine/core/math/Vec3";
 import { Time } from "@engine/core/time/Time";
@@ -10,12 +10,13 @@ export class CameraSystem extends System {
   cameraZ: number = 20;
 
   start(): void {
-    this.player = this.engine.entities.getByTag("Player");
-    this.camera = this.engine.entities.getByTag("MainCamera");
+    
+    this.player = GameEntity.getGameEntityByTag("Player");
+    this.camera = GameEntity.getGameEntityByTag("MainCamera");
 
   }
-  update() {
 
+  update() {
     if (!this.camera || !this.player) return;
 
     const target = this.player.transform.position.clone();

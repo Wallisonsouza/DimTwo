@@ -27,7 +27,6 @@ export class Sprite2D {
   public generateMesh(engine: Engine) {
     if (this.textureID) {
       const texture = engine.textureBuffers.get(this.textureID);
-      console.log(texture)
     }
   }
 }

@@ -14,6 +14,7 @@ import { CollisionResolver2D } from "./CollisionResolver2D";
 import { PhysicsMath2D } from "./PhysicsMath2D";
 import { BodyType, ForceMode, RigidBody2D } from "./RigidBody2D";
 import type { Contact2D } from "./SAT";
+import { Component } from "@engine/core/base/Component";
 
 export class CollisionSystem2D extends System {
 
@@ -33,7 +34,8 @@ export class CollisionSystem2D extends System {
   }
 
   fixedUpdate() {
-    const colliders = this.engine.components.getAllByGroup<Collider2D>(ComponentGroup.Collider);
+    const colliders =
+      Component.getAllComponentsByGroup<Collider2D>(ComponentGroup.Collider);
     this.prepareQuadTree(colliders);
     this.collectCollisionPairs();
     this.solveAllCollisions();
@@ -85,12 +87,13 @@ export class CollisionSystem2D extends System {
   }
 
   private collectCollisionPairs() {
-    const colliders = this.engine.components.getAllByGroup<Collider2D>(ComponentGroup.Collider);
+    const colliders =
+      Component.getAllComponentsByGroup<Collider2D>(ComponentGroup.Collider);
 
     for (const a of colliders) {
       if (!a.enabled) continue;
 
-      const aRigid = this.engine.components.getComponent<RigidBody2D>(a.gameEntity, ComponentType.RigidBody2D);
+      const aRigid = Component.getComponentByType<RigidBody2D>(a.gameEntity, ComponentType.RigidBody2D);
       if (!aRigid) continue;
 
       // Query candidatos à colisão via QuadTree
@@ -102,7 +105,7 @@ export class CollisionSystem2D extends System {
 
         if (!aabbOverlap(a.boundingBox, b.boundingBox)) continue;
 
-        const bRigid = this.engine.components.getComponent<RigidBody2D>(b.gameEntity, ComponentType.RigidBody2D);
+        const bRigid = Component.getComponentByType<RigidBody2D>(b.gameEntity, ComponentType.RigidBody2D);
         if (!bRigid) continue;
 
         const pair = new CollisionPair2D(a, b, aRigid, bRigid);

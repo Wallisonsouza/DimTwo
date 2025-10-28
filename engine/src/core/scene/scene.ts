@@ -1,16 +1,43 @@
-import type { Camera } from "@engine/modules/shared/camera/Camera";
-/* import type { Prefab } from "@game/systems/Prefab"; */
-import { CameraNotFoundException } from "@engine/exception /CameraNotFoundException";
-import { ComponentType } from "../../modules/enums/ComponentType";
 import { Component } from "../base/Component";
 import { GameEntity } from "../base/GameEntity";
 import { ComponentManager } from "../managers/ComponentManager";
 import { EntityManager } from "../managers/EntityManager";
+import { SceneNotFoundException } from "@engine/exception/SceneNotFoundException";
 
 export class Scene {
+
   public name: string;
   public components: ComponentManager = new ComponentManager();
   public entities: EntityManager = new EntityManager();
+
+
+  private static scenes: Map<string, Scene> = new Map();
+  private static _internalScene: Scene | null = null;
+
+  public static addScene(scene: Scene): void {
+    this.scenes.set(scene.name, scene);
+  }
+
+  public static getScene(name: string) {
+    return this.scenes.get(name) ?? null;
+  }
+
+  public static getLoadedScene(): Scene {
+    if (!this._internalScene) {
+      throw new SceneNotFoundException("Nenhuma cena está ativa na engine");
+    }
+    return this._internalScene;
+  }
+
+
+  static loadScene(name: string) {
+    const scene = Scene.getScene(name);
+    if (!scene) {
+      throw new SceneNotFoundException(`[SceneManager.loadScene] Falha ao carregar a cena "${name}". Cena não encontrada.`);
+    }
+
+    this._internalScene = scene;
+  }
 
   constructor(name: string) {
     this.name = name;
@@ -23,66 +50,11 @@ export class Scene {
   public addComponent(entity: GameEntity, component: Component) {
     this.components.addComponent(entity, component);
   }
-  private cameraCache: Camera | null = null;
 
-  public get activeCamera(): Camera {
 
-    if (this.cameraCache !== null && this.cameraCache.enabled) {
-      return this.cameraCache;
-    }
-
-    const cameras = this.components.getAllOfType<Camera>(ComponentType.Camera);
-
-    for (const camera of cameras) {
-      if (camera.enabled) {
-        this.cameraCache = camera;
-        return this.cameraCache;
-      }
-    }
-
-    throw new CameraNotFoundException(
-      `[Scene.activeCamera] Nenhuma câmera ativa encontrada na cena.`
-    );
-  }
 
   public clear(): void {
     this.components.clear();
     this.entities.clear();
   }
-
-
 }
-
-
-/*  public serialize() {
-  return JSON.stringify({
-    name: this.name,
-    entities: serializeEntitiesMap(this.entities.getData()),
-    components: serializeComponentMap(this.components.getData())
-  }, undefined, 4);
-}
-function serializeEntitiesMap(entities: Map<number, GameEntity>): any[] {
-  const result: any[] = [];
-  for (const entity of entities.values()) {
-    result.push(entity);
-  }
-  return result;
-}
-
-function serializeComponentMap(map: Map<string, Map<number, any>>): any {
-  const result: any = {};
-
-  for (const [componentType, componentMap] of map) {
-    const componentsArray: any[] = [];
-    for (const component of componentMap.values()) {
-      if (component instanceof Map) {
-        componentsArray.push(serializeComponentMap(component));
-      } else {
-        componentsArray.push(component);
-      }
-    }
-    result[componentType] = componentsArray;
-  }
-
-  return result;
-} */

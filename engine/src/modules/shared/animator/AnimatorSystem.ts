@@ -4,11 +4,12 @@ import type { SpriteRender2D } from "../../2D/SpriteRender2D";
 import { ComponentType } from "../../enums/ComponentType";
 import { Animator } from "./Animator";
 import type { AnimatorState } from "./AnimatorState";
+import { Scene } from "@engine/core/scene/scene";
 
 export class AnimatorSystem extends System {
 
   lateUpdate() {
-    const scene = this.engine.activeScene;
+    const scene = Scene.getLoadedScene();
     const components = scene.components;
 
     const animators = components.getAllOfType<Animator>(ComponentType.Animator);

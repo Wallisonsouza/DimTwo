@@ -3,7 +3,7 @@ import { Color } from "@engine/core/math/Color";
 import type { Shader } from "./Shader";
 
 export interface MaterialOptions {
-  name: string;
+  name?: string;
   shader?: Shader;
   transparent?: boolean;
   color?: Color;
@@ -34,7 +34,7 @@ export class Material {
   }
 
   constructor(options: MaterialOptions) {
-    this.name = options.name;
+    this.name = options.name ?? "New Material";
     this.shader = options.shader ?? null;
     this.transparent = options.transparent ?? false;
     this.color = options.color || Color.White;

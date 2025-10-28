@@ -6,14 +6,14 @@ import { System } from "../../core/base/System";
 import { ComponentGroup } from "../enums/ComponentGroup";
 import { PhysicsMath2D } from "./PhysicsMath2D";
 import { RigidBody2D } from "./RigidBody2D";
+import { Component } from "@engine/core/base/Component";
 
 export class PhysicsSystem extends System {
 
   gravityVectorCache: Vec2 = Vec2.create();
 
   fixedUpdate() {
-    const rigidbodies = this.engine.components.getAllByGroup<RigidBody2D>(ComponentGroup.RigidBody2D);
-
+    const rigidbodies = Component.getAllComponentsByGroup<RigidBody2D>(ComponentGroup.RigidBody2D);
 
     this.gravityVectorCache.copy(Vec2.Down).mulInPlace(EngineConfig.PHYSICS.gravity);
 

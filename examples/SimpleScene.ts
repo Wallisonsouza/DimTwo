@@ -75,21 +75,6 @@ export function configureAsteroid(scene: Scene, entity: GameEntity) {
 
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 export class SimpleScene extends Scene {
   constructor() {
     super("SimpleScene");
@@ -107,24 +92,15 @@ export class SimpleScene extends Scene {
     this.addEntity(planet);
     configurePlayer(this, planet);
 
+    const asteroids = 999;
 
+    for (let i = 0; i < asteroids; i++) {
+      const planet = new GameEntity({ name: `Player_${i}`, tag: "Player" });
+      this.addEntity(planet);
+      configureAsteroid(this, planet);
+      planet.transform.scale = new Vec3(0.1, 0.1, 0.1)
+      planet.transform.position = Vec3.random(-10, 10)
 
-
-
-
-
-
-
-
-
-    const maxObjects = 1000;
-
-    for (let i = 0; i < maxObjects; i++) {
-      const object = new GameEntity({ name: `Asteroid_${i}`, tag: "Asteroid" });
-      this.addEntity(object);
-
-
-      configureAsteroid(this, object)
     }
 
   }

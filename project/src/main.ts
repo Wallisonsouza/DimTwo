@@ -1,9 +1,7 @@
-import { SceneManager } from "@engine/core/managers/SceneManager";
+import { Scene } from "@engine/core/scene/scene";
 import { Time } from "@engine/core/time/Time";
 import { GameEngine } from "@game/GameEngine";
 import { SimpleScene } from "examples/SimpleScene";
-
-
 
 
 const game = new GameEngine();
@@ -11,10 +9,8 @@ await game.loadGameResources();
 
 
 const scene = new SimpleScene();
-SceneManager.addScene(scene);
-
-
-game.loadScene("SimpleScene")
+Scene.addScene(scene);
+Scene.loadScene("SimpleScene");
 
 const app = document.querySelector("#app") as HTMLDivElement;
 app.appendChild(game.engineWindow.container);

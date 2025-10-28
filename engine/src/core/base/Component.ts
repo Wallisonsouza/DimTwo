@@ -1,9 +1,10 @@
-import { NullReferenceException } from "@engine/exception /NullReferenceException";
+import { NullReferenceException } from "@engine/exception/NullReferenceException";
 import type { Transform } from "@engine/modules/3D/Transform";
 import type { ComponentGroup } from "../../modules/enums/ComponentGroup";
 import type { ComponentType } from "../../modules/enums/ComponentType";
 import type { GameEntity } from "./GameEntity";
 import { Id } from "./Id";
+import { Scene } from "../scene/scene";
 
 export interface ComponentOptions {
   entity?: GameEntity;
@@ -44,6 +45,23 @@ export abstract class Component {
 
   enable(): void { this.enabled = true; }
   disable(): void { this.enabled = false; }
+
+  public static getAllComponents() {
+    return Scene.getLoadedScene().components.getAll();
+  }
+
+  public static getAllComponentsByGroup<T extends Component>(group: ComponentGroup) {
+    return Scene.getLoadedScene().components.getAllByGroup<T>(group);
+  }
+
+  public static getAllComponentsByType<T extends Component>(type: ComponentType) {
+    return Scene.getLoadedScene().components.getAllOfType<T>(type);
+  }
+
+  public static getComponentByType<T extends Component>(gameEntity: GameEntity, type: ComponentType) {
+    return Scene.getLoadedScene().components.getComponent<T>(gameEntity, type);
+  }
+
 
   abstract clone(): Component;
 }

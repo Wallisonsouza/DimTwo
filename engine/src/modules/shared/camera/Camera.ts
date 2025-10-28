@@ -3,14 +3,18 @@ import { Color } from "@engine/core/math/Color";
 import type { Mat4 } from "@engine/core/math/Mat4";
 import type { Vec3 } from "@engine/core/math/Vec3";
 import { ComponentGroup } from "@engine/modules/enums/ComponentGroup";
-import type { ComponentType } from "@engine/modules/enums/ComponentType";
+import { ComponentType } from "@engine/modules/enums/ComponentType";
 import type { Ray } from "../physics/Ray";
+import { CameraNotFoundException } from "@engine/exception/CameraNotFoundException";
+import { Scene } from "@engine/core/scene/scene";
 
 export interface CameraOptions extends ComponentOptions {
   clearColor?: Color;
 }
 
 export abstract class Camera extends Component {
+
+  private static _cameraCache: Camera | null = null;
   public clearColor: Color;
 
   constructor(type: ComponentType, options: CameraOptions) {
@@ -24,5 +28,25 @@ export abstract class Camera extends Component {
   public abstract screenPointToRay(point: Vec3): Ray;
   public abstract worldPointToScreen(worldPoint: Vec3): Vec3;
   public abstract screenPointToWorld(worldPoint: Vec3): Vec3;
+
+
+  public static getActivedCamera(): Camera {
+    if (this._cameraCache !== null && this._cameraCache.enabled) {
+      return this._cameraCache;
+    }
+
+    const scene = Scene.getLoadedScene();
+
+    const cameras = scene.components.getAllOfType<Camera>(ComponentType.Camera);
+
+    for (const camera of cameras) {
+      if (camera.enabled) {
+        this._cameraCache = camera;
+        return this._cameraCache;
+      }
+    }
+
+    throw new CameraNotFoundException(`[Scene.activeCamera] Nenhuma câmera ativa encontrada na cena.`);
+  }
 
 }

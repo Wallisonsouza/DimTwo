@@ -2,9 +2,11 @@ import { MeshBuffer } from "@engine/core/webgl/MeshBuffer";
 import { Shader } from "@engine/Rendering/Shader";
 import type { Render } from "../../../core/base/Render";
 import { System } from "../../../core/base/System";
-import type { Scene } from "../../../core/scene/scene";
+import { Scene } from "../../../core/scene/scene";
 import type { Engine } from "../../../Engine";
 import { ComponentGroup } from "../../enums/ComponentGroup";
+import { Camera } from "../camera/Camera";
+import { Component } from "@engine/core/base/Component";
 
 
 export class RenderSystem extends System {
@@ -29,7 +31,7 @@ export class RenderSystem extends System {
       const system = shader.system;
       if (!system) continue;
 
-      const camera = engine.getActivedCamera();
+      const camera = Camera.getActivedCamera();
       system.global(engine, camera, scene, shader);
 
     }
@@ -55,7 +57,7 @@ export class RenderSystem extends System {
       if (!shaderSystem) continue;
 
 
-      shaderSystem.local?.(engine, render.transform, scene, shader, material);
+      shaderSystem.local?.(render.gameEntity, material);
 
 
       const mesh = render.mesh;
@@ -66,8 +68,6 @@ export class RenderSystem extends System {
 
       context.bindVertexArray(buffer.vao);
       context.drawElements(context.TRIANGLES, buffer.indexCount, context.UNSIGNED_SHORT, 0);
-      context.bindVertexArray(null);
-
 
     }
 
@@ -76,10 +76,10 @@ export class RenderSystem extends System {
 
   render() {
     const engine = this.engine;
-    const scene = this.engine.activeScene;
+    const scene = Scene.getLoadedScene();
     const context = engine.engineWindow.context;
 
-    const renders = scene.components.getAllByGroup<Render>(ComponentGroup.Render);
+    const renders = Component.getAllComponentsByGroup<Render>(ComponentGroup.Render);
 
     context.depthMask(true);
     context.enable(context.DEPTH_TEST);

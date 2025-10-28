@@ -1,5 +1,6 @@
 import { Transform } from "@engine/modules/3D/Transform";
 import { Entity } from "./Entity";
+import { Scene } from "../scene/scene";
 
 export interface GameEntityOptions {
   name?: string;
@@ -23,6 +24,26 @@ export class GameEntity extends Entity {
     this.active = options.active ?? true;
     this.static = options.static ?? false;
     this.transform.gameEntity = this;
+  }
+
+  public static getComponent() {
+    return Scene.getLoadedScene().entities.getById
+  }
+
+  public static getGameEntityById(id: number) {
+    return Scene.getLoadedScene().entities.getById(id);
+  }
+
+  public static getGameEntityByName(name: string) {
+    return Scene.getLoadedScene().entities.getByName(name);
+  }
+
+  public static getGameEntityByTag(tag: string) {
+    return Scene.getLoadedScene().entities.getByTag(tag);
+  }
+
+  public static getAllGameEntities() {
+    return Scene.getLoadedScene().entities.getAll();
   }
 
   clone(): GameEntity {
