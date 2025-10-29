@@ -1,6 +1,6 @@
-import { Render, type RenderOptions } from "../../core/base/Render.ts";
-import { ComponentGroup } from "../enums/ComponentGroup.ts";
-import { ComponentType } from "../enums/ComponentType.ts";
+import { type RenderOptions, Render } from "../../core/base/Render.js";
+import { ComponentGroup } from "../enums/ComponentGroup.js";
+import { ComponentType } from "../enums/ComponentType.js";
 import type { Sprite2D } from "./Sprite2D.ts";
 
 export interface SpriteRender2DOptions extends RenderOptions {

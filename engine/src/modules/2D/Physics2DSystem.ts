@@ -1,12 +1,12 @@
-import { Quat } from "@engine/core/math/quat";
-import { Vec2 } from "@engine/core/math/Vec2";
-import { Time } from "@engine/core/time/Time";
-import { EngineConfig } from "@engine/global/EngineConfig";
+import { Component } from "../../core/base/Component";
 import { System } from "../../core/base/System";
+import { Quat } from "../../core/math/quat";
+import { Vec2 } from "../../core/math/Vec2";
+import { Time } from "../../core/time/Time";
+import { EngineConfig } from "../../global/EngineConfig";
 import { ComponentGroup } from "../enums/ComponentGroup";
 import { PhysicsMath2D } from "./PhysicsMath2D";
 import { RigidBody2D } from "./RigidBody2D";
-import { Component } from "@engine/core/base/Component";
 
 export class PhysicsSystem extends System {
 

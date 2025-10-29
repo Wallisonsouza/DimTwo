@@ -1,5 +1,6 @@
-import { Vec2 } from "@engine/core/math/Vec2";
-import type { Vec3 } from "@engine/core/math/Vec3";
+import { Vec2 } from "../../core/math/Vec2";
+import type { Vec3 } from "../../core/math/Vec3";
+
 
 export enum FrictionCombine {
   Average,

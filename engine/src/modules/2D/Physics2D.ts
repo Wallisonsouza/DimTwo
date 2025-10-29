@@ -1,5 +1,5 @@
-import { Vec2 } from "@engine/core/math/Vec2";
-import { Vec3 } from "@engine/core/math/Vec3";
+import { Vec2 } from "../../core/math/Vec2";
+import { Vec3 } from "../../core/math/Vec3";
 import { Collider2D } from "./Collider2D";
 import { Hit2D } from "./Hit2D";
 import { Plane } from "./Plane";

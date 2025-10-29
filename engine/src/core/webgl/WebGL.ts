@@ -1,5 +1,8 @@
 export class WebGL {
 
+  public static context: WebGL2RenderingContext;
+  public static canvas: HTMLCanvasElement;
+
   public static compileShader(
     gl: WebGL2RenderingContext,
     name: string,
@@ -22,7 +25,6 @@ export class WebGL {
 
     return shader;
   }
-
 
   public static createProgram(gl: WebGL2RenderingContext, vertexShader: WebGLShader, fragmentShader: WebGLShader): WebGLProgram {
     const program = gl.createProgram();

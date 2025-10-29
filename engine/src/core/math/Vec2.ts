@@ -1,5 +1,5 @@
-import type { Vec3 } from "@engine/core/math/Vec3";
 import { Index, Vector } from "./vec";
+import { Vec3 } from "./Vec3";
 
 
 

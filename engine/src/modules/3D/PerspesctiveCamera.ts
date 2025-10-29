@@ -1,8 +1,8 @@
-import { Mat4, Mat4Error } from "@engine/core/math/Mat4";
-import { Vec3 } from "@engine/core/math/Vec3";
-import { Vec4 } from "@engine/core/math/Vec4";
-import { EngineWindow } from "@engine/core/window/EngineWindow";
-import { ComponentType } from "@engine/modules/enums/ComponentType";
+import { Mat4, Mat4Error } from "../../core/math/Mat4";
+import { Vec3 } from "../../core/math/Vec3";
+import { Vec4 } from "../../core/math/Vec4";
+import { Display } from "../../core/window/Display";
+import { ComponentType } from "../enums/ComponentType";
 import { Camera, type CameraOptions } from "../shared/camera/Camera";
 import { Ray } from "../shared/physics/Ray";
 
@@ -71,9 +71,8 @@ export class PerspectiveCamera extends Camera {
   }
 
   public screenPointToWorld(point: Vec3, out: Vec3 = new Vec3()): Vec3 {
-    const currentWindow = EngineWindow.current;
 
-    const ndc = currentWindow.toNDC(point);
+    const ndc = Display.toNDC(point);
     const clip = new Vec4(ndc.x, ndc.y, ndc.z, 1.0);
 
     if (
@@ -108,19 +107,15 @@ export class PerspectiveCamera extends Camera {
     clip.y /= clip.w;
     clip.z /= clip.w;
 
-    const currentWindow = EngineWindow.current;
-    if (!currentWindow) return new Vec3(0, 0, 0);
 
-    const screenX = ((clip.x + 1) / 2) * currentWindow.width;
-    const screenY = ((1 - clip.y) / 2) * currentWindow.height;
+    const screenX = ((clip.x + 1) / 2) * Display.width;
+    const screenY = ((1 - clip.y) / 2) * Display.height;
 
     return new Vec3(screenX, screenY, clip.z);
   }
 
   public screenPointToRay(point: Vec3): Ray {
-    const currentWindow = EngineWindow.current;
-
-    const ndc = currentWindow.toNDC(point);
+    const ndc = Display.toNDC(point);
 
     const nearClip = new Vec4(ndc.x, ndc.y, -1, 1);
     const farClip = new Vec4(ndc.x, ndc.y, 1, 1);

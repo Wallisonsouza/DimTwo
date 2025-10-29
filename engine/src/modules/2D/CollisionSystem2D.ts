@@ -1,10 +1,11 @@
 
-import { QuadTreeNode, type QuadTreeItem } from "@engine/core/algorithms/QuadTree";
-import { Mathf } from "@engine/core/math/Mathf";
-import { Vec2 } from "@engine/core/math/Vec2";
-import { Vec3 } from "@engine/core/math/Vec3";
-import { Time } from "@engine/core/time/Time";
+import { QuadTreeNode, type QuadTreeItem } from "../../core/algorithms/QuadTree";
+import { Component } from "../../core/base/Component";
 import { System } from "../../core/base/System";
+import { Mathf } from "../../core/math/Mathf";
+import { Vec2 } from "../../core/math/Vec2";
+import { Vec3 } from "../../core/math/Vec3";
+import { Time } from "../../core/time/Time";
 import { ComponentGroup } from "../enums/ComponentGroup";
 import { ComponentType } from "../enums/ComponentType";
 import type { Bounds2D } from "./Bounds2D";
@@ -14,7 +15,6 @@ import { CollisionResolver2D } from "./CollisionResolver2D";
 import { PhysicsMath2D } from "./PhysicsMath2D";
 import { BodyType, ForceMode, RigidBody2D } from "./RigidBody2D";
 import type { Contact2D } from "./SAT";
-import { Component } from "@engine/core/base/Component";
 
 export class CollisionSystem2D extends System {
 

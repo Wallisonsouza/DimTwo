@@ -1,10 +1,10 @@
-import { Time } from "@engine/core/time/Time";
 import { System } from "../../../core/base/System";
+import { Scene } from "../../../core/scene/scene";
+import { Time } from "../../../core/time/Time";
 import type { SpriteRender2D } from "../../2D/SpriteRender2D";
 import { ComponentType } from "../../enums/ComponentType";
 import { Animator } from "./Animator";
 import type { AnimatorState } from "./AnimatorState";
-import { Scene } from "@engine/core/scene/scene";
 
 export class AnimatorSystem extends System {
 

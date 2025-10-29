@@ -1,5 +1,6 @@
-import { Id } from "@engine/core/base/Id";
-import { Color } from "@engine/core/math/Color";
+
+import { Id } from "../core/base/Id";
+import { Color } from "../core/math/Color";
 import type { Shader } from "./Shader";
 
 export interface MaterialOptions {

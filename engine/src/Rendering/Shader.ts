@@ -1,10 +1,10 @@
-import type { Vec2 } from "@engine/core/math/Vec2";
-import type { Vec3 } from "@engine/core/math/Vec3";
-import type { TextureBuffer } from "@engine/core/webgl/TextureBuffer";
+import type { Color } from "../core/math/Color";
+import type { Vec2 } from "../core/math/Vec2";
+import type { Vec3 } from "../core/math/Vec3";
+import type { TextureBuffer } from "../core/webgl/TextureBuffer";
 import { WebGL } from "../core/webgl/WebGL";
+import { UniformNotFoundException } from "../exception/shader_exceptions";
 import type { ShaderSystem } from "./ShaderSystem";
-import { UniformNotFoundException } from "@engine/exception/shader_exceptions";
-import type { Color } from "@engine/core/math/Color";
 
 
 export class ContextLink {

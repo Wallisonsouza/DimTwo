@@ -1,7 +1,6 @@
-import { Uniform } from "@engine/modules/enums/Uniforms";
+import type { GameEntity } from "../../../core/base/GameEntity";
+import type { Material } from "../../../Rendering/Material";
 import { ShaderSystem } from "../../../Rendering/ShaderSystem";
-import type { Material } from "@engine/Rendering/Material";
-import type { GameEntity } from "@engine/core/base/GameEntity";
 
 export class AdvancedShaderSystem extends ShaderSystem {
 

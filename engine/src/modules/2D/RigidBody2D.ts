@@ -1,8 +1,8 @@
-import { type ComponentOptions, Component } from "@engine/core/base/Component";
-import { Mat4 } from "@engine/core/math/Mat4";
-import { Vec2 } from "@engine/core/math/Vec2";
-import { ComponentGroup } from "@engine/modules/enums/ComponentGroup";
-import { ComponentType } from "@engine/modules/enums/ComponentType";
+import { type ComponentOptions, Component } from "../../core/base/Component";
+import { Mat4 } from "../../core/math/Mat4";
+import { Vec2 } from "../../core/math/Vec2";
+import { ComponentGroup } from "../enums/ComponentGroup";
+import { ComponentType } from "../enums/ComponentType";
 import { PhysicsMath2D } from "./PhysicsMath2D";
 
 

@@ -1,12 +1,13 @@
-import { Component, type ComponentOptions } from "@engine/core/base/Component";
-import { Color } from "@engine/core/math/Color";
-import type { Mat4 } from "@engine/core/math/Mat4";
-import type { Vec3 } from "@engine/core/math/Vec3";
-import { ComponentGroup } from "@engine/modules/enums/ComponentGroup";
-import { ComponentType } from "@engine/modules/enums/ComponentType";
+import { type ComponentOptions, Component } from "../../../core/base/Component";
+import { Color } from "../../../core/math/Color";
+import type { Mat4 } from "../../../core/math/Mat4";
+import type { Vec3 } from "../../../core/math/Vec3";
+import { Scene } from "../../../core/scene/scene";
+import { CameraNotFoundException } from "../../../exception/CameraNotFoundException";
+import { ComponentGroup } from "../../enums/ComponentGroup";
+import { ComponentType } from "../../enums/ComponentType";
 import type { Ray } from "../physics/Ray";
-import { CameraNotFoundException } from "@engine/exception/CameraNotFoundException";
-import { Scene } from "@engine/core/scene/scene";
+
 
 export interface CameraOptions extends ComponentOptions {
   clearColor?: Color;

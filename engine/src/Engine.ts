@@ -1,16 +1,20 @@
-import { Input } from "@engine/core/input/Input";
 import type { System } from "./core/base/System";
+import { Input } from "./core/input/Input";
 import type { EngineSystem } from "./core/managers/EngineSystemManager";
 import { SimpleManager } from "./core/managers/SimpleManager";
 import { SystemManager } from "./core/managers/SystemManager";
 import { Time } from "./core/time/Time";
 import type { TextureBuffer } from "./core/webgl/TextureBuffer";
-import { EngineWindow } from "./core/window/EngineWindow";
+import { WebGL } from "./core/webgl/WebGL";
+import { Display } from "./core/window/Display";
 import { PerspectiveCamera } from "./modules/3D/PerspesctiveCamera";
 import { Camera } from "./modules/shared/camera/Camera";
 
+export interface EngineOptions {
+  to: string;
+}
+
 export class Engine {
-  public readonly engineWindow: EngineWindow;
   public readonly input: Input;
 
   public readonly textureBuffers = new SimpleManager<TextureBuffer>("Texture Buffer Manager");
@@ -18,9 +22,24 @@ export class Engine {
 
   private readonly loggedErrors = new Set<string>();
 
-  constructor(engineWindow: EngineWindow) {
-    this.engineWindow = engineWindow;
-    this.input = new Input(engineWindow.container);
+  constructor(options: EngineOptions) {
+
+    const canvas = document.getElementById(options.to) as HTMLCanvasElement;
+    if (!canvas) {
+      throw new Error();
+    }
+
+    WebGL.canvas = canvas;
+
+    const context = canvas.getContext("webgl2");
+
+    if (!context) {
+      throw new Error();
+    }
+
+    WebGL.context = context;
+
+    this.input = new Input(canvas);
 
     this.registerTimeEvents();
   }
@@ -48,10 +67,10 @@ export class Engine {
       const camera = Camera.getActivedCamera();
 
       if (camera instanceof PerspectiveCamera) {
-        camera.aspect = this.engineWindow.aspectRatio;
+        camera.aspect = Display.getAspectRatio();
       }
 
-      const context = this.engineWindow.context;
+      const context = WebGL.context;
       const color = camera.clearColor;
       context.clearColor(color.r, color.g, color.b, color.a);
       context.clear(context.COLOR_BUFFER_BIT | context.DEPTH_BUFFER_BIT);

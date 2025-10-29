@@ -1,8 +1,7 @@
-import type { GameEntity } from "@engine/core/base/GameEntity";
-import { Time } from "@engine/core/time/Time";
-import { Uniform } from "@engine/modules/enums/Uniforms";
-import type { Material } from "@engine/Rendering/Material";
-import { ShaderSystem } from "@engine/Rendering/ShaderSystem";
+import type { GameEntity } from "../../../core/base/GameEntity";
+import type { Material } from "../../../Rendering/Material";
+import { ShaderSystem } from "../../../Rendering/ShaderSystem";
+import { Uniform } from "../../enums/Uniforms";
 
 export class AsteroidShaderSystem extends ShaderSystem {
 

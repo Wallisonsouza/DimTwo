@@ -1,6 +1,6 @@
-import { GenericManager } from "@engine/core/managers/generic_manager";
-import type { Sprite2D } from "@engine/modules/2D/Sprite2D";
-import type { Material } from "@engine/Rendering/Material";
+import { GenericManager } from "../core/managers/generic_manager";
+import type { Sprite2D } from "../modules/2D/Sprite2D";
+import type { Material } from "../Rendering/Material";
 
 export class ResourcesManager {
   public static readonly MaterialManager = new GenericManager<string, Material>("material_manager");

@@ -1,12 +1,14 @@
-import { MeshBuffer } from "@engine/core/webgl/MeshBuffer";
-import { Shader } from "@engine/Rendering/Shader";
+import { Component } from "../../../core/base/Component";
 import type { Render } from "../../../core/base/Render";
 import { System } from "../../../core/base/System";
 import { Scene } from "../../../core/scene/scene";
+import { MeshBuffer } from "../../../core/webgl/MeshBuffer";
+import { WebGL } from "../../../core/webgl/WebGL";
 import type { Engine } from "../../../Engine";
+import { Shader } from "../../../Rendering/Shader";
 import { ComponentGroup } from "../../enums/ComponentGroup";
 import { Camera } from "../camera/Camera";
-import { Component } from "@engine/core/base/Component";
+
 
 
 export class RenderSystem extends System {
@@ -77,7 +79,7 @@ export class RenderSystem extends System {
   render() {
     const engine = this.engine;
     const scene = Scene.getLoadedScene();
-    const context = engine.engineWindow.context;
+    const context = WebGL.context;
 
     const renders = Component.getAllComponentsByGroup<Render>(ComponentGroup.Render);
 

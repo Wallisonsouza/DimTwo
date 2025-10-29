@@ -1,4 +1,4 @@
-import { Mesh } from "@engine/Rendering/Mesh";
+import { Mesh } from "../../Rendering/Mesh";
 import { Mathf } from "../math/Mathf";
 import { Vec2 } from "../math/Vec2";
 import { Vec3 } from "../math/Vec3";

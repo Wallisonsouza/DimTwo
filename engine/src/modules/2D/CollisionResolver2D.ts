@@ -1,4 +1,4 @@
-import type { Vec2 } from "@engine/core/math/Vec2";
+import type { Vec2 } from "../../core/math/Vec2";
 import { BoxCollider2D } from "./BoxCollider2D";
 import type { Collider2D } from "./Collider2D";
 import { SAT, type Contact2D } from "./SAT";

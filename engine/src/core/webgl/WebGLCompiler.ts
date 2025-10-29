@@ -1,4 +1,4 @@
-import type { Texture } from "@engine/Rendering/Texture";
+import { Texture } from "../../Rendering/Texture";
 import { EngineResourceManager } from "../managers/EngineResourceManager";
 import { Mathf } from "../math/Mathf";
 import type { TextureBuffer } from "./TextureBuffer";

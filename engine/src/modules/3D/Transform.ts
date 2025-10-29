@@ -1,10 +1,11 @@
-import { type ComponentOptions, Component } from "@engine/core/base/Component";
-import { Mat4 } from "@engine/core/math/Mat4";
-import { Mathf } from "@engine/core/math/Mathf";
-import { Quat } from "@engine/core/math/quat";
-import { Vec3 } from "@engine/core/math/Vec3";
-import { ComponentGroup } from "@engine/modules/enums/ComponentGroup";
-import { ComponentType } from "@engine/modules/enums/ComponentType";
+import { type ComponentOptions, Component } from "../../core/base/Component";
+import { Mat4 } from "../../core/math/Mat4";
+import { Mathf } from "../../core/math/Mathf";
+import { Quat } from "../../core/math/quat";
+import { Vec3 } from "../../core/math/Vec3";
+import { ComponentGroup } from "../enums/ComponentGroup";
+import { ComponentType } from "../enums/ComponentType";
+
 
 class TransformUtils {
   static tempVec1 = new Vec3();

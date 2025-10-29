@@ -1,7 +1,7 @@
-import type { Material } from "@engine/Rendering/Material";
-import type { Mesh } from "@engine/Rendering/Mesh";
 import type { ComponentGroup } from "../../modules/enums/ComponentGroup";
 import type { ComponentType } from "../../modules/enums/ComponentType";
+import { Material } from "../../Rendering/Material";
+import { Mesh } from "../../Rendering/Mesh";
 import { Color } from "../math/Color";
 import { Component, type ComponentOptions } from "./Component";
 

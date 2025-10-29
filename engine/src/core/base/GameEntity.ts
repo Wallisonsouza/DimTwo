@@ -1,6 +1,6 @@
-import { Transform } from "@engine/modules/3D/Transform";
-import { Entity } from "./Entity";
+import { Transform } from "../../modules/3D/Transform";
 import { Scene } from "../scene/scene";
+import { Entity } from "./Entity";
 
 export interface GameEntityOptions {
   name?: string;

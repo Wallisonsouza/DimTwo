@@ -1,10 +1,10 @@
-import { Uniform } from "@engine/modules/enums/Uniforms";
-import type { Camera } from "@engine/modules/shared/camera/Camera";
+import type { GameEntity } from "../core/base/GameEntity";
 import type { Scene } from "../core/scene/scene";
 import type { Engine } from "../Engine";
+import { Uniform } from "../modules/enums/Uniforms";
+import type { Camera } from "../modules/shared/camera/Camera";
 import type { Material } from "./Material";
 import type { Shader } from "./Shader";
-import type { GameEntity } from "@engine/core/base/GameEntity";
 
 export class ShaderSystem {
   name: string;

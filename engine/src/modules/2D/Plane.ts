@@ -1,4 +1,5 @@
-import { Vec3 } from "@engine/core/math/Vec3";
+import { Vec3 } from "../../core/math/Vec3";
+
 
 export class Plane {
   public normal: Vec3;
@@ -21,7 +22,7 @@ export class Plane {
     if (t < 0) return null;
 
     if (outPoint) {
-      outPoint.copy(
+      outPoint.set(
         rayOrigin.x + rayDir.x * t,
         rayOrigin.y + rayDir.y * t,
         rayOrigin.z + rayDir.z * t

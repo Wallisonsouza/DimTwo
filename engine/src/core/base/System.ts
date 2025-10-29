@@ -1,6 +1,6 @@
-import type { Collider2D } from "@engine/modules/2D/Collider2D";
-import type { Contact2D } from "@engine/modules/2D/SAT";
 import type { Engine } from "../../Engine";
+import { Collider2D } from "../../modules/2D/Collider2D";
+import { Contact2D } from "../../modules/2D/SAT";
 
 export interface CollisionEvent2D {
   a: Collider2D,

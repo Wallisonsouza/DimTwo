@@ -1,5 +1,5 @@
-import type { Engine } from "@engine/Engine";
 import { Vec2 } from "../../core/math/Vec2";
+import type { Engine } from "../../Engine";
 
 export interface Sprite2DOptions {
   textureID?: string | null;

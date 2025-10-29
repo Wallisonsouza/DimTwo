@@ -1,5 +1,5 @@
-import type { KeyCode } from "@engine/core/input/KeyCode";
-import { Vec3 } from "@engine/core/math/Vec3";
+import { Vec3 } from "../math/Vec3";
+import { KeyCode } from "./KeyCode";
 
 export class Input {
   private key = new Map<string, boolean>();

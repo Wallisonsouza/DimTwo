@@ -1,4 +1,4 @@
-import { Vec2 } from "@engine/core/math/Vec2";
+import { Vec2 } from "../../core/math/Vec2";
 
 export interface Contact2D {
   point: Vec2;

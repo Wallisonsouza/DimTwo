@@ -1,5 +1,5 @@
-import type { Mesh } from "@engine/Rendering/Mesh";
-import { ContextLink } from "@engine/Rendering/Shader";
+import { Mesh } from "../../Rendering/Mesh";
+import { ContextLink } from "../../Rendering/Shader";
 
 export class MeshBuffer {
   vao: WebGLVertexArrayObject;

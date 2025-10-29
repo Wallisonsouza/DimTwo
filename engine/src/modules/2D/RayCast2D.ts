@@ -1,5 +1,6 @@
-import type { GameEntity } from "@engine/core/base/GameEntity";
-import { Vec2 } from "@engine/core/math/Vec2";
+
+import type { GameEntity } from "../../core/base/GameEntity";
+import { Vec2 } from "../../core/math/Vec2";
 import type { Collider2D } from "./Collider2D";
 
 export interface RaycastHit2D {
@@ -57,16 +58,16 @@ export class RayCast2D {
       const distance = hitPoint.sub(origin).length();
       if (distance > maxDistance) continue;
 
-      if (!closestHit || distance < closestHit.distance) {
-        const edge = b.sub(a);
-        const normal = edge.perpendicular().normalizeInPlace();
-        closestHit = {
-          point: hitPoint,
-          normal,
-          distance,
-          polygon: poly
-        };
-      }
+      // if (!closestHit || distance < closestHit.distance) {
+      //   const edge = b.sub(a);
+      //   const normal = edge.perpendicular().normalizeInPlace();
+      //   closestHit = {
+      //     point: hitPoint,
+      //     normal,
+      //     distance,
+      //     polygon: poly
+      //   };
+      // }
     }
 
     return closestHit;

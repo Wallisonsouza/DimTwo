@@ -1,4 +1,4 @@
-import { Vec3 } from "@engine/core/math/Vec3";
+import { Vec3 } from "../../../core/math/Vec3";
 
 export class Ray {
     origin: Vec3;

@@ -1,8 +1,8 @@
+import { SceneNotFoundException } from "../../exception/SceneNotFoundException";
 import { Component } from "../base/Component";
 import { GameEntity } from "../base/GameEntity";
 import { ComponentManager } from "../managers/ComponentManager";
 import { EntityManager } from "../managers/EntityManager";
-import { SceneNotFoundException } from "@engine/exception/SceneNotFoundException";
 
 export class Scene {
 

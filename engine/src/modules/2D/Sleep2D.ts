@@ -1,4 +1,4 @@
-import { Vec2 } from "@engine/core/math/Vec2";
+import { Vec2 } from "../../core/math/Vec2";
 import type { RigidBody2D } from "./RigidBody2D";
 
 export class Sleep {

@@ -1,5 +1,5 @@
-import { Mat4 } from "@engine/core/math/Mat4";
-import { Vec2 } from "@engine/core/math/Vec2";
+import { Mat4 } from "../../core/math/Mat4";
+import { Vec2 } from "../../core/math/Vec2";
 import { ComponentType } from "../enums/ComponentType";
 import { Collider2D, type Collider2DOptions } from "./Collider2D";
 
