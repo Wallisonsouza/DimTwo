@@ -1,6 +1,8 @@
 import type { Vec3 } from "@engine/core/math/Vec3";
 import { Index, Vector } from "./vec";
 
+
+
 export class Vec2 extends Vector {
 
   constructor(x = 0, y = 0) {

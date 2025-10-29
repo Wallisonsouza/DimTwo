@@ -6,6 +6,7 @@ import { SpriteRender2D } from "@engine/modules/2D/SpriteRender2D";
 import { Material } from "@engine/Rendering/Material";
 import { Mesh } from "@engine/Rendering/Mesh";
 import { CharacterControler2D } from "../systems/character.controller.types";
+import { Vec3 } from "@engine/core/math/Vec3";
 
 const quadSprite = new Sprite2D({
   textureID: "primitives",
@@ -29,12 +30,12 @@ const circleSprite = new Sprite2D({
 export function configurePlayer(scene: Scene, entity: GameEntity) {
   const controller = new CharacterControler2D();
 
-  entity.transform.scale.setFromNumber(10, 10, 0)
+  entity.transform.localScale = new Vec3(1, 1, 0);
   const spriteRender = new SpriteRender2D({
     mesh: Mesh.get("fillQuad"),
     layer: 0,
     sprite: quadSprite,
-    material: Material.get("planet")
+    material: Material.get("simple")
   });
 
   /*  const rigidBody = new RigidBody2D({

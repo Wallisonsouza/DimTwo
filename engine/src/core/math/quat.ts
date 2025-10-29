@@ -14,6 +14,49 @@ export class Quat {
     this.w = w;
   }
 
+
+  invertSelf(): this {
+    this.x = -this.x;
+    this.y = -this.y;
+    this.z = -this.z;
+    this.w = this.w;
+    return this;
+  }
+
+  public static rotateVector(q: Quat, v: Vec3, out: Vec3 = new Vec3()): Vec3 {
+    const x = v.x, y = v.y, z = v.z;
+    const qx = q.x, qy = q.y, qz = q.z, qw = q.w;
+
+    const uvx = qy * z - qz * y;
+    const uvy = qz * x - qx * z;
+    const uvz = qx * y - qy * x;
+
+    const uuvx = qy * uvz - qz * uvy;
+    const uuvy = qz * uvx - qx * uvz;
+    const uuvz = qx * uvy - qy * uvx;
+
+    const tw = 2.0 * qw;
+    out.x = x + uvx * tw + uuvx * 2.0;
+    out.y = y + uvy * tw + uuvy * 2.0;
+    out.z = z + uvz * tw + uuvz * 2.0;
+
+    return out;
+  }
+
+
+
+  public multiply(other: Quat, out: Quat = new Quat()) {
+    const ax = this.x, ay = this.y, az = this.z, aw = this.w;
+    const bx = other.x, by = other.y, bz = other.z, bw = other.w;
+
+    out.x = aw * bx + ax * bw + ay * bz - az * by;
+    out.y = aw * by - ax * bz + ay * bw + az * bx;
+    out.z = aw * bz + ax * by - ay * bx + az * bw;
+    out.w = aw * bw - ax * bx - ay * by - az * bz;
+
+    return out;
+  }
+
   public static multiply(self: Quat, other: Quat, out: Quat) {
     const ax = self.x, ay = self.y, az = self.z, aw = self.w;
     const bx = other.x, by = other.y, bz = other.z, bw = other.w;
@@ -134,7 +177,7 @@ export class Quat {
   equals(q: Quat): boolean {
     return this.x === q.x && this.y === q.y && this.z === q.z && this.w === q.w;
   }
-  public set(x: number | Quat, y?: number, z?: number, w?: number): this {
+  public copy(x: number | Quat, y?: number, z?: number, w?: number): this {
     if (x instanceof Quat) {
       this.x = x.x;
       this.y = x.y;
@@ -149,8 +192,13 @@ export class Quat {
     return this;
   }
 
-  public static conjugate(q: Quat): Quat {
-    return new Quat(-q.x, -q.y, -q.z, q.w);
+
+  public static conjugate(q: Quat, out: Quat): Quat {
+    out.x = -q.x;
+    out.y = -q.y;
+    out.z = -q.z;
+    out.w = q.w;
+    return out;
   }
 
   public clone() {

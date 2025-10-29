@@ -24,11 +24,16 @@ export class Vec3 extends Vector {
     return new Vec2(this.data[Index.X], this.data[Index.Y])
   }
 
+  public set(x: number, y: number, z: number) {
+    this.data[0] = x;
+    this.data[1] = y;
+    this.data[2] = z;
+  }
   constructor(x = 0, y = 0, z = 0) {
     super(x, y, z)
   }
 
-  public set(other: Vec3): this {
+  public copy(other: Vec3): this {
     const d = this.data;
     const o = other.data;
     d[Index.X] = o[Index.X];
@@ -91,7 +96,15 @@ export class Vec3 extends Vector {
     return out;
   }
 
-  public static mul(a: Vec3, b: Vec3, out: Vec3 = new Vec3()): Vec3 {
+  public multiply(other: Vec3, out: Vec3 = new Vec3()): Vec3 {
+    const ad = this.data, bd = other.data, od = out.data;
+    od[Index.X] = ad[Index.X] * bd[Index.X];
+    od[Index.Y] = ad[Index.Y] * bd[Index.Y];
+    od[Index.Z] = ad[Index.Z] * bd[Index.Z];
+    return out;
+  }
+
+  public static multiply(a: Vec3, b: Vec3, out: Vec3 = new Vec3()): Vec3 {
     const ad = a.data, bd = b.data, od = out.data;
     od[Index.X] = ad[Index.X] * bd[Index.X];
     od[Index.Y] = ad[Index.Y] * bd[Index.Y];
@@ -99,6 +112,48 @@ export class Vec3 extends Vector {
     return out;
   }
 
+  public static subtract(a: Vec3, b: Vec3, out: Vec3 = new Vec3()): Vec3 {
+    const ad = a.data, bd = b.data, od = out.data;
+    od[Index.X] = ad[Index.X] - bd[Index.X];
+    od[Index.Y] = ad[Index.Y] - bd[Index.Y];
+    od[Index.Z] = ad[Index.Z] - bd[Index.Z];
+    return out;
+  }
+
+
+
+  public static divide(a: Vec3, b: Vec3, out: Vec3 = new Vec3()): Vec3 {
+    const ad = a.data, bd = b.data, od = out.data;
+    od[Index.X] = ad[Index.X] / bd[Index.X];
+    od[Index.Y] = ad[Index.Y] / bd[Index.Y];
+    od[Index.Z] = ad[Index.Z] / bd[Index.Z];
+    return out;
+  }
+
+
+
+
+
+
+
+
+
+
+  public div(other: Vec3, out: Vec3 = new Vec3()): Vec3 {
+    const ad = this.data, bd = other.data, od = out.data;
+    od[Index.X] = ad[Index.X] / bd[Index.X];
+    od[Index.Y] = ad[Index.Y] / bd[Index.Y];
+    od[Index.Z] = ad[Index.Z] / bd[Index.Z];
+    return out;
+  }
+
+  public sub(other: Vec3, out: Vec3 = new Vec3()): Vec3 {
+    const ad = this.data, bd = other.data, od = out.data;
+    od[Index.X] = ad[Index.X] - bd[Index.X];
+    od[Index.Y] = ad[Index.Y] - bd[Index.Y];
+    od[Index.Z] = ad[Index.Z] - bd[Index.Z];
+    return out;
+  }
 
   public static sub(a: Vec3, b: Vec3, out: Vec3 = new Vec3()): Vec3 {
     const ad = a.data, bd = b.data, od = out.data;

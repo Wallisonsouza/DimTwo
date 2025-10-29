@@ -48,7 +48,7 @@ export function createAsteroidMesh(name: string, vertexCount = 8, radius = 1): M
 
 export function configureAsteroid(scene: Scene, entity: GameEntity) {
 
-  entity.transform.scale.setFromNumber(0.2, 0.2, 0);
+  entity.transform.localScale = new Vec3(0.1, 0.1, 0.1);
 
   const baseMesh = createAsteroidMesh(entity.name);
   if (!baseMesh) return;
@@ -92,13 +92,13 @@ export class SimpleScene extends Scene {
     this.addEntity(planet);
     configurePlayer(this, planet);
 
-    const asteroids = 999;
+    const asteroids = 10000;
 
     for (let i = 0; i < asteroids; i++) {
       const planet = new GameEntity({ name: `Player_${i}`, tag: "Player" });
       this.addEntity(planet);
       configureAsteroid(this, planet);
-      planet.transform.scale = new Vec3(0.1, 0.1, 0.1)
+      planet.transform.localScale = new Vec3(0.1, 0.1, 0.1);
       planet.transform.position = Vec3.random(-10, 10)
 
     }

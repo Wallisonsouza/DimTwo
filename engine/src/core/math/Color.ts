@@ -1,11 +1,27 @@
+
+
+
 export class Color {
-  r: number;
-  g: number;
-  b: number;
-  a: number;
+
+  data: Float32Array = new Float32Array([1, 1, 1, 1]);
+
+
+
+  public get r() {
+    return this.data[0];
+  }
+  public get g() {
+    return this.data[1];
+  }
+  public get b() {
+    return this.data[2];
+  }
+  public get a() {
+    return this.data[3];
+  }
 
   public clone() {
-    return new Color(this.r, this.g, this.b, this.a);
+    return new Color(this.data[0], this.data[1], this.data[2], this.data[3]);
   }
 
   public static readonly Red = new Color(255, 0, 0);
@@ -26,10 +42,10 @@ export class Color {
   public static readonly transparent = new Color(0, 0, 0, 0);
 
   constructor(r: number, g: number, b: number, a: number = 1) {
-    this.r = r / 255;
-    this.g = g / 255;
-    this.b = b / 255;
-    this.a = a;
+    this.data[0] = r / 255;
+    this.data[1] = g / 255;
+    this.data[2] = b / 255;
+    this.data[3] = a;
   }
 
   public static rgba(r: number, g: number, b: number, a: number = 1): Color {

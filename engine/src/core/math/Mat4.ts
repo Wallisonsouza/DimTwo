@@ -100,7 +100,7 @@ export class Mat4 {
     return mat4;
   }
 
-  public static composeTRS(m: Mat4, t: Vec3, r: Quat, s: Vec3) {
+  public static composeTRS(t: Vec3, r: Quat, s: Vec3, out: Mat4) {
     const x = r.x, y = r.y, z = r.z, w = r.w;
 
     const x2 = x + x;
@@ -119,7 +119,7 @@ export class Mat4 {
 
     const sx = s.x, sy = s.y, sz = s.z;
 
-    const e = m.data;
+    const e = out.data;
 
     e[0] = (1 - (yy + zz)) * sx;
     e[1] = (xy + wz) * sx;
@@ -141,6 +141,15 @@ export class Mat4 {
     e[13] = t.y;
     e[14] = t.z;
     e[15] = 1;
+  }
+
+
+  public getTranslation(out: Vec3) {
+    out.x = this.data[12];
+    out.y = this.data[13];
+    out.z = this.data[14];
+
+    return out;
   }
 
   public static composeTR(m: Mat4, t: Vec3, r: Quat) {
@@ -186,7 +195,7 @@ export class Mat4 {
   }
 
   public static composeTRInverse(m: Mat4, t: Vec3, r: Quat) {
-    const conj = Quat.conjugate(r);
+    const conj = Quat.conjugate(r, new Quat());
     const ix = conj.x, iy = conj.y, iz = conj.z, iw = conj.w;
 
     const x2 = ix + ix;

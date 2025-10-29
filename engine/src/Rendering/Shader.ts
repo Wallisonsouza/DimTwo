@@ -4,6 +4,7 @@ import type { TextureBuffer } from "@engine/core/webgl/TextureBuffer";
 import { WebGL } from "../core/webgl/WebGL";
 import type { ShaderSystem } from "./ShaderSystem";
 import { UniformNotFoundException } from "@engine/exception/shader_exceptions";
+import type { Color } from "@engine/core/math/Color";
 
 
 export class ContextLink {
@@ -124,6 +125,8 @@ export class Shader {
     gl.uniform4f(location, x, y, z, w);
   }
 
+
+
   public set3F(name: string, x: number, y: number, z: number) {
     const location = this.getUniform(name);
     if (!location) this.throwUniformNotFound("vec3", name);
@@ -141,6 +144,16 @@ export class Shader {
     gl.useProgram(this.program);
     gl.uniform3fv(location, v.data);
   }
+
+  public setColor(name: string, v: Color) {
+    const location = this.getUniform(name);
+    if (!location) this.throwUniformNotFound("color", name);
+
+    const gl = this.getGL();
+    gl.useProgram(this.program);
+    gl.uniform4fv(location, v.data);
+  }
+
 
   public setVec2(name: string, v: Vec2) {
     const location = this.getUniform(name);

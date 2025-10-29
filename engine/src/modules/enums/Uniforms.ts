@@ -12,5 +12,10 @@ export enum PhongUniforms {
   Diffuse = "uDiffuse",
   Specular = "uSpecular",
   Shininess = "uShininess",
-  LightPosition = "uLightPosition"
+  AmbientFactor = "uAmbientFactor",
+  DiffuseFactor = "uDiffuseFactor",
+  SpecularFactor = "uSpecularFactor",
+  LightPosition = "uLightPosition",
+  LightColor = "uLightColor",
+  ViewPosition = "uViewPosition"
 }

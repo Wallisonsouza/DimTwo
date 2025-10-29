@@ -5,6 +5,9 @@ import { SimpleScene } from "examples/SimpleScene";
 
 
 const game = new GameEngine();
+
+
+
 await game.loadGameResources();
 
 

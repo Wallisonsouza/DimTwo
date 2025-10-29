@@ -21,7 +21,7 @@ export class Plane {
     if (t < 0) return null;
 
     if (outPoint) {
-      outPoint.set(
+      outPoint.copy(
         rayOrigin.x + rayDir.x * t,
         rayOrigin.y + rayDir.y * t,
         rayOrigin.z + rayDir.z * t

@@ -16,6 +16,8 @@ export class Material {
   color: Color;
   id: Id = new Id();
 
+  onLoop?(): void;
+
   private static materials: Map<string, Material> = new Map();
 
   static get(name: string): Material | undefined {
